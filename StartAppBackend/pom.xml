@@ -11,7 +11,7 @@
     <groupId>com.skyletto</groupId>
     <artifactId>startappbackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>StartAppBackend</name>
+    <name>startappbackend</name>
     <description>Backend application for mobile app</description>
     <properties>
         <java.version>1.8</java.version>
