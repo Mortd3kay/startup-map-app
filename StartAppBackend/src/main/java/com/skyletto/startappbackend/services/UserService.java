@@ -5,6 +5,7 @@ import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.repositories.RoleRepository;
 import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +33,6 @@ public class UserService {
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
     public User changeUser(User user) {

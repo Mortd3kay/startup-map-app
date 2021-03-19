@@ -6,6 +6,8 @@ import com.skyletto.startappbackend.entities.responses.AuthResponse;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,9 +37,9 @@ public class SecurityController {
 
     //тест
     @GetMapping("/user/get")
-    public @ResponseBody User getUserInfo(@RequestHeader (name="Authorization") String token){
-        String email = jwtProvider.getLoginFromToken(token);
-        return userService.findUserByEmail(email);
+    @PreAuthorize("#logData.email == authentication.name")
+    public @ResponseBody User getUserInfo(@RequestBody LoginDataRequest logData){
+        return userService.findUserByEmail(logData.getEmail());
     }
 
     @PostMapping("/register")
@@ -61,11 +63,13 @@ public class SecurityController {
     }
 
     @PutMapping("/user/edit")
-    public @ResponseBody AuthResponse updateUser(@RequestBody @Valid User user, @RequestParam("Token") String token){
-        String email = jwtProvider.getLoginFromToken(token);
-        User u = userService.findUserByEmail(email);
-        user.setId(u.getId());
-        u = userService.changeUser(user);
-        return new AuthResponse(jwtProvider.generateToken(u.getEmail()));
+    public @ResponseBody AuthResponse updateUser(@RequestBody @Valid User user, Authentication authentication){
+        User u = userService.findUserByEmail(authentication.getName());
+        if (u!=null) {
+            user.setId(u.getId());
+            u = userService.changeUser(user);
+            return new AuthResponse(jwtProvider.generateToken(u.getEmail()));
+        }
+        return null;
     }
 }
