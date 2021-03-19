@@ -18,7 +18,7 @@ public class User {
     private String secondName;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 

@@ -55,7 +55,7 @@ public class UserService {
     public User findByEmailAndPassword(String email, String password){
         User user = userRepository.findUserByEmail(email);
         if (user!=null){
-            if (passwordEncoder.matches(user.getPassword(),password))
+            if (passwordEncoder.matches(password,user.getPassword()))
                 return user;
         }
         return null;

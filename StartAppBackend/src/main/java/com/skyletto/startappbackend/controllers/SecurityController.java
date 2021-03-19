@@ -29,8 +29,15 @@ public class SecurityController {
     }
 
     @GetMapping("/email")
-    public int findUserByEmail(@RequestParam String email){
+    public int findUserByEmail(@RequestParam @Valid String email){
         return userService.countUserByEmail(email);
+    }
+
+    //тест
+    @GetMapping("/user/get")
+    public @ResponseBody User getUserInfo(@RequestHeader (name="Authorization") String token){
+        String email = jwtProvider.getLoginFromToken(token);
+        return userService.findUserByEmail(email);
     }
 
     @PostMapping("/register")
@@ -44,7 +51,7 @@ public class SecurityController {
     }
 
     @PostMapping("/auth")
-    public @ResponseBody AuthResponse loginUser(@RequestBody LoginDataRequest loginData){
+    public @ResponseBody AuthResponse loginUser(@RequestBody @Valid LoginDataRequest loginData){
         User user = userService.findByEmailAndPassword(loginData.getEmail(), loginData.getPassword());
         if (user!=null) {
             String token = jwtProvider.generateToken(user.getEmail());
@@ -54,7 +61,7 @@ public class SecurityController {
     }
 
     @PutMapping("/user/edit")
-    public @ResponseBody AuthResponse updateUser(@RequestBody User user, @RequestParam("Token") String token){
+    public @ResponseBody AuthResponse updateUser(@RequestBody @Valid User user, @RequestParam("Token") String token){
         String email = jwtProvider.getLoginFromToken(token);
         User u = userService.findUserByEmail(email);
         user.setId(u.getId());
