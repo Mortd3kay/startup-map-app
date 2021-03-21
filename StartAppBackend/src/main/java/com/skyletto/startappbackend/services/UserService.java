@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @Service
 public class UserService {
     private UserRepository userRepository;
@@ -37,6 +40,7 @@ public class UserService {
         );
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Logger.getLogger("SERVICE").log(Level.INFO, "save "+user.getEmail());
         return userRepository.save(user);
     }
 

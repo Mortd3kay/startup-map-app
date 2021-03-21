@@ -1,5 +1,7 @@
 package com.skyletto.startappfrontend.data.network;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -17,10 +19,21 @@ public class ApiRepository {
     public ApiService apiService;
 
     private ApiRepository() {
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        httpClient.addInterceptor(chain -> {
+            Request request = chain.request().newBuilder()
+                    .addHeader("Content-Type", "application/json;charset=UTF-8")
+                    .build();
+            return chain.proceed(request);
+        });
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(httpClient.build())
                 .build();
 
         apiService = retrofit.create(ApiService.class);
@@ -35,5 +48,9 @@ public class ApiRepository {
             }
         }
         return instance;
+    }
+
+    public static String makeToken(String token){
+        return "Bearer "+token;
     }
 }

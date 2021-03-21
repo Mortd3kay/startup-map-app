@@ -37,11 +37,9 @@ public class SecurityController {
         return userService.countUserByEmail(email);
     }
 
-    //тест
     @GetMapping("/user/get")
-    @PreAuthorize("#logData.email == authentication.name")
-    public @ResponseBody User getUserInfo(@RequestBody LoginDataRequest logData){
-        return userService.findUserByEmail(logData.getEmail());
+    public @ResponseBody User getUserInfo(Authentication auth){
+        return userService.findUserByEmail(auth.getName());
     }
 
     @PostMapping("/register")
