@@ -2,8 +2,9 @@ package com.skyletto.startappbackend.controllers;
 
 import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
+import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.AuthResponse;
-import com.skyletto.startappbackend.entities.responses.ChangeProfileResponse;
+import com.skyletto.startappbackend.entities.responses.ProfileResponse;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,41 +37,40 @@ public class SecurityController {
         return userService.countUserByEmail(email);
     }
 
-    //тест
     @GetMapping("/user/get")
-    @PreAuthorize("#logData.email == authentication.name")
-    public @ResponseBody User getUserInfo(@RequestBody LoginDataRequest logData){
-        return userService.findUserByEmail(logData.getEmail());
+    public @ResponseBody User getUserInfo(Authentication auth){
+        return userService.findUserByEmail(auth.getName());
     }
 
     @PostMapping("/register")
-    public @ResponseBody AuthResponse registerUser(@RequestBody @Valid User user){
-        User u = userService.createUser(user);
+    public @ResponseBody ProfileResponse registerUser(@RequestBody @Valid RegisterDataRequest data){
+        User u = userService.createUser(data);
         if (u!=null) {
-            String token = jwtProvider.generateToken(user.getEmail());
-            return new AuthResponse(token);
+            String token = jwtProvider.generateToken(data.getEmail());
+            ProfileResponse pr = new ProfileResponse(token, u);
+            return pr;
         }
         return null;
     }
 
     @PostMapping("/auth")
-    public @ResponseBody AuthResponse loginUser(@RequestBody @Valid LoginDataRequest loginData){
-        User user = userService.findByEmailAndPassword(loginData.getEmail(), loginData.getPassword());
+    public @ResponseBody ProfileResponse loginUser(@RequestBody @Valid LoginDataRequest data){
+        User user = userService.findByEmailAndPassword(data.getEmail(), data.getPassword());
         if (user!=null) {
             String token = jwtProvider.generateToken(user.getEmail());
-            return new AuthResponse(token);
+            return new ProfileResponse(token, user);
         }
         return null;
     }
 
     @PutMapping("/user/edit")
     public @ResponseBody
-    ChangeProfileResponse updateUser(@RequestBody @Valid User user, Authentication authentication){
+    ProfileResponse updateUser(@RequestBody @Valid User user, Authentication authentication){
         User u = userService.findUserByEmail(authentication.getName());
         if (u!=null) {
             user.setId(u.getId());
             u = userService.changeUser(user);
-            return new ChangeProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
+            return new ProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
         }
         return null;
     }
