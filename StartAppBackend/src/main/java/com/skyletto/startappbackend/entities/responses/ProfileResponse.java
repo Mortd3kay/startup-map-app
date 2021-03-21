@@ -2,11 +2,11 @@ package com.skyletto.startappbackend.entities.responses;
 
 import com.skyletto.startappbackend.entities.User;
 
-public class ChangeProfileResponse {
+public class ProfileResponse {
     private String token;
     private User user;
 
-    public ChangeProfileResponse(String token, User user) {
+    public ProfileResponse(String token, User user) {
         this.token = token;
         this.user = user;
     }

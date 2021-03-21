@@ -2,6 +2,7 @@ package com.skyletto.startappbackend.services;
 
 import com.skyletto.startappbackend.entities.Role;
 import com.skyletto.startappbackend.entities.User;
+import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.repositories.RoleRepository;
 import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,15 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(User user) {
+    public User createUser(RegisterDataRequest data) {
         Role role = roleRepository.findRoleByName("ROLE_USER");
+        User user = new User(
+                data.getEmail(),
+                data.getPassword(),
+                data.getFirstName(),
+                data.getSecondName(),
+                data.getPhoneNumber()
+        );
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
