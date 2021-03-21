@@ -5,11 +5,8 @@ import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.repositories.RoleRepository;
 import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -36,6 +33,9 @@ public class UserService {
     }
 
     public User changeUser(User user) {
+        Role role = roleRepository.findRoleByName("ROLE_USER");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(user.getRole()==null?role: user.getRole());
         return userRepository.save(user);
     }
 
