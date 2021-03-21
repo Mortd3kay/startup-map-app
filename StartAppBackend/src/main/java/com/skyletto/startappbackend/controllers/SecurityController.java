@@ -3,6 +3,7 @@ package com.skyletto.startappbackend.controllers;
 import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.responses.AuthResponse;
+import com.skyletto.startappbackend.entities.responses.ChangeProfileResponse;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +64,13 @@ public class SecurityController {
     }
 
     @PutMapping("/user/edit")
-    public @ResponseBody AuthResponse updateUser(@RequestBody @Valid User user, Authentication authentication){
+    public @ResponseBody
+    ChangeProfileResponse updateUser(@RequestBody @Valid User user, Authentication authentication){
         User u = userService.findUserByEmail(authentication.getName());
         if (u!=null) {
             user.setId(u.getId());
             u = userService.changeUser(user);
-            return new AuthResponse(jwtProvider.generateToken(u.getEmail()));
+            return new ChangeProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
         }
         return null;
     }
