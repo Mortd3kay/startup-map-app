@@ -34,21 +34,23 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(LoginAuthViewModel.class);
+
+        viewModel.setOnErrorLoginListener(() -> {
+            Toast.makeText(getContext(), "Неверные данные", Toast.LENGTH_SHORT).show();
+        });
+        viewModel.setOnSuccessLoginListener(() -> {
+            mActivity.onFinish();
+        });
+
+        viewModel.setGoToRegister(() -> mActivity.nextStep());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentLoginBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
+        binding.setModel(viewModel);
         View v = binding.getRoot();
-
-        viewModel.setOnErrorLoginListener(() -> {
-            Toast.makeText(getContext(), "Неверные данные", Toast.LENGTH_SHORT).show();
-        });
-
-        viewModel.setOnSuccessLoginListener(() -> {
-            mActivity.onFinish();
-        });
         return v;
     }
 

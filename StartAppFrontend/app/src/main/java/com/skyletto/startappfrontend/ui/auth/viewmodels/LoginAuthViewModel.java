@@ -16,6 +16,7 @@ public class LoginAuthViewModel extends AndroidViewModel {
     private LoginDataRequest data;
     private OnSuccessLoginListener onSuccessLoginListener;
     private OnErrorLoginListener onErrorLoginListener;
+    private GoToRegister goToRegister;
 
     public LoginAuthViewModel(@NonNull Application application) {
         super(application);
@@ -46,6 +47,15 @@ public class LoginAuthViewModel extends AndroidViewModel {
 
     public void setOnErrorLoginListener(OnErrorLoginListener onErrorLoginListener) {
         this.onErrorLoginListener = onErrorLoginListener;
+    }
+
+    public void setGoToRegister(GoToRegister goToRegister) {
+        this.goToRegister = goToRegister;
+    }
+
+    public void goToRegister(){
+        if (goToRegister!=null)
+            goToRegister.goTo();
     }
 }
 
