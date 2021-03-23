@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.auth.fragments.LoginFragment">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.skyletto.startappfrontend.ui.auth.viewmodels.LoginAuthViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="40dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:inputType="textEmailAddress"
+            android:text="@={model.data.email}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="40dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:inputType="textPassword"
+            android:text="@={model.data.password}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log in"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="30dp"
+            android:textAllCaps="false"
+            android:onClick="@{(view)->model.login()}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/auth_register_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:layout_marginHorizontal="40dp"
+            android:textAllCaps="false"
+            android:onClick="@{(view)->model.goToRegister()}"/>
+
+    </LinearLayout>
+
+</layout>
