@@ -1,8 +1,11 @@
 package com.skyletto.startappfrontend.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.skyletto.startappfrontend.R;
+import com.skyletto.startappfrontend.ui.auth.fragments.LoginFragment;
+import com.skyletto.startappfrontend.ui.main.MainActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -31,5 +34,11 @@ public class AuthActivity extends AppCompatActivity implements ActivityStepper {
     @Override
     public void prevStep() {
 
+    }
+
+    @Override
+    public void onFinish() {
+        startActivity(new Intent(AuthActivity.this, MainActivity.class));
+        finish();
     }
 }

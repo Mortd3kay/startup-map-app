@@ -1,4 +1,4 @@
-package com.skyletto.startappfrontend.ui.auth;
+package com.skyletto.startappfrontend.ui.auth.viewmodels;
 
 import android.app.Application;
 

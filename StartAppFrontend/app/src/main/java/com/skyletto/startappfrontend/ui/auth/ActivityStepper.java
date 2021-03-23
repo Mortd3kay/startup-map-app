@@ -4,4 +4,5 @@ public interface ActivityStepper {
 
     void nextStep();
     void prevStep();
+    void onFinish();
 }

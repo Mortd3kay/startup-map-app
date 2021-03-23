@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.auth.LoginFragment"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    tools:context=".ui.auth.fragments.LoginFragment">
+
 
     <ImageView
         android:layout_width="250dp"
@@ -56,5 +57,6 @@
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="30dp"
         android:textAllCaps="false"/>
+
 
 </LinearLayout>
