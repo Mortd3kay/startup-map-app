@@ -10,17 +10,19 @@ import androidx.lifecycle.AndroidViewModel;
 
 public class SharedAuthViewModel extends AndroidViewModel {
 
-    private RegisterDataRequest profile;
+    private ObservableField<RegisterDataRequest> profile;
     private ObservableField<String> passRepeat = new ObservableField<>();
 
     private OnNextStepListener onNextStepListener;
     private OnPrevStepListener onPrevStepListener;
+    private OnFinishRegisterListener onFinishRegisterListener;
 
     public SharedAuthViewModel(@NonNull Application application) {
         super(application);
+        profile = new ObservableField<>(new RegisterDataRequest("", "", "", "", ""));
     }
 
-    public RegisterDataRequest getProfile() {
+    public ObservableField<RegisterDataRequest> getProfile() {
         return profile;
     }
 
@@ -34,6 +36,10 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     public void setOnPrevStepListener(OnPrevStepListener onPrevStepListener) {
         this.onPrevStepListener = onPrevStepListener;
+    }
+
+    public void setOnFinishRegisterListener(OnFinishRegisterListener onFinishRegisterListener) {
+        this.onFinishRegisterListener = onFinishRegisterListener;
     }
 
     public void setPassRepeat(ObservableField<String> passRepeat) {
@@ -50,6 +56,10 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     public void prevStep(){
         if (onPrevStepListener!=null) onPrevStepListener.onPrev();
+    }
+
+    public void finish(){
+        if (onFinishRegisterListener!=null) onFinishRegisterListener.onFinish();
     }
 }
 
