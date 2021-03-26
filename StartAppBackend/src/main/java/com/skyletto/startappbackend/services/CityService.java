@@ -9,18 +9,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class CityService {
     private CountryRepository countryRepository;
     private RegionRepository regionRepository;
     private CityRepository cityRepository;
 
     @Autowired
-    public CityService(CountryRepository countryRepository, RegionRepository regionRepository, CityRepository cityRepository) {
+    public void setCountryRepository(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
+    }
+    @Autowired
+    public void setRegionRepository(RegionRepository regionRepository) {
         this.regionRepository = regionRepository;
+    }
+    @Autowired
+    public void setCityRepository(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
     }
 
@@ -29,8 +37,6 @@ public class CityService {
     }
 
     public List<City> getCitiesByCountry(String country){
-        Country c = countryRepository.findCountryByName(country);
-        List<City> cities= cityRepository.findCitiesByCountry(c);
-        return cities;
+        return cityRepository.findCitiesByCountry_Name(country);
     }
 }
