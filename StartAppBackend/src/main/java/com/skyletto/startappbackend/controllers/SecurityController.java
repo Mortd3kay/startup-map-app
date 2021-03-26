@@ -1,10 +1,13 @@
 package com.skyletto.startappbackend.controllers;
 
+import com.skyletto.startappbackend.entities.City;
+import com.skyletto.startappbackend.entities.Country;
 import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.AuthResponse;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
+import com.skyletto.startappbackend.services.CityService;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +16,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path="api")
 public class SecurityController {
 
     private UserService userService;
+    private CityService cityService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService) {
+    public SecurityController(UserService userService, CityService cityService) {
         this.userService = userService;
+        this.cityService = cityService;
     }
 
     @Autowired
@@ -73,5 +79,17 @@ public class SecurityController {
             return new ProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
         }
         return null;
+    }
+
+    @GetMapping("/countries")
+    public @ResponseBody
+    List<Country> getCountries(){
+        return cityService.getAllCountries();
+    }
+
+    @GetMapping("/cities")
+    public @ResponseBody
+    List<City> getCities(@RequestParam("country") String country){
+        return cityService.getCitiesByCountry(country);
     }
 }
