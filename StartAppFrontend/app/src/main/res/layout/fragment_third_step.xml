@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.auth.fragments.SecondStepFragment">
+    tools:context=".ui.auth.fragments.ThirdStepFragment">
 
     <data>
 
@@ -17,12 +17,10 @@
         android:orientation="vertical"
         android:gravity="fill_vertical">
 
-
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Имя*"
+            android:text="Заголовок"
             android:layout_gravity="start"
             android:layout_marginHorizontal="40dp"/>
 
@@ -31,12 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
             android:inputType="textEmailAddress"
-            android:text="@={model.profile.firstName}"/>
+            android:text="@={model.profile.title}"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Фамилия*"
+            android:text="Описание"
             android:layout_gravity="start"
             android:layout_marginHorizontal="40dp"/>
 
@@ -44,13 +42,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:inputType="textEmailAddress"
-            android:text="@={model.profile.secondName}"/>
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:text="@={model.profile.description}"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Телефон"
+            android:text="Опыт работы"
             android:layout_gravity="start"
             android:layout_marginHorizontal="40dp"/>
 
@@ -58,22 +57,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:inputType="textEmailAddress"
-            android:text="@={model.profile.phoneNumber}"/>
+            android:inputType="numberDecimal"
+            android:text="@={model.profile.experience}"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Город"
-            android:layout_gravity="start"
-            android:layout_marginHorizontal="40dp"/>
 
-        <EditText
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Тэги"-->
+<!--            android:layout_gravity="start"-->
+<!--            android:layout_marginHorizontal="40dp"/>-->
+
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="40dp"-->
+<!--            android:inputType="textEmailAddress"-->
+<!--            android:text="@={model.profile.tags}"/>-->
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/auth_third_step_chip_group"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"
-            android:inputType="textEmailAddress"
-            android:text="@={model.profile.city}"/>
+            android:layout_height="wrap_content">
+
+        </com.google.android.material.chip.ChipGroup>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -96,8 +103,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Next"
-                android:onClick="@{(view)->model.nextStep()}"
+                android:text="Finish"
+                android:onClick="@{(view)->model.finish()}"
                 />
 
         </LinearLayout>
