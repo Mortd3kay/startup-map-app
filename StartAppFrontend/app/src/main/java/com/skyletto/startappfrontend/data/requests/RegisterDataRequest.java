@@ -1,12 +1,16 @@
 package com.skyletto.startappfrontend.data.requests;
 
+import com.skyletto.startappfrontend.domain.entities.City;
+import com.skyletto.startappfrontend.domain.entities.Country;
+
 public class RegisterDataRequest {
     private String email;
     private String password;
     private String firstName;
     private String secondName;
     private String phoneNumber;
-    private String city;
+    private City city;
+    private Country country;
     private String experience;
     private String title;
     private String description;
@@ -60,12 +64,21 @@ public class RegisterDataRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getCity() {
+
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public String getExperience() {
