@@ -36,6 +36,7 @@ public class FirstStepFragment extends Fragment {
         viewModel = new ViewModelProvider(getActivity()).get(SharedAuthViewModel.class);
         viewModel.setOnNextStepListener(() -> mActivity.nextStep());
         viewModel.setOnPrevStepListener(() -> mActivity.prevStep());
+        viewModel.setOnFinishRegisterListener(() -> mActivity.onFinish());
     }
 
     @Override

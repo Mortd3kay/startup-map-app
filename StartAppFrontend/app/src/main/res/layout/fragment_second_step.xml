@@ -64,16 +64,32 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Страна"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="40dp"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/auth_country_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:inputType="text"
+            android:text="@={model.profile.country.name}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Город"
             android:layout_gravity="start"
             android:layout_marginHorizontal="40dp"/>
 
-        <EditText
+        <AutoCompleteTextView
+            android:id="@+id/auth_city_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:inputType="textEmailAddress"
-            android:text="@={model.profile.city}"/>
+            android:inputType="text"
+            android:text="@={model.profile.city.name}"/>
 
         <LinearLayout
             android:layout_width="match_parent"

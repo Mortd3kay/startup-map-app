@@ -33,9 +33,6 @@ public class ThirdStepFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(SharedAuthViewModel.class);
-        viewModel.setOnNextStepListener(() -> mActivity.nextStep());
-        viewModel.setOnPrevStepListener(() -> mActivity.prevStep());
-        viewModel.setOnFinishRegisterListener(() -> mActivity.onFinish());
     }
 
     @Override

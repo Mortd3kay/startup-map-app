@@ -20,23 +20,21 @@ public class CityService {
     private CityRepository cityRepository;
 
     @Autowired
-    public void setCountryRepository(CountryRepository countryRepository) {
+    public CityService(CountryRepository countryRepository, RegionRepository regionRepository, CityRepository cityRepository) {
         this.countryRepository = countryRepository;
-    }
-    @Autowired
-    public void setRegionRepository(RegionRepository regionRepository) {
         this.regionRepository = regionRepository;
-    }
-    @Autowired
-    public void setCityRepository(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
     }
 
-    public List<Country> getAllCountries(){
+    public List<Country> getAllCountries() {
         return countryRepository.findAll(Sort.by("name").ascending());
     }
 
-    public List<City> getCitiesByCountry(String country){
-        return cityRepository.findCitiesByCountry_Name(country);
+    public List<City> getCitiesByCountry(int id) {
+        return cityRepository.findCitiesByCountry_Id(id);
+    }
+
+    public List<City> getAllCities(){
+        return cityRepository.findAll();
     }
 }
