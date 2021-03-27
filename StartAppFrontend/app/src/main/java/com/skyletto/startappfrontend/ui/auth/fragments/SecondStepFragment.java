@@ -1,6 +1,8 @@
 package com.skyletto.startappfrontend.ui.auth.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +68,28 @@ public class SecondStepFragment extends Fragment {
             ArrayAdapter adapter = (ArrayAdapter)cityTextView.getAdapter();
             adapter.clear();
             adapter.addAll(cities);
+            Log.d(TAG, "onCreateView: "+cities);
             adapter.notifyDataSetChanged();
+        });
+
+        countryTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (countryTextView.isPerformingCompletion()) return;
+                Country c =viewModel.containsCountry(s.toString());
+                if (c!=null) viewModel.loadCities(c);
+                else if (s.toString().trim().isEmpty())
+                    viewModel.loadAllCities();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         countryTextView.setOnItemClickListener((parent, view, position, id) -> {

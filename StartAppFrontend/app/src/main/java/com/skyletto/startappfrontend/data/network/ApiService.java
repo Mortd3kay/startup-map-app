@@ -33,4 +33,7 @@ public interface ApiService {
     @GET("cities")
     Single<List<City>> getCitiesByCountryId(@Query("country") int id);
 
+    @GET("cities/all")
+    Single<List<City>> getAllCities();
+
 }

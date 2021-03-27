@@ -44,6 +44,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
         cd = new CompositeDisposable();
         countryList = db.countryDao().getAll();
         loadCountries();
+        loadAllCities();
     }
 
     private void loadCountries() {
@@ -60,15 +61,36 @@ public class SharedAuthViewModel extends AndroidViewModel {
     public void loadCities(Country country) {
         Disposable disposable = api.apiService.getCitiesByCountryId(country.getId())
                 .subscribeOn(Schedulers.io())
-                .retry()
+                .doFinally(() -> cityList.postValue(db.cityDao().getByCountryId(country.getId())))
                 .subscribe(
                         cities -> {
                             db.cityDao().insertAll(cities);
-                            cityList.postValue(db.cityDao().getByCountryId(country.getId()));
+                        },
+                        throwable -> {
+                            Log.e(TAG, "accept: ", throwable);
+                        }
+                );
+        cd.add(disposable);
+    }
+
+    public void loadAllCities() {
+        Disposable disposable = api.apiService.getAllCities()
+                .subscribeOn(Schedulers.io())
+                .retry()
+                .subscribe(
+                        cities -> {
+                            cityList.postValue(cities);
                         },
                         throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
+    }
+
+    public Country containsCountry(String name) {
+        return countryList.getValue().stream()
+                .filter(country -> country.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     public LiveData<List<Country>> getCountryList() {
