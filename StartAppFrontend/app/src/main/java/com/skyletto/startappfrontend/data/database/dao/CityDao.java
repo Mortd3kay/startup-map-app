@@ -18,7 +18,7 @@ public interface CityDao {
     LiveData<List<City>> getAll();
 
     @Query("select * from cities where country_id=:country_id order by name asc")
-    LiveData<List<City>> getByCountryId(int country_id);
+    List<City> getByCountryId(int country_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<City> cities);

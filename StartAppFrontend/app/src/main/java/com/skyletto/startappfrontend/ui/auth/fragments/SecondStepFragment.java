@@ -1,6 +1,7 @@
 package com.skyletto.startappfrontend.ui.auth.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,8 +58,10 @@ public class SecondStepFragment extends Fragment {
 
         countryTextView = v.findViewById(R.id.auth_country_input);
         cityTextView = v.findViewById(R.id.auth_city_input);
+
         cityTextView.setAdapter(new ArrayAdapter<City>(getContext(), R.layout.support_simple_spinner_dropdown_item, new ArrayList<>()));
         viewModel.getCountryList().observe(getViewLifecycleOwner(), countries -> countryTextView.setAdapter(new ArrayAdapter<Country>(getContext(), R.layout.support_simple_spinner_dropdown_item, countries)));
+
         viewModel.getCityList().observe(getViewLifecycleOwner(), cities -> {
             ArrayAdapter adapter = (ArrayAdapter)cityTextView.getAdapter();
             adapter.clear();
@@ -68,6 +71,7 @@ public class SecondStepFragment extends Fragment {
 
         countryTextView.setOnItemClickListener((parent, view, position, id) -> {
             Country c = (Country) countryTextView.getAdapter().getItem(position);
+            Log.d(TAG, "onCreateView: "+c+" "+c.getId());
             viewModel.loadCities(c);
         });
         return v;

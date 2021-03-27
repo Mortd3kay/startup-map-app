@@ -32,7 +32,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
     private AppDatabase db;
 
     private LiveData<List<Country>> countryList;
-    private LiveData<List<City>> cityList = new MutableLiveData<>();
+    private MutableLiveData<List<City>> cityList = new MutableLiveData<>();
     private OnNextStepListener onNextStepListener;
     private OnPrevStepListener onPrevStepListener;
     private OnFinishRegisterListener onFinishRegisterListener;
@@ -51,9 +51,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 .retry()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        countries -> {
-                            Log.d(TAG, "loadCountries: " + db.countryDao().insertAll(countries));
-                        },
+                        countries -> db.countryDao().insertAll(countries),
                         throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
@@ -64,7 +62,10 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .retry()
                 .subscribe(
-                        cities -> Log.d(TAG, "loadCities: " + db.cityDao().insertAll(cities)),
+                        cities -> {
+                            db.cityDao().insertAll(cities);
+                            cityList.postValue(db.cityDao().getByCountryId(country.getId()));
+                        },
                         throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
