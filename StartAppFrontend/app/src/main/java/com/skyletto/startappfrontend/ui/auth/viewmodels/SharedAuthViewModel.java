@@ -32,7 +32,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
     private AppDatabase db;
 
     private LiveData<List<Country>> countryList;
-    private MutableLiveData<List<City>> cityList = new MutableLiveData<>();
+    private LiveData<List<City>> cityList = new MutableLiveData<>();
     private OnNextStepListener onNextStepListener;
     private OnPrevStepListener onPrevStepListener;
     private OnFinishRegisterListener onFinishRegisterListener;
@@ -74,7 +74,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
         return countryList;
     }
 
-    public MutableLiveData<List<City>> getCityList() {
+    public LiveData<List<City>> getCityList() {
         return cityList;
     }
 
