@@ -89,7 +89,7 @@ public class SecurityController {
 
     @GetMapping("/cities")
     public @ResponseBody
-    List<City> getCities(@RequestParam("country") String country){
-        return cityService.getCitiesByCountry(country);
+    List<City> getCities(@RequestParam("country") int id){
+        return cityService.getCitiesByCountry(id);
     }
 }

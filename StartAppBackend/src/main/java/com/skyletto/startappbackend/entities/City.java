@@ -1,6 +1,8 @@
 package com.skyletto.startappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -16,8 +18,7 @@ public class City {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")
     private Region region;
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
     private Country country;
 
@@ -48,11 +49,14 @@ public class City {
         this.region = region;
     }
 
-    public Country getCountry() {
-        return country;
+    @JsonProperty("country_id")
+    public int getCountry() {
+        return country.getId();
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    @JsonProperty("country_id")
+    public void setCountry(int country) {
+        Country c = new Country();
+        c.setId(country);
     }
 }
