@@ -16,6 +16,7 @@ import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -63,12 +64,8 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .doFinally(() -> cityList.postValue(db.cityDao().getByCountryId(country.getId())))
                 .subscribe(
-                        cities -> {
-                            db.cityDao().insertAll(cities);
-                        },
-                        throwable -> {
-                            Log.e(TAG, "accept: ", throwable);
-                        }
+                        cities -> db.cityDao().insertAll(cities),
+                        throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
     }
@@ -78,12 +75,15 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .retry()
                 .subscribe(
-                        cities -> {
-                            cityList.postValue(cities);
-                        },
+                        cities -> cityList.postValue(cities),
                         throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
+    }
+
+    public void saveCity(City city){
+        Completable.fromRunnable(() -> db.cityDao().insert(city))
+                .subscribeOn(Schedulers.io()).subscribe();
     }
 
     public Country containsCountry(String name) {
@@ -125,10 +125,6 @@ public class SharedAuthViewModel extends AndroidViewModel {
         this.passRepeat = passRepeat;
     }
 
-//    public boolean equalPasswords(){
-//        return Objects.requireNonNull(profile.getPassword().trim().equals(passRepeat.get().trim());
-//    }
-
     public void nextStep() {
         if (onNextStepListener != null) onNextStepListener.onNext();
     }
@@ -138,6 +134,22 @@ public class SharedAuthViewModel extends AndroidViewModel {
     }
 
     public void finish() {
+        RegisterDataRequest finalData = profile.get();
+        Disposable d = db.cityDao().getCityByName(finalData.getCity().getName())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        finalData::setCity,
+                        throwable -> Log.e(TAG, "finish_get_city: ", throwable)
+                );
+        cd.add(d);
+        d = db.countryDao().getCountryByName(finalData.getCountry().getName())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        finalData::setCountry,
+                        throwable -> Log.e(TAG, "finish_get_country: ", throwable)
+                );
+        cd.add(d);
+        Log.d(TAG, "finish: "+finalData);
         if (onFinishRegisterListener != null) onFinishRegisterListener.onFinish();
     }
 

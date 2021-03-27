@@ -10,6 +10,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import io.reactivex.Single;
 
 @Dao
 public interface CityDao {
@@ -19,6 +20,9 @@ public interface CityDao {
 
     @Query("select * from cities where country_id=:country_id order by name asc")
     List<City> getByCountryId(int country_id);
+
+    @Query("select * from cities where name = :name")
+    Single<City> getCityByName(String name);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<City> cities);

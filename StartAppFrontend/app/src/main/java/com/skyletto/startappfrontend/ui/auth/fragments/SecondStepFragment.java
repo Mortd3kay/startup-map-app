@@ -46,8 +46,6 @@ public class SecondStepFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(SharedAuthViewModel.class);
-        viewModel.setOnNextStepListener(() -> mActivity.nextStep());
-        viewModel.setOnPrevStepListener(() -> mActivity.prevStep());
     }
 
     @Override
@@ -65,11 +63,16 @@ public class SecondStepFragment extends Fragment {
         viewModel.getCountryList().observe(getViewLifecycleOwner(), countries -> countryTextView.setAdapter(new ArrayAdapter<Country>(getContext(), R.layout.support_simple_spinner_dropdown_item, countries)));
 
         viewModel.getCityList().observe(getViewLifecycleOwner(), cities -> {
-            ArrayAdapter adapter = (ArrayAdapter)cityTextView.getAdapter();
+            ArrayAdapter adapter = (ArrayAdapter) cityTextView.getAdapter();
             adapter.clear();
             adapter.addAll(cities);
-            Log.d(TAG, "onCreateView: "+cities);
+            Log.d(TAG, "onCreateView: " + cities);
             adapter.notifyDataSetChanged();
+        });
+
+        cityTextView.setOnItemClickListener((parent, view, position, id) -> {
+            City c = (City) cityTextView.getAdapter().getItem(position);
+            viewModel.saveCity(c);
         });
 
         countryTextView.addTextChangedListener(new TextWatcher() {
@@ -80,8 +83,8 @@ public class SecondStepFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (countryTextView.isPerformingCompletion()) return;
-                Country c =viewModel.containsCountry(s.toString());
-                if (c!=null) viewModel.loadCities(c);
+                Country c = viewModel.containsCountry(s.toString());
+                if (c != null) viewModel.loadCities(c);
                 else if (s.toString().trim().isEmpty())
                     viewModel.loadAllCities();
             }
@@ -94,7 +97,7 @@ public class SecondStepFragment extends Fragment {
 
         countryTextView.setOnItemClickListener((parent, view, position, id) -> {
             Country c = (Country) countryTextView.getAdapter().getItem(position);
-            Log.d(TAG, "onCreateView: "+c+" "+c.getId());
+            Log.d(TAG, "onCreateView: " + c + " " + c.getId());
             viewModel.loadCities(c);
         });
         return v;

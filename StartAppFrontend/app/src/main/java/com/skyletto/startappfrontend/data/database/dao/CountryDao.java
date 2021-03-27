@@ -10,6 +10,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import io.reactivex.Single;
 
 @Dao
 public interface CountryDao {
@@ -19,6 +20,9 @@ public interface CountryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<Country> countries);
+
+    @Query("select * from countries where name = :name")
+    Single<Country> getCountryByName(String name);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Country country);

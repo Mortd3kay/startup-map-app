@@ -1,13 +1,18 @@
 package com.skyletto.startappfrontend.data.requests;
 
+import com.skyletto.startappfrontend.domain.entities.City;
+import com.skyletto.startappfrontend.domain.entities.Country;
+
+import java.util.Arrays;
+
 public class RegisterDataRequest {
     private String email;
     private String password;
     private String firstName;
     private String secondName;
     private String phoneNumber;
-    private String city;
-    private String country;
+    private City city;
+    private Country country;
     private String experience;
     private String title;
     private String description;
@@ -19,6 +24,8 @@ public class RegisterDataRequest {
         this.firstName = firstName;
         this.secondName = secondName;
         this.phoneNumber = phoneNumber;
+        country = new Country();
+        city = new City();
     }
 
     public String getEmail() {
@@ -61,19 +68,19 @@ public class RegisterDataRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
@@ -109,4 +116,20 @@ public class RegisterDataRequest {
         this.tags = tags;
     }
 
+    @Override
+    public String toString() {
+        return "RegisterDataRequest{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", city=" + city +
+                ", country=" + country +
+                ", experience='" + experience + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", tags=" + Arrays.toString(tags) +
+                '}';
+    }
 }
