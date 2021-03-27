@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import androidx.lifecycle.MutableLiveData;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -31,8 +31,8 @@ public class SharedAuthViewModel extends AndroidViewModel {
     private final ApiRepository api = ApiRepository.getInstance();
     private AppDatabase db;
 
-    public LiveData<List<Country>> countryList;
-    public LiveData<List<City>> cityList;
+    private LiveData<List<Country>> countryList;
+    private MutableLiveData<List<City>> cityList = new MutableLiveData<>();
     private OnNextStepListener onNextStepListener;
     private OnPrevStepListener onPrevStepListener;
     private OnFinishRegisterListener onFinishRegisterListener;
@@ -44,38 +44,38 @@ public class SharedAuthViewModel extends AndroidViewModel {
         cd = new CompositeDisposable();
         countryList = db.countryDao().getAll();
         loadCountries();
-        Log.d(TAG, "SharedAuthViewModel: "+countryList.getValue());
     }
 
-    private void loadCountries(){
+    private void loadCountries() {
         Disposable disposable = api.apiService.getCountries()
                 .retry()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         countries -> {
-                            Log.d(TAG, "loadCountries: "+db.countryDao().insertAll(countries));
+                            Log.d(TAG, "loadCountries: " + db.countryDao().insertAll(countries));
                         },
                         throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
     }
 
-    public void loadCities(Country country){
+    public void loadCities(Country country) {
         Disposable disposable = api.apiService.getCitiesByCountryId(country.getId())
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .retry()
                 .subscribe(
-                        cities -> {
-                            db.cityDao().insertAll(cities);
-
-                            //
-                            Log.d(TAG, "loadCities: "+cities);
-                            //
-                        },
+                        cities -> Log.d(TAG, "loadCities: " + db.cityDao().insertAll(cities)),
                         throwable -> Log.e(TAG, "accept: ", throwable)
                 );
         cd.add(disposable);
+    }
+
+    public LiveData<List<Country>> getCountryList() {
+        return countryList;
+    }
+
+    public MutableLiveData<List<City>> getCityList() {
+        return cityList;
     }
 
     public ObservableField<RegisterDataRequest> getProfile() {
@@ -106,22 +106,22 @@ public class SharedAuthViewModel extends AndroidViewModel {
 //        return Objects.requireNonNull(profile.getPassword().trim().equals(passRepeat.get().trim());
 //    }
 
-    public void nextStep(){
-        if (onNextStepListener!=null) onNextStepListener.onNext();
+    public void nextStep() {
+        if (onNextStepListener != null) onNextStepListener.onNext();
     }
 
-    public void prevStep(){
-        if (onPrevStepListener!=null) onPrevStepListener.onPrev();
+    public void prevStep() {
+        if (onPrevStepListener != null) onPrevStepListener.onPrev();
     }
 
-    public void finish(){
-        if (onFinishRegisterListener!=null) onFinishRegisterListener.onFinish();
+    public void finish() {
+        if (onFinishRegisterListener != null) onFinishRegisterListener.onFinish();
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (cd!=null) cd.dispose();
+        if (cd != null) cd.dispose();
     }
 }
 

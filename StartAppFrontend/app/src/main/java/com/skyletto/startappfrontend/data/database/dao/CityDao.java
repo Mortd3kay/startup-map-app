@@ -21,7 +21,7 @@ public interface CityDao {
     LiveData<List<City>> getByCountryId(int country_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<City> cities);
+    List<Long> insertAll(List<City> cities);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(City city);
