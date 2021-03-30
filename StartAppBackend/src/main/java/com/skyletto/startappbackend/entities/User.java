@@ -1,5 +1,8 @@
 package com.skyletto.startappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -19,16 +22,17 @@ public class User {
     private String secondName;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     private City city;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     private Country country;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_tags",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -118,12 +122,14 @@ public class User {
         this.tags = tags;
     }
 
-    public City getCity() {
-        return city;
+    @JsonProperty("city_id")
+    public int getCity() {
+        return city!=null?city.getId():0;
     }
-
-    public void setCity(City city) {
-        this.city = city;
+    @JsonProperty("city_id")
+    public void setCity(int id) {
+        city = new City();
+        city.setId(id);
     }
 
     public Country getCountry() {

@@ -25,6 +25,8 @@ public class RegisterDataRequest {
         this.firstName = firstName;
         this.secondName = secondName;
         this.phoneNumber = phoneNumber;
+        country = new Country();
+        city = new City();
     }
 
     public String getEmail() {

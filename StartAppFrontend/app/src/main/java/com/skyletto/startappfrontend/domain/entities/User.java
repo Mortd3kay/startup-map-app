@@ -1,8 +1,15 @@
 package com.skyletto.startappfrontend.domain.entities;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "users")
 public class User {
+    @PrimaryKey
     private long id;
     private String email;
+    @Ignore
     private String password;
     private String firstName;
     private String secondName;
