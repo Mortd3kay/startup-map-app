@@ -203,6 +203,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 );
         cd.add(d);
         Log.d(TAG, "finish: "+finalData);
+        api.apiService.register(finalData);
         if (onFinishRegisterListener != null) onFinishRegisterListener.onFinish();
     }
 
