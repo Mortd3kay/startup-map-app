@@ -25,7 +25,6 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     private City city;
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     private Country country;
@@ -128,15 +127,15 @@ public class User {
     }
     @JsonProperty("city_id")
     public void setCity(int id) {
-        city = new City();
         city.setId(id);
     }
 
-    public Country getCountry() {
-        return country;
+    @JsonProperty("country_id")
+    public int getCountry() {
+        return country!=null?country.getId():0;
     }
-
-    public void setCountry(Country country) {
-        this.country = country;
+    @JsonProperty("country_id")
+    public void setCountry(int id) {
+        country.setId(id);
     }
 }

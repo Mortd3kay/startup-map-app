@@ -107,8 +107,6 @@ public class RegisterDataRequest {
         this.description = description;
     }
 
-
-
     public Set<Tag> getTags() {
         return tags;
     }

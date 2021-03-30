@@ -1,20 +1,19 @@
 package com.skyletto.startappfrontend.domain.entities;
 
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+import java.util.Set;
 
-@Entity(tableName = "users")
 public class User {
-    @PrimaryKey
     private long id;
     private String email;
-    @Ignore
+
     private String password;
     private String firstName;
     private String secondName;
     private String phoneNumber;
+    private int city_id;
+    private int country_id;
     private Role role;
+    private Set<Tag> tags;
 
     public User() {
     }
@@ -75,6 +74,30 @@ public class User {
         this.role = role;
     }
 
+    public int getCity_id() {
+        return city_id;
+    }
+
+    public void setCity_id(int city_id) {
+        this.city_id = city_id;
+    }
+
+    public int getCountry_id() {
+        return country_id;
+    }
+
+    public void setCountry_id(int country_id) {
+        this.country_id = country_id;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -84,7 +107,9 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", secondName='" + secondName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", city_id=" + city_id +
                 ", role=" + role +
+                ", tags=" + tags +
                 '}';
     }
 }

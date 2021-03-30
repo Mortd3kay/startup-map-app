@@ -95,6 +95,14 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io()).subscribe();
     }
 
+    public void putCity(City c){
+        profile.get().setCity(c);
+    }
+
+    public void putCountry(Country c){
+        profile.get().setCountry(c);
+    }
+
     public Country containsCountry(String name) {
         return countryList.getValue().stream()
                 .filter(country -> country.getName().equals(name))
@@ -196,23 +204,33 @@ public class SharedAuthViewModel extends AndroidViewModel {
         Disposable d;
         City city = finalData.getCity();
         Country country = finalData.getCountry();
-        if (city!=null && !city.getName().trim().isEmpty()) {
+        try {
             d = db.cityDao().getCityByName(city.getName())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             finalData::setCity,
-                            throwable -> Log.e(TAG, "finish_get_city: ", throwable)
+                            throwable -> {
+                                Log.e(TAG, "finish_get_city: ", throwable);
+                                finalData.setCity(null);
+                            }
                     );
             cd.add(d);
+        } catch (Exception e){
+            Log.e(TAG, "finish: city_check", e.getCause());
         }
-        if (country!=null && !country.getName().trim().isEmpty()) {
+        try {
             d = db.countryDao().getCountryByName(country.getName())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             finalData::setCountry,
-                            throwable -> Log.e(TAG, "finish_get_country: ", throwable)
+                            throwable -> {
+                                Log.e(TAG, "finish_get_country: ", throwable);
+                                finalData.setCountry(null);
+                            }
                     );
             cd.add(d);
+        } catch (Exception e){
+            Log.e(TAG, "finish: country_check", e.getCause());
         }
         Log.d(TAG, "finish: "+finalData);
         d = api.apiService.register(finalData)
@@ -220,7 +238,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         profileResponse -> {
-                            Log.d(TAG, "accept: "+ profileResponse.getToken());
+                            Log.d(TAG, "accept: "+ profileResponse.getToken()+" "+profileResponse.getUser());
                             saveProfileInfo(profileResponse);
                             if (onFinishRegisterListener != null) onFinishRegisterListener.onFinish();
                         },
