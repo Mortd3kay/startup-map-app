@@ -1,7 +1,6 @@
 package com.skyletto.startappfrontend.ui.auth.fragments;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import com.skyletto.startappfrontend.domain.entities.City;
 import com.skyletto.startappfrontend.domain.entities.Country;
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper;
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel;
+import com.skyletto.startappfrontend.utils.LaconicTextWatcher;
 
 import java.util.ArrayList;
 
@@ -32,6 +32,8 @@ public class SecondStepFragment extends Fragment {
     private AutoCompleteTextView countryTextView;
     private AutoCompleteTextView cityTextView;
 
+    private TextWatcher personalInfoWatcher;
+
     public SecondStepFragment() {
         // Required empty public constructor
     }
@@ -46,6 +48,7 @@ public class SecondStepFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(SharedAuthViewModel.class);
+        personalInfoWatcher = (LaconicTextWatcher) s -> viewModel.checkPersonalInfo();
     }
 
     @Override
@@ -55,12 +58,21 @@ public class SecondStepFragment extends Fragment {
         View v = binding.getRoot();
         binding.setModel(viewModel);
         binding.setLifecycleOwner(this);
+        countryTextView = binding.authCountryInput;
+        cityTextView = binding.authCityInput;
 
-        countryTextView = v.findViewById(R.id.auth_country_input);
-        cityTextView = v.findViewById(R.id.auth_city_input);
+        binding.authRegisterFirstNameInput.addTextChangedListener(personalInfoWatcher);
+        binding.authRegisterSecondNameInput.addTextChangedListener(personalInfoWatcher);
 
         cityTextView.setAdapter(new ArrayAdapter<City>(getContext(), R.layout.support_simple_spinner_dropdown_item, new ArrayList<>()));
-        viewModel.getCountryList().observe(getViewLifecycleOwner(), countries -> countryTextView.setAdapter(new ArrayAdapter<Country>(getContext(), R.layout.support_simple_spinner_dropdown_item, countries)));
+        viewModel.getCountryList()
+                .observe(
+                        getViewLifecycleOwner(),
+                        countries -> countryTextView.setAdapter(new ArrayAdapter<Country>(getContext(),
+                                R.layout.support_simple_spinner_dropdown_item,
+                                countries
+                        ))
+                );
 
         viewModel.getCityList().observe(getViewLifecycleOwner(), cities -> {
             ArrayAdapter adapter = (ArrayAdapter) cityTextView.getAdapter();
@@ -75,31 +87,21 @@ public class SecondStepFragment extends Fragment {
             viewModel.saveCity(c);
         });
 
-        countryTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (countryTextView.isPerformingCompletion()) return;
-                Country c = viewModel.containsCountry(s.toString());
-                if (c != null) viewModel.loadCities(c);
-                else if (s.toString().trim().isEmpty())
-                    viewModel.loadAllCities();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        countryTextView.addTextChangedListener((LaconicTextWatcher) s -> checkStringIsCountryName(s.toString()));
 
         countryTextView.setOnItemClickListener((parent, view, position, id) -> {
             Country c = (Country) countryTextView.getAdapter().getItem(position);
             Log.d(TAG, "onCreateView: " + c + " " + c.getId());
-            viewModel.loadCities(c);
+            viewModel.loadAndSaveCities(c);
         });
         return v;
+    }
+
+    private void checkStringIsCountryName(String editable){
+        if (countryTextView.isPerformingCompletion()) return;
+        Country c = viewModel.containsCountry(editable);
+        if (c != null) viewModel.loadAndSaveCities(c);
+        else if (editable.trim().isEmpty())
+            viewModel.loadAllCities();
     }
 }
