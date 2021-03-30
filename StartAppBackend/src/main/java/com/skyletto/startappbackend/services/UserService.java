@@ -35,8 +35,7 @@ public class UserService {
                 data.getEmail(),
                 data.getPassword(),
                 data.getFirstName(),
-                data.getSecondName(),
-                data.getPhoneNumber()
+                data.getSecondName()
         );
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

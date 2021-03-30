@@ -1,6 +1,7 @@
 package com.skyletto.startappbackend.entities;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -18,19 +19,39 @@ public class User {
     private String secondName;
     @Column(name = "phone_number")
     private String phoneNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id")
+    private City city;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_id")
+    private Country country;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+    @ManyToMany
+    @JoinTable(
+            name = "user_tags",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags;
 
     public User() {
     }
 
-    public User(String email, String password, String firstName, String secondName, String phoneNumber) {
+    public User(String email, String password, String firstName, String secondName) {
+        this(email, password, firstName, secondName, null, null, null, null, null);
+    }
+
+    public User(String email, String password, String firstName, String secondName, String phoneNumber, City city, Country country, Role role, Set<Tag> tags) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.secondName = secondName;
         this.phoneNumber = phoneNumber;
+        this.city = city;
+        this.country = country;
+        this.role = role;
+        this.tags = tags;
     }
 
     public long getId() {
@@ -87,5 +108,29 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 }
