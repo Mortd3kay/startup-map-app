@@ -27,6 +27,7 @@ public class AuthActivity extends AppCompatActivity implements ActivityStepper {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+        stepNum = -1;
         fm = getSupportFragmentManager();
         fm.beginTransaction().add(R.id.auth_frame_layout, LoginFragment.newInstance(this)).commit();
 

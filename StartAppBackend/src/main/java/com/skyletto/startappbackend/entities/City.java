@@ -55,8 +55,8 @@ public class City {
     }
 
     @JsonProperty("country_id")
-    public void setCountry(int country) {
-        Country c = new Country();
-        c.setId(country);
+    public void setCountry(int id) {
+        country = new Country();
+        country.setId(id);
     }
 }

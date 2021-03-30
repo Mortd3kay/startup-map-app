@@ -1,11 +1,14 @@
 package com.skyletto.startappfrontend.ui.auth.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.skyletto.startappfrontend.data.database.AppDatabase;
 import com.skyletto.startappfrontend.data.network.ApiRepository;
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest;
+import com.skyletto.startappfrontend.data.responses.ProfileResponse;
 import com.skyletto.startappfrontend.domain.entities.City;
 import com.skyletto.startappfrontend.domain.entities.Country;
 
@@ -18,6 +21,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -32,13 +36,13 @@ public class SharedAuthViewModel extends AndroidViewModel {
     private CompositeDisposable cd;
     private final ApiRepository api = ApiRepository.getInstance();
     private AppDatabase db;
+    private SharedPreferences sp;
 
     private LiveData<List<Country>> countryList;
     private MutableLiveData<List<City>> cityList = new MutableLiveData<>();
     private OnNextStepListener onNextStepListener;
     private OnPrevStepListener onPrevStepListener;
     private OnFinishRegisterListener onFinishRegisterListener;
-
     private final ObservableField<Boolean> passAndEmailOk = new ObservableField<>(false);
     private final ObservableField<Boolean> personalInfoOk = new ObservableField<>(false);
 
@@ -50,6 +54,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
         countryList = db.countryDao().getAll();
         loadAndSaveCountries();
         loadAllCities();
+        sp = application.getSharedPreferences("profile", Context.MODE_PRIVATE);
     }
 
     private void loadAndSaveCountries() {
@@ -88,6 +93,14 @@ public class SharedAuthViewModel extends AndroidViewModel {
     public void saveCity(City city){
         Completable.fromRunnable(() -> db.cityDao().insert(city))
                 .subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public void putCity(City c){
+        profile.get().setCity(c);
+    }
+
+    public void putCountry(Country c){
+        profile.get().setCountry(c);
     }
 
     public Country containsCountry(String name) {
@@ -188,23 +201,57 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     public void finish() {
         RegisterDataRequest finalData = profile.get();
-        Disposable d = db.cityDao().getCityByName(finalData.getCity().getName())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        finalData::setCity,
-                        throwable -> Log.e(TAG, "finish_get_city: ", throwable)
-                );
-        cd.add(d);
-        d = db.countryDao().getCountryByName(finalData.getCountry().getName())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        finalData::setCountry,
-                        throwable -> Log.e(TAG, "finish_get_country: ", throwable)
-                );
-        cd.add(d);
+        Disposable d;
+        City city = finalData.getCity();
+        Country country = finalData.getCountry();
+        try {
+            d = db.cityDao().getCityByName(city.getName())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            finalData::setCity,
+                            throwable -> {
+                                Log.e(TAG, "finish_get_city: ", throwable);
+                                finalData.setCity(null);
+                            }
+                    );
+            cd.add(d);
+        } catch (Exception e){
+            Log.e(TAG, "finish: city_check", e.getCause());
+        }
+        try {
+            d = db.countryDao().getCountryByName(country.getName())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            finalData::setCountry,
+                            throwable -> {
+                                Log.e(TAG, "finish_get_country: ", throwable);
+                                finalData.setCountry(null);
+                            }
+                    );
+            cd.add(d);
+        } catch (Exception e){
+            Log.e(TAG, "finish: country_check", e.getCause());
+        }
         Log.d(TAG, "finish: "+finalData);
-        api.apiService.register(finalData);
-        if (onFinishRegisterListener != null) onFinishRegisterListener.onFinish();
+        d = api.apiService.register(finalData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        profileResponse -> {
+                            Log.d(TAG, "accept: "+ profileResponse.getToken()+" "+profileResponse.getUser());
+                            saveProfileInfo(profileResponse);
+                            if (onFinishRegisterListener != null) onFinishRegisterListener.onFinish();
+                        },
+                        throwable -> Log.e(TAG, "finish: register", throwable)
+                );
+        cd.add(d);
+    }
+
+    private void saveProfileInfo(ProfileResponse pr){
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("token", pr.getToken());
+        e.putLong("id", pr.getUser().getId());
+        e.apply();
     }
 
     @Override

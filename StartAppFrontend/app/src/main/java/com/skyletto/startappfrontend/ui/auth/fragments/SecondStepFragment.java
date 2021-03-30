@@ -68,10 +68,13 @@ public class SecondStepFragment extends Fragment {
         viewModel.getCountryList()
                 .observe(
                         getViewLifecycleOwner(),
-                        countries -> countryTextView.setAdapter(new ArrayAdapter<Country>(getContext(),
-                                R.layout.support_simple_spinner_dropdown_item,
-                                countries
-                        ))
+                        countries -> countryTextView.setAdapter(
+                                new ArrayAdapter<Country>(
+                                        getContext(),
+                                        R.layout.support_simple_spinner_dropdown_item,
+                                        countries
+                                )
+                        )
                 );
 
         viewModel.getCityList().observe(getViewLifecycleOwner(), cities -> {
@@ -85,6 +88,7 @@ public class SecondStepFragment extends Fragment {
         cityTextView.setOnItemClickListener((parent, view, position, id) -> {
             City c = (City) cityTextView.getAdapter().getItem(position);
             viewModel.saveCity(c);
+            viewModel.putCity(c);
         });
 
         countryTextView.addTextChangedListener((LaconicTextWatcher) s -> checkStringIsCountryName(s.toString()));
@@ -93,15 +97,17 @@ public class SecondStepFragment extends Fragment {
             Country c = (Country) countryTextView.getAdapter().getItem(position);
             Log.d(TAG, "onCreateView: " + c + " " + c.getId());
             viewModel.loadAndSaveCities(c);
+            viewModel.putCountry(c);
         });
         return v;
     }
 
-    private void checkStringIsCountryName(String editable){
+    private void checkStringIsCountryName(String editable) {
         if (countryTextView.isPerformingCompletion()) return;
         Country c = viewModel.containsCountry(editable);
         if (c != null) viewModel.loadAndSaveCities(c);
         else if (editable.trim().isEmpty())
             viewModel.loadAllCities();
+        viewModel.putCountry(c);
     }
 }

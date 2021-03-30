@@ -1,5 +1,8 @@
 package com.skyletto.startappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -19,7 +22,7 @@ public class User {
     private String secondName;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     private City city;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,7 +31,7 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_tags",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -118,19 +121,21 @@ public class User {
         this.tags = tags;
     }
 
-    public City getCity() {
-        return city;
+    @JsonProperty("city_id")
+    public int getCity() {
+        return city!=null?city.getId():0;
+    }
+    @JsonProperty("city_id")
+    public void setCity(int id) {
+        city.setId(id);
     }
 
-    public void setCity(City city) {
-        this.city = city;
+    @JsonProperty("country_id")
+    public int getCountry() {
+        return country!=null?country.getId():0;
     }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
+    @JsonProperty("country_id")
+    public void setCountry(int id) {
+        country.setId(id);
     }
 }

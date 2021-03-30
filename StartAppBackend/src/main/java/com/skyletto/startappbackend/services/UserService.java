@@ -35,9 +35,13 @@ public class UserService {
                 data.getEmail(),
                 data.getPassword(),
                 data.getFirstName(),
-                data.getSecondName()
+                data.getSecondName(),
+                data.getPhoneNumber(),
+                data.getCity(),
+                data.getCountry(),
+                role,
+                data.getTags()
         );
-        user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Logger.getLogger("SERVICE").log(Level.INFO, "save "+user.getEmail());
         return userRepository.save(user);

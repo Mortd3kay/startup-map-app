@@ -50,6 +50,7 @@ public class SecurityController {
 
     @PostMapping("/register")
     public @ResponseBody ProfileResponse registerUser(@RequestBody @Valid RegisterDataRequest data){
+        System.out.println(data);
         User u = userService.createUser(data);
         if (u!=null) {
             String token = jwtProvider.generateToken(data.getEmail());
