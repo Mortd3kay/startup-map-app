@@ -2,8 +2,9 @@ package com.skyletto.startappfrontend.data.requests;
 
 import com.skyletto.startappfrontend.domain.entities.City;
 import com.skyletto.startappfrontend.domain.entities.Country;
+import com.skyletto.startappfrontend.domain.entities.Tag;
 
-import java.util.Arrays;
+import java.util.Set;
 
 public class RegisterDataRequest {
     private String email;
@@ -16,7 +17,7 @@ public class RegisterDataRequest {
     private String experience;
     private String title;
     private String description;
-    private String[] tags;
+    private Set<Tag> tags;
 
     public RegisterDataRequest(String email, String password, String firstName, String secondName, String phoneNumber) {
         this.email = email;
@@ -24,8 +25,6 @@ public class RegisterDataRequest {
         this.firstName = firstName;
         this.secondName = secondName;
         this.phoneNumber = phoneNumber;
-        country = new Country();
-        city = new City();
     }
 
     public String getEmail() {
@@ -108,11 +107,11 @@ public class RegisterDataRequest {
         this.description = description;
     }
 
-    public String[] getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(String[] tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
@@ -129,7 +128,7 @@ public class RegisterDataRequest {
                 ", experience='" + experience + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", tags=" + Arrays.toString(tags) +
+                ", tags=" + tags +
                 '}';
     }
 }
