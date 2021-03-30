@@ -1,6 +1,7 @@
 package com.skyletto.startappfrontend.ui.auth.fragments;
 
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,8 @@ public class SecondStepFragment extends Fragment {
     private AutoCompleteTextView countryTextView;
     private AutoCompleteTextView cityTextView;
 
+    private TextWatcher personalInfoWatcher;
+
     public SecondStepFragment() {
         // Required empty public constructor
     }
@@ -45,6 +48,7 @@ public class SecondStepFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(SharedAuthViewModel.class);
+        personalInfoWatcher = (LaconicTextWatcher) s -> viewModel.checkPersonalInfo();
     }
 
     @Override
@@ -54,9 +58,11 @@ public class SecondStepFragment extends Fragment {
         View v = binding.getRoot();
         binding.setModel(viewModel);
         binding.setLifecycleOwner(this);
+        countryTextView = binding.authCountryInput;
+        cityTextView = binding.authCityInput;
 
-        countryTextView = v.findViewById(R.id.auth_country_input);
-        cityTextView = v.findViewById(R.id.auth_city_input);
+        binding.authRegisterFirstNameInput.addTextChangedListener(personalInfoWatcher);
+        binding.authRegisterSecondNameInput.addTextChangedListener(personalInfoWatcher);
 
         cityTextView.setAdapter(new ArrayAdapter<City>(getContext(), R.layout.support_simple_spinner_dropdown_item, new ArrayList<>()));
         viewModel.getCountryList()

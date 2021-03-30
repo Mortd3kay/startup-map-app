@@ -1,7 +1,6 @@
 package com.skyletto.startappfrontend.ui.auth.viewmodels;
 
 import android.app.Application;
-import android.text.TextWatcher;
 import android.util.Log;
 
 import com.skyletto.startappfrontend.data.database.AppDatabase;
@@ -9,9 +8,9 @@ import com.skyletto.startappfrontend.data.network.ApiRepository;
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest;
 import com.skyletto.startappfrontend.domain.entities.City;
 import com.skyletto.startappfrontend.domain.entities.Country;
-import com.skyletto.startappfrontend.utils.LaconicTextWatcher;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -42,9 +41,6 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     private final ObservableField<Boolean> passAndEmailOk = new ObservableField<>(false);
     private final ObservableField<Boolean> personalInfoOk = new ObservableField<>(false);
-
-    private final TextWatcher emailAndPassWatcher = (LaconicTextWatcher) s -> checkPasswordsAndEmail();
-    private final TextWatcher personalInfoWatcher = (LaconicTextWatcher) s -> checkPasswordsAndEmail();
 
     public SharedAuthViewModel(@NonNull Application application) {
         super(application);
@@ -103,14 +99,20 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     private boolean isPasswordValid(String pass){
         String n = ".*[0-9].*";
-        String a = ".*[A-Z].*";
+        String a = ".*[\\p{L}].*";
         if (pass.length() < 8 || pass.length() > 40) return false;
         return pass.matches(n) && pass.matches(a);
     }
 
     private boolean isEmailValid(String email){
-        String e = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
-        return email.matches(e);
+        Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        boolean b= p.matcher(email).matches();
+        return b;
+    }
+
+    private boolean isNameValid(String name){
+        String n = "^[\\p{L} .'-]+$";
+        return !name.isEmpty() && name.matches(n);
     }
 
     public void checkPasswordsAndEmail(){
@@ -118,6 +120,12 @@ public class SharedAuthViewModel extends AndroidViewModel {
         String email = profile.get().getEmail();
         String ps2 = passRepeat.get();
         setPassAndEmailOk(ps1.equals(ps2) && isPasswordValid(ps1) && isEmailValid(email));
+    }
+
+    public void checkPersonalInfo(){
+        String name = profile.get().getFirstName();
+        String surname = profile.get().getSecondName();
+        setPersonalInfoOk(isNameValid(name) && isNameValid(surname));
     }
 
     public LiveData<List<Country>> getCountryList() {
@@ -138,14 +146,6 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     public ObservableField<Boolean> getPassAndEmailOk() {
         return passAndEmailOk;
-    }
-
-    public TextWatcher getEmailAndPassWatcher() {
-        return emailAndPassWatcher;
-    }
-
-    public TextWatcher getPersonalInfoWatcher() {
-        return personalInfoWatcher;
     }
 
     public void setPassAndEmailOk(boolean value) {

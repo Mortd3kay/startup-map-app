@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.fragments.FirstStepFragment">
 
     <data>
@@ -27,6 +28,7 @@
             android:layout_marginHorizontal="40dp"/>
 
         <EditText
+            android:id="@+id/auth_register_email_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
@@ -41,6 +43,7 @@
             android:layout_marginHorizontal="40dp"/>
 
         <EditText
+            android:id="@+id/auth_register_pass_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
@@ -54,6 +57,7 @@
             android:layout_marginHorizontal="40dp"/>
 
         <EditText
+            android:id="@+id/auth_register_pass_repeat_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"

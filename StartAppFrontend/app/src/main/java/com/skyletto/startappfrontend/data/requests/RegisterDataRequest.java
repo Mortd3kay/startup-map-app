@@ -49,7 +49,7 @@ public class RegisterDataRequest {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.trim();
     }
 
     public String getSecondName() {
@@ -57,7 +57,7 @@ public class RegisterDataRequest {
     }
 
     public void setSecondName(String secondName) {
-        this.secondName = secondName;
+        this.secondName = secondName.trim();
     }
 
     public String getPhoneNumber() {
