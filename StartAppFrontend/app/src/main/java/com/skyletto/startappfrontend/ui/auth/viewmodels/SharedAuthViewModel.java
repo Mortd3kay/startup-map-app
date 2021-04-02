@@ -261,39 +261,19 @@ public class SharedAuthViewModel extends AndroidViewModel {
 
     public void finish() {
         RegisterDataRequest finalData = profile.get();
-        Disposable d;
-        City city = finalData.getCity();
-        Country country = finalData.getCountry();
-        try {
-            d = db.cityDao().getCityByName(city.getName())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                            finalData::setCity,
-                            throwable -> {
-                                Log.e(TAG, "finish_get_city: ", throwable);
-                                finalData.setCity(null);
-                            }
-                    );
-            cd.add(d);
-        } catch (Exception e) {
-            Log.e(TAG, "finish: city_check", e.getCause());
-        }
-        try {
-            d = db.countryDao().getCountryByName(country.getName())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                            finalData::setCountry,
-                            throwable -> {
-                                Log.e(TAG, "finish_get_country: ", throwable);
-                                finalData.setCountry(null);
-                            }
-                    );
-            cd.add(d);
-        } catch (Exception e) {
-            Log.e(TAG, "finish: country_check", e.getCause());
-        }
+        checkCityInDatabase(finalData);
+        checkCountryInDatabase(finalData);
+        finalData.setTags(chosenTags.getValue());
+
         Log.d(TAG, "finish: " + finalData);
-        d = api.apiService.register(finalData)
+
+        register(finalData);
+
+    }
+
+    private void register(RegisterDataRequest data){
+        Disposable d;
+        d = api.apiService.register(data)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -306,6 +286,42 @@ public class SharedAuthViewModel extends AndroidViewModel {
                         throwable -> Log.e(TAG, "finish: register", throwable)
                 );
         cd.add(d);
+    }
+
+    private void checkCityInDatabase(RegisterDataRequest data){
+        Disposable d;
+        try {
+            d = db.cityDao().getCityByName(data.getCity().getName())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            data::setCity,
+                            throwable -> {
+                                Log.e(TAG, "finish_get_city: ", throwable);
+                                data.setCity(null);
+                            }
+                    );
+            cd.add(d);
+        } catch (Exception e) {
+            Log.e(TAG, "finish: city_check", e.getCause());
+        }
+    }
+
+    private void checkCountryInDatabase(RegisterDataRequest data){
+        Disposable d;
+        try {
+            d = db.countryDao().getCountryByName(data.getCountry().getName())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            data::setCountry,
+                            throwable -> {
+                                Log.e(TAG, "finish_get_country: ", throwable);
+                                data.setCountry(null);
+                            }
+                    );
+            cd.add(d);
+        } catch (Exception e) {
+            Log.e(TAG, "finish: country_check", e.getCause());
+        }
     }
 
     private void saveProfileInfo(ProfileResponse pr) {

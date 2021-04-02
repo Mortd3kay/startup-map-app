@@ -12,7 +12,6 @@ public class User {
     private String phoneNumber;
     private int city_id;
     private int country_id;
-    private Role role;
     private Set<Tag> tags;
 
     public User() {
@@ -66,14 +65,6 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public int getCity_id() {
         return city_id;
     }
@@ -108,7 +99,6 @@ public class User {
                 ", secondName='" + secondName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", city_id=" + city_id +
-                ", role=" + role +
                 ", tags=" + tags +
                 '}';
     }
