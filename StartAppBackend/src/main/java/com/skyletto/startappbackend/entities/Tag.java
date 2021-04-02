@@ -1,5 +1,7 @@
 package com.skyletto.startappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -10,6 +12,7 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<User> users;
 

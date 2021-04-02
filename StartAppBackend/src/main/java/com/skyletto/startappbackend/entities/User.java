@@ -1,10 +1,11 @@
 package com.skyletto.startappbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 @Entity
 @Table(name = "users")
