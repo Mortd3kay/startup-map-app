@@ -5,9 +5,11 @@ import com.skyletto.startappfrontend.data.requests.RegisterDataRequest;
 import com.skyletto.startappfrontend.data.responses.ProfileResponse;
 import com.skyletto.startappfrontend.domain.entities.City;
 import com.skyletto.startappfrontend.domain.entities.Country;
+import com.skyletto.startappfrontend.domain.entities.Tag;
 import com.skyletto.startappfrontend.domain.entities.User;
 
 import java.util.List;
+import java.util.Set;
 
 import io.reactivex.Single;
 import retrofit2.http.Body;
@@ -36,4 +38,9 @@ public interface ApiService {
     @GET("cities/all")
     Single<List<City>> getAllCities();
 
+    @GET("tags/random")
+    Single<Set<Tag>> getRandomTags();
+
+    @GET("tags")
+    Single<Set<Tag>> getSimilarTags(@Query("string") String str);
 }
