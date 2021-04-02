@@ -2,12 +2,14 @@ package com.skyletto.startappbackend.controllers;
 
 import com.skyletto.startappbackend.entities.City;
 import com.skyletto.startappbackend.entities.Country;
+import com.skyletto.startappbackend.entities.Tag;
 import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.AuthResponse;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
 import com.skyletto.startappbackend.services.CityService;
+import com.skyletto.startappbackend.services.TagService;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +26,30 @@ public class SecurityController {
 
     private UserService userService;
     private CityService cityService;
+    private TagService tagService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService, CityService cityService) {
+    public SecurityController(UserService userService, CityService cityService, TagService tagService) {
         this.userService = userService;
         this.cityService = cityService;
+        this.tagService = tagService;
     }
 
     @Autowired
     public void setJwtProvider(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
+    }
+
+    @GetMapping("/tags/random")
+    public List<Tag> getRandomTags(){
+        return tagService.getRandomTags();
+    }
+
+    @GetMapping("tags")
+    public List<Tag> getTags(@RequestParam String string){
+        return tagService.getSimilarTags(string);
     }
 
     @GetMapping("/email")
