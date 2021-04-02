@@ -7,13 +7,14 @@ import com.skyletto.startappfrontend.data.network.ApiRepository;
 import com.skyletto.startappfrontend.data.requests.LoginDataRequest;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class LoginAuthViewModel extends AndroidViewModel {
     
-    private LoginDataRequest data;
+    private ObservableField<LoginDataRequest> data = new ObservableField<>(new LoginDataRequest());
     private OnSuccessLoginListener onSuccessLoginListener;
     private OnErrorLoginListener onErrorLoginListener;
     private GoToRegister goToRegister;
@@ -24,7 +25,7 @@ public class LoginAuthViewModel extends AndroidViewModel {
 
     @SuppressLint("CheckResult")
     public void login() {
-        ApiRepository.getInstance().apiService.login(data)
+        ApiRepository.getInstance().apiService.login(data.get())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -33,11 +34,11 @@ public class LoginAuthViewModel extends AndroidViewModel {
                 );
     }
 
-    public LoginDataRequest getData() {
+    public ObservableField<LoginDataRequest> getData() {
         return data;
     }
 
-    public void setData(LoginDataRequest data) {
+    public void setData(ObservableField<LoginDataRequest> data) {
         this.data = data;
     }
 

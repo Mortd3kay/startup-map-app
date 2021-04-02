@@ -4,6 +4,9 @@ public class LoginDataRequest {
     private String email;
     private String password;
 
+    public LoginDataRequest() {
+    }
+
     public LoginDataRequest(String email, String password) {
         this.email = email;
         this.password = password;
