@@ -1,6 +1,7 @@
 package com.skyletto.startappfrontend.ui.auth;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.skyletto.startappfrontend.R;
@@ -14,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-public class AuthActivity extends AppCompatActivity implements ActivityStepper {
+public class AuthActivity extends AppCompatActivity implements ActivityStepper, TokenSaver {
 
     private static final String TAG = "AUTH_ACTIVITY";
     private static final int STEPS_COUNT = 3;
@@ -49,8 +50,8 @@ public class AuthActivity extends AppCompatActivity implements ActivityStepper {
     }
 
     @Override
-    public void onFinish() {
-        startActivity(new Intent(AuthActivity.this, MainActivity.class));
+    public void onFinish(Bundle bundle) {
+        startActivity(new Intent(AuthActivity.this, MainActivity.class), bundle);
         finish();
     }
 
@@ -58,5 +59,14 @@ public class AuthActivity extends AppCompatActivity implements ActivityStepper {
     public void onBackPressed() {
         stepNum--;
         super.onBackPressed();
+    }
+
+    @Override
+    public void save(String token, long id) {
+        SharedPreferences sp = getSharedPreferences("profile", MODE_PRIVATE);
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("token", token);
+        e.putLong("id", id);
+        e.apply();
     }
 }
