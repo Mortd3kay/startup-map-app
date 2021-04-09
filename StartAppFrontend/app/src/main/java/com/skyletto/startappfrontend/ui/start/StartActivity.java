@@ -37,7 +37,8 @@ public class StartActivity extends AppCompatActivity {
                 bundle.putString("token", token);
                 bundle.putLong("id", id);
                 Intent intent = new Intent(StartActivity.this, MainActivity.class);
-                startActivity(intent, bundle);
+                intent.putExtras(bundle);
+                startActivity(intent);
             } else {
                 View v = findViewById(R.id.start_logo_img);
                 Intent intent = new Intent(StartActivity.this, AuthActivity.class);

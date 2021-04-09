@@ -51,7 +51,7 @@ public class AuthActivity extends AppCompatActivity implements ActivityStepper, 
 
     @Override
     public void onFinish(Bundle bundle) {
-        startActivity(new Intent(AuthActivity.this, MainActivity.class), bundle);
+        startActivity(new Intent(AuthActivity.this, MainActivity.class).putExtras(bundle));
         finish();
     }
 
