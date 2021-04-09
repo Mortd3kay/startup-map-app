@@ -13,7 +13,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skyletto.startappfrontend.R;
+import com.skyletto.startappfrontend.ui.main.ActivityFragmentChanger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +25,7 @@ public class MapsFragment extends Fragment {
 
     private static final String TAG = "MAP_FRAGMENT";
     GoogleMap mMap;
+    private ActivityFragmentChanger mActivity;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -58,7 +61,12 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        View v = inflater.inflate(R.layout.fragment_maps, container, false);
+        FloatingActionButton fab = v.findViewById(R.id.map_profile_btn);
+        fab.setOnClickListener(v1 -> {
+            if (mActivity!=null)mActivity.goToProfile();
+        });
+        return v;
     }
 
     @Override
@@ -69,5 +77,9 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+    }
+
+    public void setActivity(ActivityFragmentChanger mActivity) {
+        this.mActivity = mActivity;
     }
 }

@@ -6,16 +6,20 @@ import android.os.Bundle;
 
 import com.skyletto.startappfrontend.R;
 import com.skyletto.startappfrontend.ui.main.fragments.MapsFragment;
+import com.skyletto.startappfrontend.ui.main.fragments.ProfileFragment;
 import com.skyletto.startappfrontend.ui.start.StartActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActivityFragmentChanger {
 
     private static final String TAG = "MAIN_ACTIVITY";
 
     private FragmentManager fm;
+    private final Fragment profileFragment = ProfileFragment.newInstance();
+    private MapsFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         String token = bundle.getString("token");
         long id = bundle.getLong("id");
 
-        if (token==null){
+        if (token == null) {
             SharedPreferences sp = getSharedPreferences("profile", MODE_PRIVATE);
             token = sp.getString("token", "");
             if (token.equals("")) {
@@ -37,8 +41,15 @@ public class MainActivity extends AppCompatActivity {
             id = sp.getLong("id", -1);
         }
 
-
         fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.main_pane,fm.getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), MapsFragment.class.getName())).commitNow();
+
+        mapFragment = (MapsFragment) fm.getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), MapsFragment.class.getName());
+        mapFragment.setActivity(this);
+        fm.beginTransaction().replace(R.id.main_pane,mapFragment).commitNow();
+    }
+
+    @Override
+    public void goToProfile() {
+        fm.beginTransaction().replace(R.id.main_pane, profileFragment).addToBackStack("profile").commit();
     }
 }
