@@ -1,7 +1,5 @@
 package com.skyletto.startappfrontend.data.requests;
 
-import com.skyletto.startappfrontend.domain.entities.City;
-import com.skyletto.startappfrontend.domain.entities.Country;
 import com.skyletto.startappfrontend.domain.entities.Tag;
 
 import java.util.Set;
@@ -12,8 +10,6 @@ public class RegisterDataRequest {
     private String firstName;
     private String secondName;
     private String phoneNumber;
-    private City city;
-    private Country country;
     private String experience;
     private String title;
     private String description;
@@ -67,22 +63,6 @@ public class RegisterDataRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
     public String getExperience() {
         return experience;
     }
@@ -123,8 +103,6 @@ public class RegisterDataRequest {
                 ", firstName='" + firstName + '\'' +
                 ", secondName='" + secondName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", city=" + city +
-                ", country=" + country +
                 ", experience='" + experience + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +

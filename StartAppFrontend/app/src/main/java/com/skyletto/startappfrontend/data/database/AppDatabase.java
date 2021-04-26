@@ -2,16 +2,13 @@ package com.skyletto.startappfrontend.data.database;
 
 import android.content.Context;
 
-import com.skyletto.startappfrontend.data.database.dao.CityDao;
-import com.skyletto.startappfrontend.data.database.dao.CountryDao;
-import com.skyletto.startappfrontend.domain.entities.City;
-import com.skyletto.startappfrontend.domain.entities.Country;
+import com.skyletto.startappfrontend.domain.entities.Tag;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Country.class, City.class}, version = 1, exportSchema = false)
+@Database(entities = {Tag.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase db;
@@ -25,7 +22,4 @@ public abstract class AppDatabase extends RoomDatabase {
             }
         return db;
     }
-
-    public abstract CountryDao countryDao();
-    public abstract CityDao cityDao();
 }

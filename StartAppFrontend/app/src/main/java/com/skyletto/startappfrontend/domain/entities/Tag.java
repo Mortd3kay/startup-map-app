@@ -2,7 +2,12 @@ package com.skyletto.startappfrontend.domain.entities;
 
 import java.util.Objects;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "tags")
 public class Tag {
+    @PrimaryKey
     private long id;
     private String name;
 

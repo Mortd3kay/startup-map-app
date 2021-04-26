@@ -3,12 +3,9 @@ package com.skyletto.startappfrontend.data.network;
 import com.skyletto.startappfrontend.data.requests.LoginDataRequest;
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest;
 import com.skyletto.startappfrontend.data.responses.ProfileResponse;
-import com.skyletto.startappfrontend.domain.entities.City;
-import com.skyletto.startappfrontend.domain.entities.Country;
 import com.skyletto.startappfrontend.domain.entities.Tag;
 import com.skyletto.startappfrontend.domain.entities.User;
 
-import java.util.List;
 import java.util.Set;
 
 import io.reactivex.Single;
@@ -28,15 +25,6 @@ public interface ApiService {
 
     @GET("user/get")
     Single<User> getUserByToken(@Header("Authorization") String auth);
-
-    @GET("countries")
-    Single<List<Country>> getCountries();
-
-    @GET("cities")
-    Single<List<City>> getCitiesByCountryId(@Query("country") int id);
-
-    @GET("cities/all")
-    Single<List<City>> getAllCities();
 
     @GET("tags/random")
     Single<Set<Tag>> getRandomTags();

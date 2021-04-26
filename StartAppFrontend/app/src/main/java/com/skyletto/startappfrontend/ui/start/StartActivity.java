@@ -25,8 +25,6 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-
-
         SharedPreferences sp = getSharedPreferences("profile", MODE_PRIVATE);
         String token = sp.getString("token", "");
         long id = sp.getLong("id", -1);
