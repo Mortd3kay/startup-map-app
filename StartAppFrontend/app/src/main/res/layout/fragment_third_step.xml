@@ -81,7 +81,7 @@
             android:id="@+id/auth_third_step_entry_chip_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"/>
+            android:layout_marginHorizontal="40dp" />
 
         <Space
             android:layout_width="0dp"
