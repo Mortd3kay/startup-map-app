@@ -2,10 +2,14 @@ package com.skyletto.startappfrontend.domain.entities;
 
 import java.util.Set;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "users")
 public class User {
+    @PrimaryKey
     private long id;
     private String email;
-
     private String password;
     private String firstName;
     private String secondName;

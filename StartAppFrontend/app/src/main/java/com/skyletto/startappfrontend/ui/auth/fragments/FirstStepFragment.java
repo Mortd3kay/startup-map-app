@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.skyletto.startappfrontend.R;
 import com.skyletto.startappfrontend.databinding.FragmentFirstStepBinding;
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper;
+import com.skyletto.startappfrontend.ui.auth.TokenSaver;
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel;
 import com.skyletto.startappfrontend.utils.LaconicTextWatcher;
 
@@ -39,7 +40,16 @@ public class FirstStepFragment extends Fragment {
         viewModel = new ViewModelProvider(getActivity()).get(SharedAuthViewModel.class);
         viewModel.setOnNextStepListener(() -> mActivity.nextStep());
         viewModel.setOnPrevStepListener(() -> mActivity.prevStep());
-        viewModel.setOnFinishRegisterListener(() -> mActivity.onFinish());
+        viewModel.setOnFinishRegisterListener(pr -> {
+            Bundle b = new Bundle();
+            b.putString("token",pr.getToken());
+            b.putLong("id",pr.getUser().getId());
+            mActivity.onFinish(b);
+        });
+        viewModel.setOnSaveProfileListener(pr -> {
+            if (mActivity instanceof TokenSaver)
+                ((TokenSaver) mActivity).save(pr.getToken(), pr.getUser().getId());
+        });
         emailAndPassWatcher = (LaconicTextWatcher) s -> viewModel.checkPasswordsAndEmail();
     }
 

@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.skyletto.startappfrontend.R;
 import com.skyletto.startappfrontend.databinding.FragmentLoginBinding;
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper;
+import com.skyletto.startappfrontend.ui.auth.TokenSaver;
 import com.skyletto.startappfrontend.ui.auth.viewmodels.LoginAuthViewModel;
 
 import androidx.databinding.DataBindingUtil;
@@ -38,10 +39,16 @@ public class LoginFragment extends Fragment {
         viewModel.setOnErrorLoginListener(() -> {
             Toast.makeText(getContext(), "Неверные данные", Toast.LENGTH_SHORT).show();
         });
-        viewModel.setOnSuccessLoginListener(() -> {
-            mActivity.onFinish();
+        viewModel.setOnSuccessLoginListener(pr -> {
+            Bundle b = new Bundle();
+            b.putString("token",pr.getToken());
+            b.putLong("id",pr.getUser().getId());
+            mActivity.onFinish(b);
         });
-
+        viewModel.setOnSaveProfileListener(pr -> {
+            if (mActivity instanceof TokenSaver)
+                ((TokenSaver) mActivity).save(pr.getToken(), pr.getUser().getId());
+        });
         viewModel.setGoToRegister(() -> mActivity.nextStep());
     }
 

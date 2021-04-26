@@ -49,6 +49,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
     private MutableLiveData<List<City>> cityList = new MutableLiveData<>();
     private OnNextStepListener onNextStepListener;
     private OnPrevStepListener onPrevStepListener;
+    private OnSaveProfileListener onSaveProfileListener;
     private OnFinishRegisterListener onFinishRegisterListener;
     private final ObservableField<Boolean> passAndEmailOk = new ObservableField<>(false);
     private final ObservableField<Boolean> personalInfoOk = new ObservableField<>(false);
@@ -235,6 +236,10 @@ public class SharedAuthViewModel extends AndroidViewModel {
         personalInfoOk.notifyChange();
     }
 
+    public void setOnSaveProfileListener(OnSaveProfileListener onSaveProfileListener) {
+        this.onSaveProfileListener = onSaveProfileListener;
+    }
+
     public void setOnNextStepListener(OnNextStepListener onNextStepListener) {
         this.onNextStepListener = onNextStepListener;
     }
@@ -281,7 +286,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
                             Log.d(TAG, "accept: " + profileResponse.getToken() + " " + profileResponse.getUser());
                             saveProfileInfo(profileResponse);
                             if (onFinishRegisterListener != null)
-                                onFinishRegisterListener.onFinish();
+                                onFinishRegisterListener.onFinish(profileResponse);
                         },
                         throwable -> Log.e(TAG, "finish: register", throwable)
                 );
@@ -325,10 +330,7 @@ public class SharedAuthViewModel extends AndroidViewModel {
     }
 
     private void saveProfileInfo(ProfileResponse pr) {
-        SharedPreferences.Editor e = sp.edit();
-        e.putString("token", pr.getToken());
-        e.putLong("id", pr.getUser().getId());
-        e.apply();
+        if (onSaveProfileListener!=null) onSaveProfileListener.save(pr);
     }
 
     @Override
