@@ -37,8 +37,9 @@ public class UserService {
                 data.getFirstName(),
                 data.getSecondName(),
                 data.getPhoneNumber(),
-                data.getCity(),
-                data.getCountry(),
+                data.getTitle(),
+                data.getExperience(),
+                data.getDescription(),
                 role,
                 data.getTags()
         );
