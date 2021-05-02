@@ -46,7 +46,7 @@ public class SecurityController {
     }
 
     @GetMapping("/email")
-    public int findUserByEmail(@RequestParam @Valid String email) {
+    public int findUserByEmail(@RequestParam String email) {
         return userService.countUserByEmail(email);
     }
 

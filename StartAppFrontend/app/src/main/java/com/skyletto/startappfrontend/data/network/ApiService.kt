@@ -5,22 +5,25 @@ import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.domain.entities.User
-import retrofit2.Response
+import io.reactivex.Single
 import retrofit2.http.*
 
 interface ApiService {
     @POST("register")
-    suspend fun register(@Body data: RegisterDataRequest): Response<ProfileResponse>
+    fun register(@Body data: RegisterDataRequest): Single<ProfileResponse>
 
     @POST("auth")
-    suspend fun login(@Body data: LoginDataRequest): Response<ProfileResponse>
+    fun login(@Body data: LoginDataRequest): Single<ProfileResponse>
 
     @GET("user/get")
-    suspend fun getUserByToken(@Header("Authorization") auth: String): Response<User>
+    fun getUserByToken(@Header("Authorization") auth: String): Single<User>
+
+    @GET("email")
+    fun findUserByEmail(@Query("email") str: String): Single<Int>
 
     @GET("tags/random")
-    suspend fun getRandomTags(): Response<Set<Tag>>
+    fun getRandomTags(): Single<Set<Tag>>
 
     @GET("tags")
-    suspend fun getSimilarTags(@Query("string") str: String): Response<Set<Tag>>
+    fun getSimilarTags(@Query("string") str: String): Single<Set<Tag>>
 }

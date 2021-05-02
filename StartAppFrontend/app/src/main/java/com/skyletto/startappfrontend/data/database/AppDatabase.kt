@@ -16,13 +16,13 @@ abstract class AppDatabase : RoomDatabase() {
         private var db: AppDatabase? = null
         private const val DB_NAME = "main.db"
         @JvmStatic
-        fun getInstance(context: Context): AppDatabase? {
+        fun getInstance(context: Context): AppDatabase {
             if (db == null)
                 synchronized(AppDatabase::class.java) {
                 if (db == null)
                     db = Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME).build()
             }
-            return db
+            return db!!
         }
     }
 }

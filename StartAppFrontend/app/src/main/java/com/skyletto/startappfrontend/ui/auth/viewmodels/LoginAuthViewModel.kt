@@ -6,15 +6,17 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.requests.LoginDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
+import com.skyletto.startappfrontend.utils.MainApplication
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class LoginAuthViewModel(application: Application) : AndroidViewModel(application) {
     var data = ObservableField(LoginDataRequest(null, null))
+    private val api = getApplication<MainApplication>().api
     private var onSuccessLoginListener: OnSuccessLoginListener? = null
     private var onErrorLoginListener: OnErrorLoginListener? = null
     private var onSaveProfileListener: OnSaveProfileListener? = null
@@ -23,19 +25,15 @@ class LoginAuthViewModel(application: Application) : AndroidViewModel(applicatio
     @SuppressLint("CheckResult")
     fun login() {
         data.get()?.let {
-            viewModelScope.launch(Dispatchers.IO) {
-                val response = ApiRepository.apiService.login(it)
-                if (response.isSuccessful){
-                    val pr = response.body()
-                    pr?.let {
-                        saveProfileInfo(it)
-                        onSuccessLoginListener?.onSuccess(it)
-                    }
-                } else {
-                    Log.e(TAG, "login error response:  ${response.errorBody()!!}")
-                    onErrorLoginListener?.onError()
-                }
-            }
+            api.apiService.login(it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { profileResponse: ProfileResponse ->
+                                saveProfileInfo(profileResponse)
+                                onSuccessLoginListener?.onSuccess(profileResponse)
+                            }
+                    ) { onErrorLoginListener?.onError() }
         }
     }
 

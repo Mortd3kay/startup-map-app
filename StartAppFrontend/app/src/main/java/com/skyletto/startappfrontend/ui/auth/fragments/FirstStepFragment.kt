@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,11 @@ import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.TokenSaver
 import com.skyletto.startappfrontend.ui.auth.viewmodels.*
 import com.skyletto.startappfrontend.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.utils.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FirstStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
@@ -26,7 +32,13 @@ class FirstStepFragment : Fragment() {
         viewModel = activity?.let { ViewModelProvider(it).get(SharedAuthViewModel::class.java) }
         viewModel?.setOnNextStepListener(object : OnNextStepListener {
             override fun onNext() {
-                mActivity?.nextStep()
+                    viewModel?.userExists { i ->
+                        run {
+                            if (i > 0) toast(context, "Такой email уже зарегистрирован")
+                            else mActivity?.nextStep()
+                        }
+                }
+
             }
         })
         viewModel?.setOnPrevStepListener(object : OnPrevStepListener {
