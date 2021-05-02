@@ -163,7 +163,7 @@ class SharedAuthViewModel(application: Application) : AndroidViewModel(applicati
         cd.dispose()
     }
 
-    fun userExists(func:(Int)->Unit){
+    fun userExists(func:(Int)->Unit, error: () -> Unit){
         profile.get()?.email?.let { outerIt ->
             api.apiService.findUserByEmail(outerIt)
                     .subscribeOn(Schedulers.io())
@@ -173,7 +173,7 @@ class SharedAuthViewModel(application: Application) : AndroidViewModel(applicati
                                 func.invoke(it)
                             },
                             {
-                                toast(getApplication(), "Ошибка")
+                                error.invoke()
                             })
 
         }

@@ -17,6 +17,7 @@ import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel
 import com.skyletto.startappfrontend.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.utils.paintButtonText
 
 class ThirdStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
@@ -31,6 +32,8 @@ class ThirdStepFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val binding: FragmentThirdStepBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_third_step, container, false)
         binding.model = viewModel
+        val btn = binding.thirdStepContBtn
+        paintButtonText(btn)
         viewModel?.let {
             it.chosenTags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.authThirdStepEntryChipGroup, tags, 1) })
             it.tags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.authThirdStepChooseChipGroup, tags, 2) })
@@ -48,7 +51,7 @@ class ThirdStepFragment : Fragment() {
     private fun inflateChipGroup(group: ChipGroup, tags: Set<Tag>, flag: Int) {
         group.removeAllViews()
         for (t in tags) {
-            val chip = Chip(requireContext())
+            val chip = (Chip(requireContext()))
             chip.text = t.name
             if (flag == 1) {
                 chip.isChecked = true
