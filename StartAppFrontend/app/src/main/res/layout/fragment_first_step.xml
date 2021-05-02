@@ -13,85 +13,95 @@
     </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="fill_vertical">
-
-
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@color/cardview_dark_background"
+        android:paddingBottom="50dp"
+        android:gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
-            android:layout_gravity="start"
-            android:layout_marginHorizontal="40dp"/>
+            android:text="@string/register"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textAllCaps="true"
+            android:fontFamily="@font/rubik_regular"
+            android:layout_marginBottom="60dp"/>
 
         <EditText
             android:id="@+id/auth_register_email_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"
+            style="@style/input_style"
             android:inputType="textEmailAddress"
+            android:hint="@string/input_email"
             android:text="@={model.profile.email}"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Пароль"
-            android:layout_gravity="start"
-            android:layout_marginHorizontal="40dp"/>
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp"
+            app:passwordToggleDrawable="@drawable/asl_password_visibility"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/white">
 
-        <EditText
-            android:id="@+id/auth_register_pass_input"
+            <EditText
+                style="@style/input_style"
+                android:id="@+id/auth_register_pass_input"
+                android:layout_marginTop="3dp"
+                android:hint="@string/input_password"
+                android:inputType="textPassword"
+                android:text="@={model.profile.password}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp"
+            app:passwordToggleDrawable="@drawable/asl_password_visibility"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/white">
+
+            <EditText
+                style="@style/input_style"
+                android:id="@+id/auth_register_pass_repeat_input"
+                android:layout_marginTop="3dp"
+                android:hint="@string/repeat_pass"
+                android:inputType="textPassword"
+                android:text="@={model.passRepeat}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/pass_equals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:inputType="textEmailAddress"
-            android:text="@={model.profile.password}"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Пароль"
-            android:layout_gravity="start"
-            android:layout_marginHorizontal="40dp"/>
+            android:textColor="@color/green"
+            android:text="@string/password_are_equals"
+            android:layout_marginTop="3dp"
+            android:visibility="gone"/>
 
-        <EditText
-            android:id="@+id/auth_register_pass_repeat_input"
+        <TextView
+            android:id="@+id/pass_not_equals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:inputType="textEmailAddress"
-            android:text="@={model.passRepeat}"/>
+            android:textColor="@color/red"
+            android:text="@string/password_are_not_equals"
+            android:layout_marginTop="3dp"
+            android:visibility="gone"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="bottom"
-            >
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Prev"
-                android:onClick="@{(view)->model.prevStep()}"/>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Next"
-                android:enabled="@{model.passAndEmailOk}"
-                android:onClick="@{(view)->model.nextStep()}"
-                />
-
-        </LinearLayout>
-
+        <Button
+            style="@style/button_style"
+            android:text="@string/_continue"
+            android:enabled="@{model.passAndEmailOk}"
+            android:onClick="@{(view)->model.nextStep()}"
+            android:layout_marginTop="60dp"
+            />
     </LinearLayout>
 
 </layout>

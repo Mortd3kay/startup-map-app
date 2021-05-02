@@ -32,12 +32,17 @@ class FirstStepFragment : Fragment() {
         viewModel = activity?.let { ViewModelProvider(it).get(SharedAuthViewModel::class.java) }
         viewModel?.setOnNextStepListener(object : OnNextStepListener {
             override fun onNext() {
-                    viewModel?.userExists { i ->
-                        run {
-                            if (i > 0) toast(context, "Такой email уже зарегистрирован")
-                            else mActivity?.nextStep()
+                viewModel?.userExists(
+                        { i ->
+                            run {
+                                if (i > 0) toast(context, "Такой email уже зарегистрирован")
+                                else mActivity?.nextStep()
+                            }
+                        },
+                        {
+                            toast(context, "Не удалось подключиться к серверу")
                         }
-                }
+                )
 
             }
         })

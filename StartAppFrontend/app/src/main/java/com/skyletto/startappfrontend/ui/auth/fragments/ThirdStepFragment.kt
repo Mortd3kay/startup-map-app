@@ -48,7 +48,7 @@ class ThirdStepFragment : Fragment() {
     private fun inflateChipGroup(group: ChipGroup, tags: Set<Tag>, flag: Int) {
         group.removeAllViews()
         for (t in tags) {
-            val chip = Chip(requireContext())
+            val chip = (Chip(requireContext()))
             chip.text = t.name
             if (flag == 1) {
                 chip.isChecked = true
