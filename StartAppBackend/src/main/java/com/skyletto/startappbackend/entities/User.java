@@ -24,12 +24,9 @@ public class User {
     private String secondName;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "city_id")
-    private City city;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
-    private Country country;
+    private String title;
+    private String experience;
+    private String description;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -45,17 +42,18 @@ public class User {
     }
 
     public User(String email, String password, String firstName, String secondName) {
-        this(email, password, firstName, secondName, null, null, null, null, null);
+        this(email, password, firstName, secondName,  null, null, null,  null, null, null);
     }
 
-    public User(String email, String password, String firstName, String secondName, String phoneNumber, City city, Country country, Role role, Set<Tag> tags) {
+    public User(String email, String password, String firstName, String secondName, String phoneNumber, String title, String experience, String description, Role role, Set<Tag> tags) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.secondName = secondName;
         this.phoneNumber = phoneNumber;
-        this.city = city;
-        this.country = country;
+        this.title = title;
+        this.experience = experience;
+        this.description = description;
         this.role = role;
         this.tags = tags;
     }
@@ -122,23 +120,5 @@ public class User {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
-    }
-
-    @JsonProperty("city_id")
-    public int getCity() {
-        return city!=null?city.getId():0;
-    }
-    @JsonProperty("city_id")
-    public void setCity(int id) {
-        city.setId(id);
-    }
-
-    @JsonProperty("country_id")
-    public int getCountry() {
-        return country!=null?country.getId():0;
-    }
-    @JsonProperty("country_id")
-    public void setCountry(int id) {
-        country.setId(id);
     }
 }
