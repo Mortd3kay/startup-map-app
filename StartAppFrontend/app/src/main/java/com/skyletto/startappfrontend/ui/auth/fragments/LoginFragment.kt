@@ -14,6 +14,7 @@ import com.skyletto.startappfrontend.databinding.FragmentLoginBinding
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.TokenSaver
 import com.skyletto.startappfrontend.ui.auth.viewmodels.*
+import com.skyletto.startappfrontend.utils.paintButtonText
 
 class LoginFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
@@ -50,6 +51,8 @@ class LoginFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val binding: FragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         binding.model = viewModel
+        val btn = binding.loginBtn
+        paintButtonText(btn)
         return binding.root
     }
 

@@ -14,6 +14,7 @@ import com.skyletto.startappfrontend.databinding.FragmentSecondStepBinding
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel
 import com.skyletto.startappfrontend.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.utils.paintButtonText
 
 class SecondStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
@@ -37,6 +38,8 @@ class SecondStepFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.authRegisterFirstNameInput.addTextChangedListener(personalInfoWatcher)
         binding.authRegisterSecondNameInput.addTextChangedListener(personalInfoWatcher)
+        val btn = binding.secStepContBtn
+        paintButtonText(btn)
         return v
     }
 

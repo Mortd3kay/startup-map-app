@@ -30,12 +30,22 @@
             android:fontFamily="@font/rubik_regular"
             android:layout_marginBottom="60dp"/>
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:id="@+id/auth_register_email_input"
             style="@style/input_style"
             android:inputType="textEmailAddress"
-            android:hint="@string/input_email"
+            android:hint="@string/login_hint"
             android:text="@={model.profile.email}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -46,11 +56,12 @@
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/white">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 style="@style/input_style"
                 android:id="@+id/auth_register_pass_input"
-                android:layout_marginTop="3dp"
-                android:hint="@string/input_password"
+                android:hint="@string/pass_hint"
                 android:inputType="textPassword"
                 android:text="@={model.profile.password}" />
 
@@ -65,10 +76,11 @@
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/white">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 style="@style/input_style"
                 android:id="@+id/auth_register_pass_repeat_input"
-                android:layout_marginTop="3dp"
                 android:hint="@string/repeat_pass"
                 android:inputType="textPassword"
                 android:text="@={model.passRepeat}" />
@@ -96,6 +108,7 @@
             android:visibility="gone"/>
 
         <Button
+            android:id="@+id/first_step_cont_btn"
             style="@style/button_style"
             android:text="@string/_continue"
             android:enabled="@{model.passAndEmailOk}"

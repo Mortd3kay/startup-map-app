@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.fragments.SecondStepFragment">
 
     <data>
@@ -29,31 +30,60 @@
             android:fontFamily="@font/rubik_regular"
             android:layout_marginBottom="60dp"/>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/auth_register_first_name_input"
             style="@style/input_style"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:inputType="textEmailAddress"
-            android:hint="@string/input_name"
+            android:hint="@string/name"
             android:text="@={model.profile.firstName}"/>
 
-        <EditText
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/auth_register_second_name_input"
             style="@style/input_style"
-            android:layout_marginTop="13dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:inputType="textEmailAddress"
-            android:hint="@string/input_surname"
+            android:hint="@string/surname"
             android:text="@={model.profile.secondName}"/>
 
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp">
+
+
+        <com.google.android.material.textfield.TextInputEditText
             style="@style/input_style"
-            android:layout_marginTop="13dp"
             android:inputType="phone"
-            android:hint="@string/input_phone"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:hint="@string/phone"
             android:text="@={model.profile.phoneNumber}"/>
 
+        </com.google.android.material.textfield.TextInputLayout>
+
         <Button
+            android:id="@+id/sec_step_cont_btn"
             style="@style/button_style"
             android:text="@string/_continue"
             android:layout_marginTop="50dp"

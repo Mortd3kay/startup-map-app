@@ -21,10 +21,9 @@
     <string name="register">Регистрация</string>
     <string name="password_are_equals">пароли совпадают</string>
     <string name="password_are_not_equals">пароли не совпадают</string>
-    <string name="input_email">введите почту</string>
-    <string name="input_name">введите имя</string>
-    <string name="input_phone">введите телефон</string>
-    <string name="input_surname">введите фамилию</string>
+    <string name="name">имя</string>
+    <string name="phone">телефон</string>
+    <string name="surname">фамилия</string>
     <string name="finish">Завершить</string>
     <string name="your_skills_and_prefs">Ваши навыки и предпочтения</string>
     <string name="specialization">специальность</string>

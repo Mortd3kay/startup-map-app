@@ -17,6 +17,7 @@ import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.TokenSaver
 import com.skyletto.startappfrontend.ui.auth.viewmodels.*
 import com.skyletto.startappfrontend.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.utils.paintButtonText
 import com.skyletto.startappfrontend.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -79,6 +80,8 @@ class FirstStepFragment : Fragment() {
         binding.authRegisterEmailInput.addTextChangedListener(emailAndPassWatcher)
         binding.authRegisterPassInput.addTextChangedListener(emailAndPassWatcher)
         binding.authRegisterPassRepeatInput.addTextChangedListener(emailAndPassWatcher)
+        val btn = binding.firstStepContBtn
+        paintButtonText(btn)
         return v
     }
 

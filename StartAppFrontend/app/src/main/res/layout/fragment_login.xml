@@ -30,14 +30,20 @@
             android:fontFamily="@font/rubik_regular"
             android:layout_marginBottom="60dp"/>
 
-
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            style="@style/input_style"
-            android:inputType="textEmailAddress"
-            android:hint="@string/login_hint"
-            android:text="@={model.data.email}"/>
+            android:layout_height="wrap_content"
+            android:textColorHint="#FFFFFF"
+            app:boxStrokeWidth="0dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/input_style"
+                android:hint="@string/login_hint"
+                android:inputType="textEmailAddress"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@={model.data.email}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -48,11 +54,13 @@
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/white">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 style="@style/input_style"
                 android:layout_marginTop="3dp"
                 android:hint="@string/pass_hint"
                 android:inputType="textPassword"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
                 android:text="@={model.data.password}" />
 
         </com.google.android.material.textfield.TextInputLayout>
