@@ -1,3 +1,6 @@
 package com.skyletto.startappfrontend.domain.entities;
 
-data class Role(val id: Int, val name: String)
+import com.squareup.moshi.Json
+
+data class Role(@Json(name="id") val id: Int,
+                @Json(name="name") val name: String)

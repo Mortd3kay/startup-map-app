@@ -7,16 +7,15 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.skyletto.startappfrontend.data.database.AppDatabase
 import com.skyletto.startappfrontend.data.database.AppDatabase.Companion.getInstance
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
 import com.skyletto.startappfrontend.domain.entities.Tag
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.regex.Pattern
 
@@ -25,34 +24,40 @@ class SharedAuthViewModel(application: Application) : AndroidViewModel(applicati
     var passRepeat = ObservableField<String>()
     val tags = MutableLiveData<MutableSet<Tag>>()
     val chosenTags = MutableLiveData<MutableSet<Tag>>(HashSet())
-    private val cd: CompositeDisposable?
     private val api = ApiRepository
     private val db: AppDatabase? = getInstance(application)
-    private val sp: SharedPreferences
+    private val sp: SharedPreferences = application.getSharedPreferences("profile", Context.MODE_PRIVATE)
     private var onNextStepListener: OnNextStepListener? = null
     private var onPrevStepListener: OnPrevStepListener? = null
     private var onSaveProfileListener: OnSaveProfileListener? = null
     private var onFinishRegisterListener: OnFinishRegisterListener? = null
     val passAndEmailOk = ObservableField(false)
     val personalInfoOk = ObservableField(false)
+
     fun loadRandomTags() {
-        val d = api.apiService.getRandomTags()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ tags: Set<Tag> -> setTags(tags) }
-                ) { throwable: Throwable? -> Log.e(TAG, "loadRandomTags: ", throwable) }
-        cd!!.add(d)
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = api.apiService.getRandomTags()
+            if (response.isSuccessful) {
+                val tags = response.body()
+                tags?.let { setTags(it) }
+            } else {
+                Log.e(TAG, "loadRandomTags error: ${response.errorBody()!!}")
+            }
+        }
     }
 
     fun loadSimilarTags(str: String?) {
-        val d = str?.let {
-            api.apiService.getSimilarTags(it)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ tags: Set<Tag> -> setTags(tags) }
-                ) { throwable: Throwable? -> Log.e(TAG, "loadSimilarTags: ", throwable) }
+        str?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                val response = api.apiService.getSimilarTags(it)
+                if (response.isSuccessful) {
+                    val tags = response.body()
+                    tags?.let { setTags(it) }
+                } else {
+                    Log.e(TAG, "loadSimilarTags error: ${response.errorBody()!!}")
+                }
+            }
         }
-        d?.let { cd?.add(it) }
     }
 
     private fun isPasswordValid(pass: String): Boolean {
@@ -149,37 +154,29 @@ class SharedAuthViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun register(data: RegisterDataRequest?) {
-        val d: Disposable?
-        d = data?.let {
-            api.apiService.register(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { profileResponse: ProfileResponse ->
-                                Log.d(TAG, "accept: " + profileResponse.token + " " + profileResponse.user)
-                                saveProfileInfo(profileResponse)
-                                onFinishRegisterListener?.onFinish(profileResponse)
-                            }
-                    ) { throwable: Throwable? -> Log.e(TAG, "finish: register", throwable) }
+        data?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                val response = api.apiService.register(it)
+                if (response.isSuccessful) {
+                    val pr = response.body()
+                    pr?.let {
+                        Log.d(TAG, "accept: ${it.token} ${it.user} ")
+                        saveProfileInfo(it)
+                        onFinishRegisterListener?.onFinish(it)
+                    }
+                } else {
+                    Log.e(TAG, "finish register error: ${response.errorBody()!!}")
+                }
+            }
         }
-        d?.let { cd?.add(it) }
     }
 
     private fun saveProfileInfo(pr: ProfileResponse) {
         onSaveProfileListener?.save(pr)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        cd?.dispose()
-    }
-
     companion object {
         private const val TAG = "SHARED_AUTH_VIEW_MODEL"
     }
 
-    init {
-        cd = CompositeDisposable()
-        sp = application.getSharedPreferences("profile", Context.MODE_PRIVATE)
-    }
 }
