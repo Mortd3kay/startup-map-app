@@ -8,18 +8,18 @@ import android.view.ViewGroup
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentChanger
 
-class ProfileFragment: Fragment() {
+class MessagesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_profile, container, false)
-        return v
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_messages, container, false)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance():ProfileFragment{
-            return ProfileFragment()
+        fun newInstance():MessagesFragment{
+            return MessagesFragment()
         }
     }
 }

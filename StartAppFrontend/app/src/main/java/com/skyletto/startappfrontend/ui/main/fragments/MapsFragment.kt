@@ -19,7 +19,7 @@ import com.skyletto.startappfrontend.ui.main.ActivityFragmentChanger
 
 class MapsFragment : Fragment() {
     private lateinit var mMap: GoogleMap
-    private var mActivity: ActivityFragmentChanger? = null
+    var mActivity: ActivityFragmentChanger? = null
     private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
         try {
@@ -36,8 +36,6 @@ class MapsFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_maps, container, false)
-        val fab: FloatingActionButton = v.findViewById(R.id.map_profile_btn)
-        fab.setOnClickListener { mActivity?.goToProfile() }
         return v
     }
 
@@ -45,10 +43,6 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-    }
-
-    fun setActivity(mActivity: ActivityFragmentChanger?) {
-        this.mActivity = mActivity
     }
 
     companion object {

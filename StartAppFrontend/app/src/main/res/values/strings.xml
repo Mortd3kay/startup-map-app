@@ -30,4 +30,7 @@
     <string name="tell_about_you">о себе</string>
     <string name="experience">опыт работы</string>
     <string name="for_example">например, mvc</string>
+    <string name="map">Карта</string>
+    <string name="messages">Сообщения</string>
+    <string name="profile">Профиль</string>
 </resources>
