@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "api")
@@ -60,6 +61,8 @@ public class SecurityController {
     public @ResponseBody
     ProfileResponse registerUser(@RequestBody @Valid RegisterDataRequest data) {
         System.out.println(data);
+        int count = tagService.saveTags(data.getTags());
+        System.out.println("saved "+count);
         User u = userService.createUser(data);
         if (u != null) {
             String token = jwtProvider.generateToken(data.getEmail());

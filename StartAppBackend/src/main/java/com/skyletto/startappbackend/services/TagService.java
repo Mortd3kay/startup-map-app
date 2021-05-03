@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TagService {
@@ -33,5 +34,9 @@ public class TagService {
         List<Tag> tags = tagRepository.findTagsByNameStartsWith(str);
         if (tags.size()==0) return tagRepository.findTagsByNameContains(str);
         return tags;
+    }
+
+    public int saveTags(Set<Tag> tags){
+        return tagRepository.saveAll(tags).size();
     }
 }
