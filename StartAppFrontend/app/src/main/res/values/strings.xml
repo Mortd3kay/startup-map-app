@@ -35,7 +35,10 @@
     <string name="profile">Профиль</string>
     <string name="settings">Настройки</string>
     <string name="filters">Фильтры</string>
-    <string name="all">Все</string>
-    <string name="specialists">Специалисты</string>
-    <string name="projects">Проекты</string>
+
+    <string-array name="categories">
+        <item name="all">Все</item>
+        <item name="specialists">Специалисты</item>
+        <item name="projects">Проекты</item>
+    </string-array>
 </resources>

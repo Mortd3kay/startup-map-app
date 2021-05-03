@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.skyletto.startappfrontend.R
@@ -19,8 +18,8 @@ class MainActivity : AppCompatActivity(), ActivityFragmentChanger {
     private lateinit var fm: FragmentManager
     private var isBack = false
     private val stack = LinkedList<Int>()
-    private val profileFragment: ProfileFragment = ProfileFragment.newInstance()
-    private val messageFragment: MessagesFragment = MessagesFragment.newInstance()
+    private val profileFragment = ProfileFragment.newInstance()
+    private val messageFragment = MessagesFragment.newInstance()
     private lateinit var mapFragment: MapsFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +77,10 @@ class MainActivity : AppCompatActivity(), ActivityFragmentChanger {
 
     override fun goToMap() {
         fm.beginTransaction().replace(R.id.main_pane, mapFragment).commit()
+    }
+
+    override fun goToSettings() {
+        startActivity(Intent(baseContext, SettingsActivity::class.java))
     }
 
     override fun onBackPressed() {

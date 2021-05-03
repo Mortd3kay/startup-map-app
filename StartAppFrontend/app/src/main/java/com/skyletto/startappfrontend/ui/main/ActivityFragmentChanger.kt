@@ -4,4 +4,5 @@ interface ActivityFragmentChanger {
     fun goToProfile()
     fun goToMessages()
     fun goToMap()
+    fun goToSettings()
 }

@@ -31,7 +31,7 @@ class SecondStepFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         val binding: FragmentSecondStepBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_second_step, container, false)
         val v = binding.root
         binding.model = viewModel
