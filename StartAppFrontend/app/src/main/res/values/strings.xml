@@ -33,4 +33,9 @@
     <string name="map">Карта</string>
     <string name="messages">Сообщения</string>
     <string name="profile">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="filters">Фильтры</string>
+    <string name="all">Все</string>
+    <string name="specialists">Специалисты</string>
+    <string name="projects">Проекты</string>
 </resources>
