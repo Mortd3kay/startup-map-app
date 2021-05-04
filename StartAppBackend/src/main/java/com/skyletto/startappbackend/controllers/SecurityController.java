@@ -1,10 +1,13 @@
 package com.skyletto.startappbackend.controllers;
 
+import com.skyletto.startappbackend.entities.Message;
 import com.skyletto.startappbackend.entities.Tag;
 import com.skyletto.startappbackend.entities.User;
+import com.skyletto.startappbackend.entities.requests.ChatInfo;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
+import com.skyletto.startappbackend.services.MessageService;
 import com.skyletto.startappbackend.services.TagService;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
@@ -22,13 +25,15 @@ public class SecurityController {
 
     private UserService userService;
     private TagService tagService;
+    private MessageService messageService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService, TagService tagService) {
+    public SecurityController(UserService userService, TagService tagService, MessageService messageService) {
         this.userService = userService;
         this.tagService = tagService;
+        this.messageService = messageService;
     }
 
     @Autowired
@@ -37,17 +42,35 @@ public class SecurityController {
     }
 
     @GetMapping("/tags/random")
-    public List<Tag> getRandomTags() {
+    public @ResponseBody List<Tag> getRandomTags() {
         return tagService.getRandomTags();
     }
 
-    @GetMapping("tags")
-    public List<Tag> getTags(@RequestParam String string) {
+    @PostMapping("/messages/add")
+    public @ResponseBody Message saveMessage(Authentication auth, @RequestBody Message message){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u != null) {
+            return messageService.saveMessage(message);
+        }
+        return null;
+    }
+
+    @GetMapping("/messages/get")
+    public @ResponseBody List<Message> getMessages(Authentication auth, @RequestBody ChatInfo chat){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u != null) {
+            return messageService.getMessagesByChat(u, chat);
+        }
+        return null;
+    }
+
+    @GetMapping("/tags")
+    public @ResponseBody List<Tag> getTags(@RequestParam String string) {
         return tagService.getSimilarTags(string);
     }
 
     @GetMapping("/email")
-    public int findUserByEmail(@RequestParam String email) {
+    public @ResponseBody int findUserByEmail(@RequestParam String email) {
         return userService.countUserByEmail(email);
     }
 
@@ -56,11 +79,20 @@ public class SecurityController {
     User getUserInfo(Authentication auth) {
         return userService.findUserByEmail(auth.getName());
     }
+    
+    @GetMapping("/messages/chats")
+    public @ResponseBody
+    List<Message> getLastMessages(Authentication auth){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u!=null){
+            return messageService.getLastMessages(u);
+        }
+        return null;
+    }
 
     @PostMapping("/register")
     public @ResponseBody
     ProfileResponse registerUser(@RequestBody @Valid RegisterDataRequest data) {
-        System.out.println(data);
         int count = tagService.saveTags(data.getTags());
         System.out.println("saved "+count);
         User u = userService.createUser(data);
