@@ -7,23 +7,15 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.skyletto.startappfrontend.data.database.AppDatabase
 import com.skyletto.startappfrontend.data.database.AppDatabase.Companion.getInstance
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
 import com.skyletto.startappfrontend.domain.entities.Tag
-import com.skyletto.startappfrontend.utils.MainApplication
-import com.skyletto.startappfrontend.utils.toast
+import com.skyletto.startappfrontend.common.MainApplication
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiConsumer
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.regex.Pattern
 

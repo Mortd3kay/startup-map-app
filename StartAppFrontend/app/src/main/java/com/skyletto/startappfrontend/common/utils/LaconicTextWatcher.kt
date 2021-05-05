@@ -1,4 +1,4 @@
-package com.skyletto.startappfrontend.utils
+package com.skyletto.startappfrontend.common.utils
 
 import android.text.Editable
 import android.text.TextWatcher

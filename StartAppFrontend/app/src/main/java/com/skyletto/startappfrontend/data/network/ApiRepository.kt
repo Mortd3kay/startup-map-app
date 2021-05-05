@@ -10,6 +10,7 @@ object ApiRepository {
     const val ERR_500 = "HTTP 500"
     private const val BASE_URL = "http://192.168.0.11:8080/api/"
     private const val HEADER_NAME = "Content-Type"
+    const val AUTH_HEADER_NAME = "Authorization"
     private const val HEADER_VALUE = "application/json;charset=UTF-8"
 
     private val httpClient = OkHttpClient.Builder()

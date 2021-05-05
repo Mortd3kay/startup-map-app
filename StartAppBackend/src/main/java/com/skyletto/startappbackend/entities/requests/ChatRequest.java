@@ -1,12 +1,12 @@
 package com.skyletto.startappbackend.entities.requests;
 
-public class ChatInfo {
+public class ChatRequest {
     private long friendId;
 
-    public ChatInfo() {
+    public ChatRequest() {
     }
 
-    public ChatInfo(long friendId) {
+    public ChatRequest(long friendId) {
         this.friendId = friendId;
     }
 

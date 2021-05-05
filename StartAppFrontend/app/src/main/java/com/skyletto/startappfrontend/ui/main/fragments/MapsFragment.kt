@@ -16,16 +16,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
-import com.skyletto.startappfrontend.ui.main.ActivityFragmentChanger
+import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
 
 class MapsFragment : Fragment() {
     private lateinit var mMap: GoogleMap
     private lateinit var categories: Spinner
-    var mActivity: ActivityFragmentChanger? = null
+    var mActivity: ActivityFragmentWorker? = null
     private var viewModel: MapViewModel? = null
     private var callback: OnMapReadyCallback = initMapCallback()
 

@@ -1,26 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.main.fragments.MessagesFragment">
 
     <data>
+
         <variable
             name="model"
             type="com.skyletto.startappfrontend.ui.main.viewmodels.MessagesViewModel" />
     </data>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/cardview_dark_background"
-        android:gravity="center">
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/message_back_img"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/message_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_marginEnd="15dp"
+            android:id="@+id/message_tb_settings"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_settings"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/message_back_img"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Messages" />
+            android:id="@+id/message_tv_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik_medium"
+            android:text="@string/chats"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/message_tb_settings"
+            app:layout_constraintEnd_toEndOf="@+id/message_back_img"
+            app:layout_constraintStart_toStartOf="@+id/message_back_img"
+            app:layout_constraintTop_toTopOf="@+id/message_tb_settings" />
 
-    </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chats_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/message_back_img"
+            tools:listitem="@layout/chat_item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

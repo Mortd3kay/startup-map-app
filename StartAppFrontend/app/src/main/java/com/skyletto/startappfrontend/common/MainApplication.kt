@@ -1,4 +1,4 @@
-package com.skyletto.startappfrontend.utils
+package com.skyletto.startappfrontend.common
 
 import android.app.Application
 import com.skyletto.startappfrontend.data.database.AppDatabase
@@ -16,7 +16,7 @@ class MainApplication: Application() {
     }
 
     companion object {
-        lateinit var instance:MainApplication
+        lateinit var instance: MainApplication
             private set
     }
 }

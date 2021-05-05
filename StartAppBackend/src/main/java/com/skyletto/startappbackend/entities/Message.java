@@ -1,10 +1,10 @@
 package com.skyletto.startappbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.*;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +14,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String text;
-    private Time time;
+    private String time;
     private boolean checked;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id",nullable = false)
@@ -23,7 +23,7 @@ public class Message {
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiverId;
 
-    public Message(String text, Time time, User senderId, User receiverId) {
+    public Message(String text, String time, User senderId, User receiverId) {
         this.text = text;
         this.time = time;
         this.senderId = senderId;
@@ -50,12 +50,20 @@ public class Message {
         this.text = text;
     }
 
-    public Time getTime() {
-        return time;
+
+    @JsonProperty("time")
+    public String getTime() {
+        if (time!=null)
+            return time;
+        return "";
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    @JsonProperty("time")
+    public void setTime(String time) {
+        Instant instant = Instant.now();
+        ZoneId zoneId = ZoneId.of("UTC");
+        LocalDateTime ldt = LocalDateTime.ofInstant(instant, zoneId);
+        this.time = ldt.toString();
     }
 
     public boolean isChecked() {

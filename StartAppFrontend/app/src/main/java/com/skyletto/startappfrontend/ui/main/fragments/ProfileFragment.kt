@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.skyletto.startappfrontend.R
-import com.skyletto.startappfrontend.ui.main.ActivityFragmentChanger
 
 class ProfileFragment: Fragment() {
 

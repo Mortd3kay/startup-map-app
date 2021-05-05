@@ -14,7 +14,7 @@ import com.skyletto.startappfrontend.databinding.FragmentLoginBinding
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.TokenSaver
 import com.skyletto.startappfrontend.ui.auth.viewmodels.*
-import com.skyletto.startappfrontend.utils.paintButtonText
+import com.skyletto.startappfrontend.common.utils.paintButtonText
 
 class LoginFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
