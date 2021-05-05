@@ -1,32 +1,26 @@
 package com.skyletto.startappfrontend.domain.entities
 
-import android.util.Log
-import java.sql.Time
-import java.text.SimpleDateFormat
-import java.time.Instant
+import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
-import java.util.*
 
-data class Message (
-    val id: Long,
-    val text: String,
-    var time: String,
-    val isChecked: Boolean,
-    val senderId: Long,
-    val receiverId: Long
+class Message (
+    p_id: Long,
+    p_text: String,
+    p_time: String,
+    p_checked: Boolean,
+    p_sender: Long,
+    p_receiver: Long,
+
 ){
-    init {
-        if (time.isNotEmpty()) {
-            Log.d("TAG", "$time")
-            val ldt = LocalDateTime.parse(time)
-            val zoneId = ZoneId.systemDefault()
-            time = ldt.atZone(zoneId).toLocalDateTime().format(DateTimeFormatter.ISO_TIME)
-            Log.d("TAG", "$time")
-        }
-    }
-    constructor() : this(0, "", "", false, 0, 0)
+    val id: Long = p_id
+    val text: String = p_text
+    val time: String = LocalDateTime.parse(p_time).atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ISO_TIME)
+    @SerializedName("checked")
+    val isChecked: Boolean = p_checked
+    @SerializedName("sender_id")
+    val senderId: Long = p_sender
+    @SerializedName("receiver_id")
+    val receiverId: Long = p_receiver
 }

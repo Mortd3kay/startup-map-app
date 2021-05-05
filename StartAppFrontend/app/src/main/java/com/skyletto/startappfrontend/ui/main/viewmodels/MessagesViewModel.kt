@@ -14,14 +14,19 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class MessagesViewModel(application: Application) : AndroidViewModel(application) {
+    private var id: Long? = null
     var activity: ActivityFragmentWorker? = null
+    set(value) {
+        field = value
+        id = field?.getUserId()
+    }
     private val api = getApplication<MainApplication>().api
     private val cd = CompositeDisposable()
     var chats: MutableLiveData<MutableList<ChatItem>> = MutableLiveData(mutableListOf())
-    private val id = activity?.getUserId()
+
 
     fun loadChats(){
-        activity?.let {outerIt->
+        activity?.let { outerIt->
             val d = api.apiService.getChats(ApiRepository.makeToken(outerIt.getToken()))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
@@ -29,7 +34,8 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
                             {
                                 Log.d(TAG, "loadChats: $it")
                                 val list: MutableList<ChatItem> = mutableListOf()
-                                for (m in it){
+                                for (m in it) {
+                                    Log.d(TAG, "loadChats: $id == ${m.senderId}")
                                     var friendId = if (id == m.senderId) m.receiverId else m.senderId
                                     list.add(ChatItem(message = m, chatId = friendId))
                                 }

@@ -30,7 +30,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/ic_settings"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="@+id/message_back_img"
             app:layout_constraintTop_toTopOf="parent" />
 

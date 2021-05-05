@@ -3,6 +3,7 @@
     <style name="Theme.StartAppFrontend" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/main_color2</item>
+        <item name="colorPrimaryDark">@color/grey</item>
         <item name="colorPrimaryVariant">@color/main_color3</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->

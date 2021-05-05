@@ -12,7 +12,7 @@
         android:theme="@style/Theme.StartAppFrontend"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustPan">
-        <activity android:name=".ui.chat.ChatActivity"></activity>
+        <activity android:name=".ui.chat.ChatActivity" />
         <activity android:name=".ui.settings.SettingsActivity" />
         <activity android:name=".ui.start.StartActivity">
             <intent-filter>
