@@ -54,7 +54,7 @@
                 android:fontFamily="@font/rubik_medium"
                 android:textColor="@color/dark"
                 android:textSize="18sp"
-                android:text="@{String.valueOf(model.chatId)}"
+                android:text="@{model.chatName}"
                 tools:text="@tools:sample/first_names" />
 
             <Space
@@ -84,7 +84,7 @@
             android:gravity="center"
             android:textColor="@color/dark"
             android:textSize="14sp"
-            app:text='@{model.message.time}'
+            app:time='@{model.message.time}'
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view"
             app:layout_constraintTop_toTopOf="parent"

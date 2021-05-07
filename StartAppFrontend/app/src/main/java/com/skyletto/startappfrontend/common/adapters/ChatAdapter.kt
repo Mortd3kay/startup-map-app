@@ -70,7 +70,7 @@ class ChatAdapter(val context: Context) : RecyclerView.Adapter<ChatAdapter.ChatV
         }
 
         @JvmStatic
-        @BindingAdapter("text", requireAll = false)
+        @BindingAdapter("time", requireAll = false)
         fun convertTime(textView: TextView, v: String?) {
             v?.let {
                 try {

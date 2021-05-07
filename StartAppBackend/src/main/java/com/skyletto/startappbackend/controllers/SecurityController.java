@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping(path = "api")
@@ -48,8 +50,7 @@ public class SecurityController {
 
     @PostMapping("/messages/add")
     public @ResponseBody Message saveMessage(Authentication auth, @RequestBody Message message){
-        User u = userService.findUserByEmail(auth.getName());
-        if (u != null) {
+        if (auth.isAuthenticated()){
             return messageService.saveMessage(message);
         }
         return null;
@@ -74,9 +75,12 @@ public class SecurityController {
         return userService.countUserByEmail(email);
     }
 
-    @GetMapping("/users/specific")
-    public @ResponseBody List<User> getAllUsersByIds(@RequestBody Set<Long> ids){
-        return userService.getAllUsersByIds(ids);
+    @PostMapping("/users/specific")
+    public @ResponseBody List<User> getAllUsersByIds(Authentication auth,@RequestBody Set<Long> ids){
+        Logger.getAnonymousLogger().log(Level.INFO, ids+"");
+        if (auth.isAuthenticated())
+            return userService.getAllUsersByIds(ids);
+        return null;
     }
 
     @GetMapping("/user/get")

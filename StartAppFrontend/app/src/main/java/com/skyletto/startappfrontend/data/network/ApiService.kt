@@ -31,6 +31,6 @@ interface ApiService {
     @GET("messages/chats")
     fun getChats(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String): Single<List<Message>>
 
-    @POST("/users/specific")
-    fun getUsersByIds(@Body ids: Set<Long>): Single<List<User>>
+    @POST("users/specific")
+    fun getUsersByIds(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body ids: Set<Long>): Single<List<User>>
 }
