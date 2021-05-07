@@ -77,9 +77,16 @@ public class SecurityController {
 
     @PostMapping("/users/specific")
     public @ResponseBody List<User> getAllUsersByIds(Authentication auth,@RequestBody Set<Long> ids){
-        Logger.getAnonymousLogger().log(Level.INFO, ids+"");
         if (auth.isAuthenticated())
             return userService.getAllUsersByIds(ids);
+        return null;
+    }
+    
+    @GetMapping("/users/{id}")
+    public @ResponseBody User getUserById(Authentication auth, @PathVariable("id") Long id){
+        Logger.getLogger("CONTROLLER").log(Level.INFO, "user_id: "+id);
+        if (auth.isAuthenticated())
+        return userService.getUserById(id);
         return null;
     }
 

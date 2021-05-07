@@ -54,6 +54,10 @@ public class UserService {
         return userRepository.findAllById(ids);
     }
 
+    public User getUserById(Long id){
+        return userRepository.findById(id).orElse(null);
+    }
+
     public User changeUser(User user) {
         Role role = roleRepository.findRoleByName("ROLE_USER");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
