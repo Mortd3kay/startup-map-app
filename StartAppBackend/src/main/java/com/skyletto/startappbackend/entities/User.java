@@ -13,6 +13,7 @@ public class User {
     private long id;
     @Column(nullable = false, unique = true)
     private String email;
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Column(name = "first_name", nullable = false)

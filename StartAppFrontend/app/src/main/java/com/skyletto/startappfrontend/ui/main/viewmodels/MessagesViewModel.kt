@@ -32,10 +32,8 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             {
-                                Log.d(TAG, "loadChats: $it")
                                 val list: MutableList<ChatItem> = mutableListOf()
                                 for (m in it) {
-                                    Log.d(TAG, "loadChats: $id == ${m.senderId}")
                                     var friendId = if (id == m.senderId) m.receiverId else m.senderId
                                     list.add(ChatItem(message = m, chatId = friendId))
                                 }

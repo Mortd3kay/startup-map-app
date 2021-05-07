@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "api")
@@ -71,6 +72,11 @@ public class SecurityController {
     @GetMapping("/email")
     public @ResponseBody int findUserByEmail(@RequestParam String email) {
         return userService.countUserByEmail(email);
+    }
+
+    @GetMapping("/users/specific")
+    public @ResponseBody List<User> getAllUsersByIds(@RequestBody Set<Long> ids){
+        return userService.getAllUsersByIds(ids);
     }
 
     @GetMapping("/user/get")
