@@ -19,7 +19,8 @@
         <TextView
             android:id="@+id/message_text"
             tools:text="Привет могу предложить встречу с сеньором"
-            style="@style/bubble_incoming"/>
+            android:text="@{model.text}"
+            style="@style/bubble"/>
 
         <TextView
             android:id="@+id/message_time"

@@ -13,6 +13,7 @@ import com.skyletto.startappfrontend.domain.entities.User
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ChatViewModel(application: Application) : AndroidViewModel(application) {
     var chatId: Long? = null
@@ -29,6 +30,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadDialog(){
         var d = loadFriend(chatId!!)
+                .delaySubscription(10, TimeUnit.SECONDS)
+                .repeat()
+                .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -42,6 +46,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         cd.add(d)
 
         d = loadMessages(chatId!!)
+                .delaySubscription(1, TimeUnit.SECONDS)
+                .repeat()
+                .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
