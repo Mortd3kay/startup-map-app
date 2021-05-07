@@ -28,6 +28,9 @@ interface ApiService {
     @GET("tags")
     fun getSimilarTags(@Query("string") str: String): Single<Set<Tag>>
 
+    @GET("messages/get")
+    fun getMessagesFromChat(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Query("chat") id:Long):Single<List<Message>>
+
     @GET("messages/chats")
     fun getChats(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String): Single<List<Message>>
 

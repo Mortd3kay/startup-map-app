@@ -2,7 +2,6 @@ package com.skyletto.startappbackend.services;
 
 import com.skyletto.startappbackend.entities.Message;
 import com.skyletto.startappbackend.entities.User;
-import com.skyletto.startappbackend.entities.requests.ChatRequest;
 import com.skyletto.startappbackend.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +22,8 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    public List<Message> getMessagesByChat(User user, ChatRequest chatRequest) {
-        return messageRepository.getMessagesByUsers(user.getId(), chatRequest.getFriendId());
+    public List<Message> getMessagesByChat(User user, Long chatId) {
+        return messageRepository.getMessagesByUsers(user.getId(), chatId);
     }
 
     public List<Message> getLastMessages(User user){

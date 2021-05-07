@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.data.network.ApiRepository
+import com.skyletto.startappfrontend.domain.entities.Message
 import com.skyletto.startappfrontend.domain.entities.User
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,9 +24,11 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val api = getApplication<MainApplication>().api
     private val cd = CompositeDisposable()
     private val sp = application.getSharedPreferences("profile", AppCompatActivity.MODE_PRIVATE)
+    private val ownerId = sp.getLong("id", -1)
+    var messages: MutableLiveData<List<Message>> = MutableLiveData()
 
     private fun loadDialog(){
-        val d = loadFriend(chatId!!)
+        var d = loadFriend(chatId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -32,13 +36,28 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                             friend.set(it)
                         },
                         {
-                            Log.e(TAG, "loadDialog: ", it)
+                            Log.e(TAG, "loadFriend: ", it)
+                        }
+                )
+        cd.add(d)
+
+        d = loadMessages(chatId!!)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            messages.postValue(it)
+                        },
+                        {
+                            Log.e(TAG, "loadMessages: ", it)
                         }
                 )
         cd.add(d)
     }
 
     private fun loadFriend(id:Long) = api.apiService.getUserById(ApiRepository.makeToken(sp.getString("token", "")!!), id)
+
+    private fun loadMessages(id:Long) = api.apiService.getMessagesFromChat(ApiRepository.makeToken(sp.getString("token", "")!!), id)
 
     override fun onCleared() {
         super.onCleared()

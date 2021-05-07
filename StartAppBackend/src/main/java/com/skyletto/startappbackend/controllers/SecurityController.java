@@ -3,7 +3,6 @@ package com.skyletto.startappbackend.controllers;
 import com.skyletto.startappbackend.entities.Message;
 import com.skyletto.startappbackend.entities.Tag;
 import com.skyletto.startappbackend.entities.User;
-import com.skyletto.startappbackend.entities.requests.ChatRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
@@ -57,7 +56,7 @@ public class SecurityController {
     }
 
     @GetMapping("/messages/get")
-    public @ResponseBody List<Message> getMessages(Authentication auth, @RequestBody ChatRequest chat){
+    public @ResponseBody List<Message> getMessages(Authentication auth, @RequestParam Long chat){
         User u = userService.findUserByEmail(auth.getName());
         if (u != null) {
             return messageService.getMessagesByChat(u, chat);

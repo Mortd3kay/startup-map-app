@@ -16,4 +16,6 @@
     <color name="red">#FF5459</color>
     <color name="pink2">#F8B6BD</color>
     <color name="skin2">#F8B299</color>
+    <color name="bubble_in">#C4C4C4</color>
+    <color name="bubble_out">#A39CD3</color>
 </resources>

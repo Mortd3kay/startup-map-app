@@ -46,4 +46,29 @@
 
         <item name="android:windowSharedElementExitTransition">@transition/start_auth_logo_transition</item>
     </style>
+
+    <style name="bubble">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">250dp</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingVertical">15dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="bubble_incoming" parent="bubble">
+        <item name="android:background">@drawable/incoming_bubble</item>
+        <item name="android:gravity">start</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:paddingStart">30dp</item>
+        <item name="android:paddingEnd">15dp</item>
+    </style>
+
+    <style name="bubble_outcoming" parent="bubble">
+        <item name="android:background">@drawable/outcoming_bubble</item>
+        <item name="android:gravity">end</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingEnd">30dp</item>
+        <item name="android:paddingStart">15dp</item>
+    </style>
 </resources>
