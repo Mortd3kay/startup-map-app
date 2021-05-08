@@ -131,6 +131,7 @@
                 app:layout_constraintEnd_toEndOf="@id/chat_input_msg"
                 android:src="@drawable/plane"
                 android:paddingVertical="10dp"
+                android:clickable="@{!model.messageText.empty}"
                 android:layout_marginEnd="15dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
