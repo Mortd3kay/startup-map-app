@@ -46,13 +46,10 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
                         val friendId = if (id == m.senderId) m.receiverId else m.senderId
                         set.add(friendId)
                     }
-                    Log.d(TAG, "loadChats set: $set")
                     getUsers(set)
                 },
                 { messages, users ->
                     val list: MutableList<ChatItem> = mutableListOf()
-                    Log.d(TAG, "selector: $messages")
-                    Log.d(TAG, "selector: $users")
                     for (m in messages) {
                         val user = users.first { it.id == m.senderId || it.id == m.receiverId }
                         list.add(ChatItem(message = m, chatId = user.id!!, chatName = "${user.firstName} ${user.secondName}"))
@@ -60,9 +57,16 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
                     list
                 })
                 ?.subscribeOn(Schedulers.io())
+                ?.retry()
                 ?.subscribe(
                         {
-                            chats.postValue(it)
+                            if (chats.value != null){
+                                chats.value?.let { innerIt ->
+                                    if (innerIt.size < it.size)
+                                        chats.postValue(it)
+                                }
+                            } else chats.postValue(it)
+
                         },
                         {
                             Log.e(TAG, "loadChats: error ", it.fillInStackTrace())

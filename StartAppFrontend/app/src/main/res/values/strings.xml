@@ -38,6 +38,9 @@
     <string name="log_out">Выйти</string>
     <string name="start_app_name"><font color="#FFFFFF">Be</font>Founder</string>
     <string name="chats">Чаты</string>
+    <string name="type_smth">Напишите что-нибудь...</string>
+    <string name="error_while_sending">Ошибка при отправке сообщения</string>
+    <string name="cant_send_message">Не удалось отправить сообщение</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

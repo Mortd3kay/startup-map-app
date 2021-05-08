@@ -6,7 +6,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 data class Message (
-        val id: Long,
+        val id: Long?,
         val text: String,
         val time: String,
         @SerializedName("checked")
@@ -15,4 +15,6 @@ data class Message (
         val senderId: Long,
         @SerializedName("receiver_id")
         val receiverId: Long
-)
+){
+        constructor(text: String, time: String, senderId: Long, receiverId: Long): this(null, text, time, false, senderId, receiverId)
+}

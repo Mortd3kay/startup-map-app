@@ -3,6 +3,7 @@ package com.skyletto.startappfrontend.ui.chat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
@@ -35,7 +36,13 @@ class ChatActivity : AppCompatActivity() {
     private fun initViews(){
         binding.chatTbSettings.setOnClickListener { startActivity(Intent(this@ChatActivity, SettingsActivity::class.java)) }
         binding.chatBackBtn.setOnClickListener { onBackPressed() }
-        binding.messagesRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+        binding.messagesRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messagesRv.adapter = adapter
+        binding.chatSendBtn.setOnClickListener {
+            viewModel?.sendMessage() }
+    }
+
+    companion object{
+        private  const val TAG = "CHAT_ACTIVITY"
     }
 }
