@@ -8,7 +8,7 @@
 
         <variable
             name="model"
-            type="com.skyletto.startappfrontend.ui.chat.ChatViewModel" />
+            type="com.skyletto.startappfrontend.ui.chat.viewmodels.ChatViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

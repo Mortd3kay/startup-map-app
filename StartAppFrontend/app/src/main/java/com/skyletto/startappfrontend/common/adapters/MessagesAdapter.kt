@@ -65,9 +65,7 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
             v?.let {
                 try {
                     val ldt = LocalDateTime.parse(it)
-                    Log.d(TAG, "convertTime: $ldt")
                     val zUtc = ldt.atZone(ZoneId.of("UTC"))
-                    Log.d(TAG, "convertTime: $zUtc")
                     textView.text = zUtc.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm"))
                 } catch (e: Exception) {
                     Log.e(TAG, "convertTime: ", e.fillInStackTrace())

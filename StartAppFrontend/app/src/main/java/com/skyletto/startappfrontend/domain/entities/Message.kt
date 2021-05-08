@@ -1,12 +1,15 @@
 package com.skyletto.startappfrontend.domain.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@Entity(tableName = "messages")
 data class Message (
-        val id: Long?,
+        @PrimaryKey val id: Long?,
         val text: String,
         val time: String,
         @SerializedName("checked")
