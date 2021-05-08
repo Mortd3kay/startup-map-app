@@ -1,12 +1,9 @@
 package com.skyletto.startappbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collector;
 
 @Entity
 @Table(name = "users")
@@ -16,6 +13,7 @@ public class User {
     private long id;
     @Column(nullable = false, unique = true)
     private String email;
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Column(name = "first_name", nullable = false)
@@ -120,5 +118,29 @@ public class User {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getExperience() {
+        return experience;
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -3,6 +3,7 @@
     <style name="Theme.StartAppFrontend" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/main_color2</item>
+        <item name="colorPrimaryDark">@color/grey</item>
         <item name="colorPrimaryVariant">@color/main_color3</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -44,5 +45,17 @@
         <item name="android:windowSharedElementEnterTransition">@transition/start_auth_logo_transition</item>
 
         <item name="android:windowSharedElementExitTransition">@transition/start_auth_logo_transition</item>
+    </style>
+
+    <style name="bubble">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:maxWidth">270dp</item>
+        <item name="android:minWidth">70dp</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingVertical">15dp</item>
+        <item name="android:paddingHorizontal">25dp</item>
+        <item name="android:layout_marginTop">10dp</item>
     </style>
 </resources>

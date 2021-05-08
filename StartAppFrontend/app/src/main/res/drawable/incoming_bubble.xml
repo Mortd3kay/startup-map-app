@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:right="10dp"
+        android:top="10dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/bubble_in" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
+            <solid android:color="@color/bubble_in" />
+        </shape>
+    </item>
+</layer-list>

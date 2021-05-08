@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,13 +15,9 @@ import com.skyletto.startappfrontend.databinding.FragmentFirstStepBinding
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.TokenSaver
 import com.skyletto.startappfrontend.ui.auth.viewmodels.*
-import com.skyletto.startappfrontend.utils.LaconicTextWatcher
-import com.skyletto.startappfrontend.utils.paintButtonText
-import com.skyletto.startappfrontend.utils.toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.common.utils.paintButtonText
+import com.skyletto.startappfrontend.common.utils.toast
 
 class FirstStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null

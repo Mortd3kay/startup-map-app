@@ -5,5 +5,6 @@ import androidx.room.PrimaryKey;
 import com.squareup.moshi.Json
 
 @Entity(tableName = "tags")
-data class Tag(@PrimaryKey @Json(name="id") val id: Long,
-               @Json(name="name") val name: String)
+data class Tag(
+        @PrimaryKey val id: Long,
+        val name: String)

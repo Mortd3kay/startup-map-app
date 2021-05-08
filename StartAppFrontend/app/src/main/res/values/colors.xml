@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="dark">#616161</color>
     <color name="grey">#848586</color>
+    <color name="transparent_grey">#A1848586</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="skin">#F9AC72</color>
@@ -16,4 +17,6 @@
     <color name="red">#FF5459</color>
     <color name="pink2">#F8B6BD</color>
     <color name="skin2">#F8B299</color>
+    <color name="bubble_in">#C4C4C4</color>
+    <color name="bubble_out">#A39CD3</color>
 </resources>

@@ -11,4 +11,5 @@
     android:textStyle="bold"
     android:gravity="center"
     android:padding="5dp"
+    android:textAllCaps="true"
     xmlns:tools="http://schemas.android.com/tools" />

@@ -1,14 +1,12 @@
-package com.skyletto.startappfrontend.utils
+package com.skyletto.startappfrontend.common.utils
 
 import android.content.Context
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.Shader.TileMode
-import android.net.ConnectivityManager
 import android.widget.Button
 import android.widget.Toast
 import com.skyletto.startappfrontend.R
-import java.net.InetAddress
 
 
 fun toast(context: Context?, msg: String) {

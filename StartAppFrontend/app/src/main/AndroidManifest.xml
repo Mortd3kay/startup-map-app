@@ -3,7 +3,7 @@
     package="com.skyletto.startappfrontend">
 
     <application
-        android:name=".utils.MainApplication"
+        android:name="com.skyletto.startappfrontend.common.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -12,7 +12,8 @@
         android:theme="@style/Theme.StartAppFrontend"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustPan">
-        <activity android:name=".ui.main.SettingsActivity"></activity>
+        <activity android:name=".ui.chat.ChatActivity" />
+        <activity android:name=".ui.settings.SettingsActivity" />
         <activity android:name=".ui.start.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +30,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
     </application>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

@@ -10,36 +10,33 @@ import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.ui.main.fragments.MapsFragment
 import com.skyletto.startappfrontend.ui.main.fragments.MessagesFragment
 import com.skyletto.startappfrontend.ui.main.fragments.ProfileFragment
+import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 import com.skyletto.startappfrontend.ui.start.StartActivity
 import java.util.*
 
-class MainActivity : AppCompatActivity(), ActivityFragmentChanger {
+class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     private lateinit var bnv: BottomNavigationView
     private lateinit var fm: FragmentManager
+
     private var isBack = false
     private val stack = LinkedList<Int>()
+
     private val profileFragment = ProfileFragment.newInstance()
     private val messageFragment = MessagesFragment.newInstance()
     private lateinit var mapFragment: MapsFragment
+
+    private var token : String? = null
+    private var id : Long? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val bundle = intent.extras
-        var token = bundle?.getString("token")
-        //var id = bundle?.getLong("id")
-        if (token == null) {
-            val sp = getSharedPreferences("profile", MODE_PRIVATE)
-            token = sp.getString("token", "")
-            if (token == "") {
-                startActivity(Intent(this@MainActivity, StartActivity::class.java))
-                finish()
-            }
-            //id = sp.getLong("id", -1)
-        }
+        parseBundle()
         initViews()
         fm = supportFragmentManager
         mapFragment = fm.fragmentFactory.instantiate(ClassLoader.getSystemClassLoader(), MapsFragment::class.java.name) as MapsFragment
         mapFragment.mActivity = this
+        messageFragment.mActivity = this
         bnv.selectedItemId = R.id.map
     }
 
@@ -67,6 +64,21 @@ class MainActivity : AppCompatActivity(), ActivityFragmentChanger {
         }
     }
 
+    private fun parseBundle(){
+        val bundle = intent.extras
+        token = bundle?.getString("token")
+        id = bundle?.getLong("id")
+        if (token == null) {
+            val sp = getSharedPreferences("profile", MODE_PRIVATE)
+            token = sp.getString("token", "")
+            if (token == "") {
+                startActivity(Intent(this@MainActivity, StartActivity::class.java))
+                finish()
+            }
+            id = sp.getLong("id", -1)
+        }
+    }
+
     override fun goToProfile() {
         fm.beginTransaction().replace(R.id.main_pane, profileFragment).commit()
     }
@@ -81,6 +93,14 @@ class MainActivity : AppCompatActivity(), ActivityFragmentChanger {
 
     override fun goToSettings() {
         startActivity(Intent(baseContext, SettingsActivity::class.java))
+    }
+
+    override fun getToken():String {
+        return token?:""
+    }
+
+    override fun getUserId():Long {
+        return id?:-1
     }
 
     override fun onBackPressed() {

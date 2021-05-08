@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:background="@color/cardview_dark_background"
+        android:background="@drawable/main_background"
         android:paddingBottom="50dp"
         android:gravity="center">
 

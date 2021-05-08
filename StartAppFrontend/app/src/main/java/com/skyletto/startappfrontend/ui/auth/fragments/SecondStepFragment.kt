@@ -13,8 +13,8 @@ import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.databinding.FragmentSecondStepBinding
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel
-import com.skyletto.startappfrontend.utils.LaconicTextWatcher
-import com.skyletto.startappfrontend.utils.paintButtonText
+import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.common.utils.paintButtonText
 
 class SecondStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null

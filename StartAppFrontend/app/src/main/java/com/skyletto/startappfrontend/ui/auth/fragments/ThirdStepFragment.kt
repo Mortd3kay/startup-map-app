@@ -16,8 +16,8 @@ import com.skyletto.startappfrontend.databinding.FragmentThirdStepBinding
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel
-import com.skyletto.startappfrontend.utils.LaconicTextWatcher
-import com.skyletto.startappfrontend.utils.paintButtonText
+import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.common.utils.paintButtonText
 
 class ThirdStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
