@@ -1,27 +1,18 @@
 package com.skyletto.startappfrontend.ui.main.viewmodels
 
-import android.app.Activity
 import android.app.Application
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.skyletto.startappfrontend.common.ChatItem
+import com.skyletto.startappfrontend.domain.entities.Chat
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.data.network.ApiRepository
-import com.skyletto.startappfrontend.domain.entities.Message
-import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
-import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.BackpressureStrategy
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
-import java.util.function.Function
 
 class MessagesViewModel(application: Application) : AndroidViewModel(application) {
     private var id: Long? = null
@@ -31,16 +22,16 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
             id = field?.getUserId()
         }
     private val api = getApplication<MainApplication>().api
+    private val db = getApplication<MainApplication>().db
     private val cd = CompositeDisposable()
     private val sp = application.getSharedPreferences("profile", AppCompatActivity.MODE_PRIVATE)
-    var chats: MutableLiveData<MutableList<ChatItem>> = MutableLiveData(mutableListOf())
+    var chats = db.chatDao().getAll()
 
 
     fun loadChats() {
         val a = activity?.let { getChats(it) }
         val d = a?.flatMap(
                 {
-                    Log.d(TAG, "loadChats: $it")
                     val set = mutableSetOf<Long>()
                     for (m in it) {
                         val friendId = if (id == m.senderId) m.receiverId else m.senderId
@@ -49,24 +40,19 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
                     getUsers(set)
                 },
                 { messages, users ->
-                    val list: MutableList<ChatItem> = mutableListOf()
+                    val list = mutableListOf<Chat>()
                     for (m in messages) {
                         val user = users.first { it.id == m.senderId || it.id == m.receiverId }
-                        list.add(ChatItem(message = m, chatId = user.id!!, chatName = "${user.firstName} ${user.secondName}"))
+                        list.add(Chat(message = m, chatId = user.id!!, chatName = "${user.firstName} ${user.secondName}"))
                     }
                     list
                 })
+                ?.repeatWhen{completed -> completed.delay(3, TimeUnit.SECONDS)}
                 ?.subscribeOn(Schedulers.io())
                 ?.retry()
                 ?.subscribe(
                         {
-                            if (chats.value != null){
-                                chats.value?.let { innerIt ->
-                                    if (innerIt.size < it.size)
-                                        chats.postValue(it)
-                                }
-                            } else chats.postValue(it)
-
+                            db.chatDao().addAll(it)
                         },
                         {
                             Log.e(TAG, "loadChats: error ", it.fillInStackTrace())

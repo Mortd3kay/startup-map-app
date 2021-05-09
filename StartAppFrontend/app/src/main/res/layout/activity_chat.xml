@@ -5,10 +5,9 @@
     tools:context=".ui.chat.ChatActivity">
 
     <data>
-
         <variable
             name="model"
-            type="com.skyletto.startappfrontend.ui.chat.ChatViewModel" />
+            type="com.skyletto.startappfrontend.ui.chat.viewmodels.ChatViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -121,6 +120,7 @@
                 android:textColor="@color/white"
                 android:paddingHorizontal="18dp"
                 android:paddingVertical="12dp"
+                android:layout_marginTop="5dp"
                 android:textSize="15sp"/>
 
             <ImageView
@@ -133,6 +133,19 @@
                 android:paddingVertical="10dp"
                 android:clickable="@{!model.messageText.empty}"
                 android:layout_marginEnd="15dp"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/chat_scroll_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                app:layout_constraintEnd_toEndOf="@id/chat_input_msg"
+                app:layout_constraintBottom_toTopOf="@id/chat_input_msg"
+                app:layout_constraintStart_toStartOf="@id/chat_input_msg"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

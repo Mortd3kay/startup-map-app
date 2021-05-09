@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    @Query(value = "select * from messages m where (m.sender_id=?1 and m.receiver_id = ?2) or (m.sender_id=?2 and m.receiver_id = ?1)", nativeQuery = true)
-    List<Message> getMessagesByUsers(long id, long friendId);
+    @Query(value = "select * from messages m where m.id > ?3 and ((m.sender_id=?1 and m.receiver_id = ?2) or (m.sender_id=?2 and m.receiver_id = ?1))", nativeQuery = true)
+    List<Message> getMessagesByUsers(long id, long friendId, long lastId);
     @Query(value =
             "select * from messages " +
             "where id in " +

@@ -7,7 +7,7 @@
         <import type="android.view.Gravity"/>
         <variable
             name="model"
-            type="com.skyletto.startappfrontend.common.MessageItem" />
+            type="com.skyletto.startappfrontend.common.models.MessageItem" />
     </data>
 
     <LinearLayout

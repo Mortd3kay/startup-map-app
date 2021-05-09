@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.adapters.ChatAdapter
 import com.skyletto.startappfrontend.databinding.FragmentMessagesBinding
@@ -37,7 +39,11 @@ class MessagesFragment : Fragment() {
             adapter?.chats = it
             adapter?.notifyDataSetChanged()
         }
-        rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false )
+        val llm = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false )
+        val divider = DividerItemDecoration(context, llm.orientation)
+        divider.setDrawable(resources.getDrawable(R.drawable.rv_divider, null))
+        rv.layoutManager = llm
+        rv.addItemDecoration(divider)
         rv.adapter = adapter
         return binding.root
     }

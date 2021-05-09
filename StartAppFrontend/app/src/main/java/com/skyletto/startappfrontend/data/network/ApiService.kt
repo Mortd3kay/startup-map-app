@@ -29,7 +29,7 @@ interface ApiService {
     fun getSimilarTags(@Query("string") str: String): Single<Set<Tag>>
 
     @GET("messages/get")
-    fun getMessagesFromChat(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Query("chat") id:Long):Single<List<Message>>
+    fun getMessagesFromChat(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Query("chat") id:Long, @Query("last") lastId:Long):Single<List<Message>>
 
     @POST("messages/add")
     fun addMessage(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body message: Message): Single<Message>

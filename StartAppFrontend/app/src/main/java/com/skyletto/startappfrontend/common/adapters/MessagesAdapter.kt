@@ -11,17 +11,25 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.skyletto.startappfrontend.R
-import com.skyletto.startappfrontend.common.MessageItem
+import com.skyletto.startappfrontend.common.models.MessageItem
 import com.skyletto.startappfrontend.databinding.MessageItemBinding
+import com.skyletto.startappfrontend.ui.chat.viewmodels.OnDownPositionListener
+import com.skyletto.startappfrontend.ui.chat.viewmodels.OnMessageAddedListener
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
-
+    var drop = true
+    var onDownPositionListener: OnDownPositionListener? = null
+    var onMessageAddedListener: OnMessageAddedListener? = null
     var messages: List<MessageItem> = mutableListOf()
         set(value) {
             field = value
+            if (drop){
+                onMessageAddedListener?.update()
+                drop = false
+            }
             notifyDataSetChanged()
         }
 
@@ -36,6 +44,8 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MessagesHolder, position: Int) {
+        onDownPositionListener?.check((position < itemCount-2).not())
+        drop = itemCount-1 == position
         holder.binding?.model = messages[position]
         holder.binding?.messageText?.let {
             with(it) {
@@ -65,9 +75,7 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
             v?.let {
                 try {
                     val ldt = LocalDateTime.parse(it)
-                    Log.d(TAG, "convertTime: $ldt")
                     val zUtc = ldt.atZone(ZoneId.of("UTC"))
-                    Log.d(TAG, "convertTime: $zUtc")
                     textView.text = zUtc.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm"))
                 } catch (e: Exception) {
                     Log.e(TAG, "convertTime: ", e.fillInStackTrace())

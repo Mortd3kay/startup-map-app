@@ -1,6 +1,4 @@
-package com.skyletto.startappfrontend.common
-
-import com.google.gson.annotations.SerializedName
+package com.skyletto.startappfrontend.common.models
 
 data class MessageItem(
         val text: String,
