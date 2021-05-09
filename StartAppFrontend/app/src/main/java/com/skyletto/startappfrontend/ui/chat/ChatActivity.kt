@@ -3,6 +3,7 @@ package com.skyletto.startappfrontend.ui.chat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.skyletto.startappfrontend.common.adapters.MessagesAdapter
 import com.skyletto.startappfrontend.databinding.ActivityChatBinding
 import com.skyletto.startappfrontend.ui.chat.viewmodels.ChatViewModel
 import com.skyletto.startappfrontend.ui.chat.viewmodels.ChatViewModelFactory
+import com.skyletto.startappfrontend.ui.chat.viewmodels.OnDownPositionListener
 import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 
 class ChatActivity : AppCompatActivity() {
@@ -29,15 +31,31 @@ class ChatActivity : AppCompatActivity() {
             adapter.messages = items
         }
         initViews()
+        adapter.onDownPositionListener = object : OnDownPositionListener {
+            override fun check(isDown:Boolean) {
+                if (isDown) {
+                    binding.chatScrollBtn.visibility = View.GONE
+                    binding.messagesRv.smoothScrollToPosition(adapter.itemCount - 1)
+                } else {
+                    binding.chatScrollBtn.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     private fun initViews(){
         binding.chatTbSettings.setOnClickListener { startActivity(Intent(this@ChatActivity, SettingsActivity::class.java)) }
         binding.chatBackBtn.setOnClickListener { onBackPressed() }
-        binding.messagesRv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val llm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        llm.isSmoothScrollbarEnabled = true
+        binding.messagesRv.layoutManager = llm
         binding.messagesRv.adapter = adapter
+        binding.messagesRv.scrollToPosition(adapter.itemCount-1)
         binding.chatSendBtn.setOnClickListener {
-            viewModel?.sendMessage() }
+            viewModel?.sendMessage()
+        }
+        binding.chatScrollBtn.setOnClickListener { binding.messagesRv.smoothScrollToPosition(adapter.itemCount-1) }
+
     }
 
     companion object{

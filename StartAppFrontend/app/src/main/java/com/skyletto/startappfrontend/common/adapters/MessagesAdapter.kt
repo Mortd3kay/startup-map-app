@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MessageItem
 import com.skyletto.startappfrontend.databinding.MessageItemBinding
+import com.skyletto.startappfrontend.ui.chat.viewmodels.OnDownPositionListener
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
-
+    var onDownPositionListener: OnDownPositionListener? = null
     var messages: List<MessageItem> = mutableListOf()
         set(value) {
             field = value
@@ -36,6 +37,7 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MessagesHolder, position: Int) {
+        onDownPositionListener?.check(position >= itemCount-2)
         holder.binding?.model = messages[position]
         holder.binding?.messageText?.let {
             with(it) {

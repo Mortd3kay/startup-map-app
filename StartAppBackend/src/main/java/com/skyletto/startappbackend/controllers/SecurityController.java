@@ -56,10 +56,10 @@ public class SecurityController {
     }
 
     @GetMapping("/messages/get")
-    public @ResponseBody List<Message> getMessages(Authentication auth, @RequestParam Long chat){
+    public @ResponseBody List<Message> getMessages(Authentication auth, @RequestParam Long chat, @RequestParam(name = "last") Long lastId){
         User u = userService.findUserByEmail(auth.getName());
         if (u != null) {
-            return messageService.getMessagesByChat(u, chat);
+            return messageService.getMessagesByChat(u, chat, lastId);
         }
         return null;
     }

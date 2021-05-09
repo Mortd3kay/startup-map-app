@@ -17,7 +17,7 @@ interface MessageDao {
     fun getAllByChatId(id: Long):LiveData<List<Message>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addAll(list: List<Message>): Single<List<Long>>
+    fun addAll(list: List<Message>): List<Long>
 
     @Query("select * from messages where id=:id")
     fun getById(id: Long): Single<Message>
