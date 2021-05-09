@@ -11,7 +11,7 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.skyletto.startappfrontend.R
-import com.skyletto.startappfrontend.common.MessageItem
+import com.skyletto.startappfrontend.common.models.MessageItem
 import com.skyletto.startappfrontend.databinding.MessageItemBinding
 import com.skyletto.startappfrontend.ui.chat.viewmodels.OnDownPositionListener
 import com.skyletto.startappfrontend.ui.chat.viewmodels.OnMessageAddedListener

@@ -91,7 +91,6 @@
                 tools:text="@tools:sample/first_names" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:background="@drawable/rv_chat_shape"
                 android:id="@+id/messages_rv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

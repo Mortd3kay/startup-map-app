@@ -12,7 +12,7 @@
 
         <variable
             name="model"
-            type="com.skyletto.startappfrontend.common.ChatItem" />
+            type="com.skyletto.startappfrontend.domain.entities.Chat" />
         
     </data>
     
@@ -96,7 +96,7 @@
             android:layout_height="5dp"
             android:background="@drawable/checked_point"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility='@{model.message.checked?View.INVISIBLE:View.VISIBLE}'
+            android:visibility='@{!model.message.checked?View.INVISIBLE:View.VISIBLE}'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

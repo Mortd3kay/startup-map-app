@@ -12,28 +12,22 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.skyletto.startappfrontend.common.ChatItem
+import com.skyletto.startappfrontend.domain.entities.Chat
 import com.skyletto.startappfrontend.common.utils.OnChatClickListener
 import com.skyletto.startappfrontend.databinding.ChatItemBinding
 import com.skyletto.startappfrontend.ui.chat.ChatActivity
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
 class ChatAdapter(val context: Context) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
-    var chats: MutableList<ChatItem> = mutableListOf()
+    var chats: List<Chat> = mutableListOf()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
-
-    fun addChat(chat: ChatItem) {
-        chats.add(chat)
-        notifyDataSetChanged()
-    }
 
     class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding: ChatItemBinding? = DataBindingUtil.bind(itemView)

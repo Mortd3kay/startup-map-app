@@ -33,6 +33,7 @@ public class MessageService {
     }
 
     public List<Message> getLastMessages(User user){
+        Logger.getLogger("MESSAGE_SERVICE").log(Level.INFO, "chats required");
         return messageRepository.getLastMessages(user.getId());
     }
 }
