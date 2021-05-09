@@ -1,8 +1,6 @@
 package com.skyletto.startappfrontend.ui.chat.viewmodels
 
-import android.app.Activity
 import android.app.Application
-import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
@@ -20,11 +18,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 class ChatViewModel(application: Application, private val chatId: Long) : AndroidViewModel(application) {
+    var forceDrop = true
     private val mObservable = MutableLiveData<Long>(0)
     var messageText = ObservableField("")
     var friend = ObservableField<User>()
@@ -45,6 +43,7 @@ class ChatViewModel(application: Application, private val chatId: Long) : Androi
                 .subscribe(
                         {
                             if (it == null) toast(getApplication(), getApplication<MainApplication>().getString(R.string.cant_send_message))
+                            else forceDrop = true
                         },
                         {
                             Log.e(TAG, "sendMessage: ", it)

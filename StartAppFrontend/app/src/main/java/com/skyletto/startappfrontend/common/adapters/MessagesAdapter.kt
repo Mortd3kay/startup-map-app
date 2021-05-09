@@ -14,15 +14,22 @@ import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MessageItem
 import com.skyletto.startappfrontend.databinding.MessageItemBinding
 import com.skyletto.startappfrontend.ui.chat.viewmodels.OnDownPositionListener
+import com.skyletto.startappfrontend.ui.chat.viewmodels.OnMessageAddedListener
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
+    var drop = true
     var onDownPositionListener: OnDownPositionListener? = null
+    var onMessageAddedListener: OnMessageAddedListener? = null
     var messages: List<MessageItem> = mutableListOf()
         set(value) {
             field = value
+            if (drop){
+                onMessageAddedListener?.update()
+                drop = false
+            }
             notifyDataSetChanged()
         }
 
@@ -37,7 +44,8 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MessagesHolder, position: Int) {
-        onDownPositionListener?.check(position >= itemCount-2)
+        onDownPositionListener?.check((position < itemCount-2).not())
+        drop = itemCount-1 == position
         holder.binding?.model = messages[position]
         holder.binding?.messageText?.let {
             with(it) {

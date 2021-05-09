@@ -6,6 +6,8 @@ import com.skyletto.startappbackend.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +23,7 @@ public class MessageService {
     }
 
     public Message saveMessage(Message message){
+        message.setTime(LocalDateTime.now(ZoneId.of("UTC")).toString());
         return messageRepository.save(message);
     }
 
