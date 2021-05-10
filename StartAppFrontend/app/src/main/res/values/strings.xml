@@ -42,6 +42,12 @@
     <string name="old_pass_hint">старый пароль</string>
     <string name="save">Сохранить</string>
     <string name="new_pass_hint">новый пароль</string>
+    <string name="confirm">Подтвердите</string>
+    <string name="ok">Ок</string>
+    <string name="close">Закрыть</string>
+    <string name="error_while_editing_profile">Не удалось обновить данные профиля</string>
+    <string name="wrong_fields">Поля заполнены неверно</string>
+    <string name="wrong_password">Неверный пароль</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

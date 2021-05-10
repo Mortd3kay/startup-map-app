@@ -142,6 +142,22 @@
                     app:boxStrokeWidth="0dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        style="@style/input_style"
+                        android:inputType="phone"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:hint="@string/phone"
+                        android:text="@={model.profile.phoneNumber}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
                         android:id="@+id/settings_title_input"
@@ -184,7 +200,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
-                    android:id="@+id/third_step_cont_btn"
+                    android:id="@+id/edit_profile_btn"
                     style="@style/button_style"
                     android:layout_marginVertical="50dp"
                     android:text="@string/save" />
