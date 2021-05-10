@@ -1,27 +1,21 @@
 package com.skyletto.startappfrontend.domain.entities;
 
-import androidx.room.PrimaryKey;
+import androidx.room.*
 
+@Entity(tableName = "users")
 data class User(
-        @PrimaryKey var id: Long?,
+        @PrimaryKey
+        @ColumnInfo(name = "uId")
+        var id: Long? = null,
         var email: String,
-        //var password: String,
-        var firstName: String,
-        var secondName: String,
-        var phoneNumber: String,
-        var title: String?,
-        var experience: String?,
-        var description: String?,
-        var tags: Set<Tag>?
-) {
-    constructor(
-            email: String,
-            //password: String,
-            firstName: String,
-            secondName: String,
-            phoneNumber: String
-    ) :this(null, email,
-            //password,
-            firstName, secondName, phoneNumber, null,null,null,null)
+        @ColumnInfo(name = "first_name") var firstName: String,
+        @ColumnInfo(name = "second_name") var secondName: String,
+        @ColumnInfo(name = "phone") var phoneNumber: String? = null,
+        @ColumnInfo(name = "title") var title: String? = null,
+        @ColumnInfo(name = "experience") var experience: String? = null,
+        @ColumnInfo(name = "desc") var description: String? = null,
+        @Ignore var tags: Set<Tag>? = null
+){
+    constructor():this(email = "", firstName = "", secondName = "")
 }
 

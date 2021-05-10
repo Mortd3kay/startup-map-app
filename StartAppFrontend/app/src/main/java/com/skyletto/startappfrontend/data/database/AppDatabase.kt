@@ -4,19 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.skyletto.startappfrontend.data.database.dao.ChatDao
-import com.skyletto.startappfrontend.data.database.dao.MessageDao
-import com.skyletto.startappfrontend.data.database.dao.TagDao
+import com.skyletto.startappfrontend.common.models.UserTags
+import com.skyletto.startappfrontend.data.database.dao.*
 import com.skyletto.startappfrontend.domain.entities.Chat
 import com.skyletto.startappfrontend.domain.entities.Message
 import com.skyletto.startappfrontend.domain.entities.Tag
+import com.skyletto.startappfrontend.domain.entities.User
 
-@Database(entities = [Tag::class, Message::class, Chat::class], version = 2, exportSchema = false)
+@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tagDao(): TagDao
     abstract fun messageDao(): MessageDao
     abstract fun chatDao(): ChatDao
+    abstract fun userDao(): UserDao
+    abstract fun userTagsDao(): UserTagsDao
 
     companion object {
         private var db: AppDatabase? = null

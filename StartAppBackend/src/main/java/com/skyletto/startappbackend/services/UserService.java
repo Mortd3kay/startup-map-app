@@ -72,6 +72,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email){
+        Logger.getLogger("USER_SERVICE").log(Level.INFO, "request info "+email);
         return userRepository.findUserByEmail(email);
     }
 

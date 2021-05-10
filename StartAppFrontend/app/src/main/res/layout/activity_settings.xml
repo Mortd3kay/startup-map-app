@@ -1,18 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/dark"
-    android:gravity="center_horizontal"
-    tools:context=".ui.settings.SettingsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/log_out_btn"
-        style="@style/button_style"
-        android:textColor="@color/dark"
-        android:text="@string/log_out"/>
+    <data>
+        <variable
+            name="model"
+            type="com.skyletto.startappfrontend.ui.settings.viewmodels.SettingsViewModel" />
+    </data>
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/dark"
+        android:gravity="center_horizontal"
+        tools:context=".ui.settings.SettingsActivity">
+
+        <ImageView
+            android:id="@+id/settings_back_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/main_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_marginEnd="15dp"
+            android:id="@+id/log_out_btn"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_exit"
+            app:tint="@color/dark"
+            android:layout_marginTop="13dp"
+            app:layout_constraintEnd_toEndOf="@+id/settings_back_img"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/settings_tv_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik_medium"
+            android:text="@string/settings"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/log_out_btn"
+            app:layout_constraintEnd_toEndOf="@+id/settings_back_img"
+            app:layout_constraintStart_toStartOf="@+id/settings_back_img"
+            app:layout_constraintTop_toTopOf="@+id/log_out_btn" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintTop_toBottomOf="@id/settings_tv_label"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:id="@+id/settings_email_input"
+                        style="@style/input_style"
+                        android:inputType="textEmailAddress"
+                        android:hint="@string/login_hint"
+                        android:text="@={model.profile.email}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp"
+                    app:passwordToggleDrawable="@drawable/asl_password_visibility"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/white">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        style="@style/input_style"
+                        android:id="@+id/settings_pass_input"
+                        android:hint="@string/new_pass_hint"
+                        android:inputType="textPassword"
+                        android:text="@={model.profile.password}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:id="@+id/settings_f_name_input"
+                        style="@style/input_style"
+                        android:inputType="textPersonName"
+                        android:hint="@string/name"
+                        android:text="@={model.profile.firstName}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:id="@+id/settings_s_name_input"
+                        style="@style/input_style"
+                        android:inputType="textPersonName"
+                        android:hint="@string/surname"
+                        android:text="@={model.profile.secondName}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:id="@+id/settings_title_input"
+                        style="@style/input_style"
+                        android:inputType="textPersonName"
+                        android:hint="@string/specialization"
+                        android:text="@={model.profile.title}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/input_style"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:layout_height="100dp"
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:hint="@string/tell_about_you"
+                    android:text="@={model.profile.description}"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/input_style"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:inputType="numberDecimal"
+                        android:hint="@string/experience"
+                        android:text="@={model.profile.experience}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/third_step_cont_btn"
+                    style="@style/button_style"
+                    android:layout_marginVertical="50dp"
+                    android:text="@string/save" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
