@@ -48,6 +48,8 @@
     <string name="error_while_editing_profile">Не удалось обновить данные профиля</string>
     <string name="wrong_fields">Поля заполнены неверно</string>
     <string name="wrong_password">Неверный пароль</string>
+    <string name="profile_email_label">Email:</string>
+    <string name="profile_phone_label">Телефон:</string>
 
     <string-array name="categories">
         <item name="all">Все</item>
