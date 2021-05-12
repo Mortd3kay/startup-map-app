@@ -19,7 +19,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class SettingsViewModel(application: Application, private val userId: Long) : AndroidViewModel(application) {
-    val handler = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     val api = getApplication<MainApplication>().api
     val db = getApplication<MainApplication>().db
     private val sp = getApplication<MainApplication>().getSharedPreferences("profile", Application.MODE_PRIVATE)

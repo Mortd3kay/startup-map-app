@@ -1,13 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.fragments.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <data>
+        <variable
+            name="model"
+            type="com.skyletto.startappfrontend.ui.main.viewmodels.ProfileViewModel" />
+    </data>
 
-</FrameLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/profile_background"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/message_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/profile_tb_settings"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="13dp"
+                android:src="@drawable/ic_settings"
+                app:layout_constraintEnd_toEndOf="@+id/profile_background"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="profile_tags_chip_group,profile_img"
+                tools:layout_editor_absoluteY="160dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/profile_tags_chip_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/profile_img"
+                app:layout_constraintTop_toBottomOf="@id/profile_background" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/ic_profile_image"
+                app:layout_constraintBottom_toBottomOf="@id/profile_background"
+                app:layout_constraintStart_toStartOf="@id/profile_background"
+                app:layout_constraintTop_toBottomOf="@id/profile_background" />
+
+            <LinearLayout
+                app:layout_constraintTop_toBottomOf="@id/barrier3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/profile_spec_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/rubik_medium"
+                        android:textColor="@color/dark"
+                        android:textSize="16sp"
+                        android:text="@string/specialization2" />
+
+                    <TextView
+                        android:id="@+id/profile_spec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/rubik_regular"
+                        android:text="@{model.VUser.user.title}"
+                        android:textSize="16sp"
+                        tools:text="PHP Senior Developer" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/profile_exp_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/rubik_medium"
+                        android:textColor="@color/dark"
+                        android:textSize="16sp"
+                        android:text="@string/experience2" />
+
+                    <TextView
+                        android:id="@+id/profile_exp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/rubik_regular"
+                        android:text="@{model.VUser.user.experience}"
+                        android:textSize="16sp"
+                        tools:text="3 года" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/profile_desc_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/rubik_medium"
+                        android:textColor="@color/dark"
+                        android:textSize="16sp"
+                        android:text="@string/tell_about_you2" />
+
+                    <TextView
+                        android:id="@+id/profile_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/rubik_regular"
+                        android:text="@{model.VUser.user.description}"
+                        android:textSize="16sp"
+                        tools:text="@tools:sample/lorem/random" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/profile_projects_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/rubik_medium"
+                    android:textColor="@color/dark"
+                    android:textSize="16sp"
+                    android:textAllCaps="true"
+                    android:text="@string/projects" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/profile_projects_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginTop="15dp" />
+
+            </LinearLayout>
+
+
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rubik_medium"
+                android:text='@{model.VUser.user.firstName  +" "+model.VUser.user.secondName.substring(0,1)+"."}'
+                android:textColor="@color/dark"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/profile_email_label"
+                app:layout_constraintStart_toStartOf="@+id/profile_email_label"
+                tools:text="Александр З." />
+
+            <TextView
+                android:id="@+id/profile_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:text="@{model.VUser.user.email}"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/profile_phone_label"
+                app:layout_constraintStart_toEndOf="@+id/profile_email_label"
+                tools:text="alex.zaruchevskiy@mail.com" />
+
+            <TextView
+                android:id="@+id/profile_phone"
+                android:layout_width="182dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:text="@{model.VUser.user.phoneNumber}"
+                android:textColor="#2295CA"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_phone_label"
+                app:layout_constraintStart_toEndOf="@+id/profile_phone_label"
+                app:layout_constraintTop_toTopOf="@+id/profile_phone_label"
+                tools:text="+79112281337" />
+
+            <TextView
+                android:id="@+id/profile_email_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_email_label"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_email"
+                app:layout_constraintStart_toStartOf="@+id/profile_phone_label"
+                app:layout_constraintTop_toTopOf="@+id/profile_email" />
+
+            <TextView
+                android:id="@+id/profile_phone_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/profile_phone_label"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_background"
+                app:layout_constraintStart_toEndOf="@+id/profile_img" />
+
+            <TextView
+                android:id="@+id/profile_tv_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rubik_medium"
+                android:text="@string/profile"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_tb_settings"
+                app:layout_constraintEnd_toEndOf="@+id/profile_background"
+                app:layout_constraintStart_toStartOf="@+id/profile_background"
+                app:layout_constraintTop_toTopOf="@+id/profile_tb_settings" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
+</layout>
