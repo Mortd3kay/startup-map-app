@@ -35,15 +35,21 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_projects",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id"))
+    private Set<Project> projects;
 
     public User() {
     }
 
     public User(String email, String password, String firstName, String secondName) {
-        this(email, password, firstName, secondName,  null, null, null,  null, null, null);
+        this(email, password, firstName, secondName,  null, null, null,  null, null, null, null);
     }
 
-    public User(String email, String password, String firstName, String secondName, String phoneNumber, String title, String experience, String description, Role role, Set<Tag> tags) {
+    public User(String email, String password, String firstName, String secondName, String phoneNumber, String title, String experience, String description, Role role, Set<Tag> tags, Set<Project> projects) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -54,6 +60,7 @@ public class User {
         this.description = description;
         this.role = role;
         this.tags = tags;
+        this.projects = projects;
     }
 
     public long getId() {

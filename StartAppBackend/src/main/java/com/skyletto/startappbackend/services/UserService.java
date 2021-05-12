@@ -45,7 +45,8 @@ public class UserService {
                 data.getExperience(),
                 data.getDescription(),
                 role,
-                data.getTags()
+                data.getTags(),
+                null
         );
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Logger.getLogger("SERVICE").log(Level.INFO, "save "+user.getEmail());

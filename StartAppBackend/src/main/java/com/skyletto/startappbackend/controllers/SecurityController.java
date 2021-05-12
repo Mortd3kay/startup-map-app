@@ -8,6 +8,7 @@ import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
 import com.skyletto.startappbackend.services.MessageService;
+import com.skyletto.startappbackend.services.ProjectService;
 import com.skyletto.startappbackend.services.TagService;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
@@ -28,14 +29,16 @@ public class SecurityController {
     private UserService userService;
     private TagService tagService;
     private MessageService messageService;
+    private ProjectService projectService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService, TagService tagService, MessageService messageService) {
+    public SecurityController(UserService userService, TagService tagService, MessageService messageService, ProjectService projectService) {
         this.userService = userService;
         this.tagService = tagService;
         this.messageService = messageService;
+        this.projectService = projectService;
     }
 
     @Autowired
