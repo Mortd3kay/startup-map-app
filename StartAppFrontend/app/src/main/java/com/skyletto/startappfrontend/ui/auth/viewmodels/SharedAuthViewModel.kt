@@ -13,6 +13,9 @@ import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.common.MainApplication
+import com.skyletto.startappfrontend.common.utils.isEmailValid
+import com.skyletto.startappfrontend.common.utils.isNameValid
+import com.skyletto.startappfrontend.common.utils.isPasswordValid
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -55,22 +58,6 @@ class SharedAuthViewModel(application: Application) : AndroidViewModel(applicati
                     ) { throwable: Throwable? -> Log.e(TAG, "loadSimilarTags: ", throwable) }
         }
         d?.let { cd.add(it) }
-    }
-
-    private fun isPasswordValid(pass: String): Boolean {
-        val n = ".*[0-9].*"
-        val a = ".*[\\p{L}].*"
-        return if (pass.length < 8 || pass.length > 40) false else pass.matches(Regex(n)) && pass.matches(Regex(a))
-    }
-
-    private fun isEmailValid(email: String): Boolean {
-        val p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
-        return p.matcher(email).matches()
-    }
-
-    private fun isNameValid(name: String): Boolean {
-        val n = "^[\\p{L} .'-]+$"
-        return name.isNotEmpty() && name.matches(Regex(n))
     }
 
     fun checkPasswordsAndEmail() {

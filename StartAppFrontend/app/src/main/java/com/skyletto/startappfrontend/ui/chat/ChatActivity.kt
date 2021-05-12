@@ -12,7 +12,7 @@ import com.skyletto.startappfrontend.common.adapters.MessagesAdapter
 import com.skyletto.startappfrontend.common.models.MessageItem
 import com.skyletto.startappfrontend.databinding.ActivityChatBinding
 import com.skyletto.startappfrontend.ui.chat.viewmodels.ChatViewModel
-import com.skyletto.startappfrontend.ui.chat.viewmodels.ChatViewModelFactory
+import com.skyletto.startappfrontend.common.utils.ChatViewModelFactory
 import com.skyletto.startappfrontend.ui.chat.viewmodels.OnDownPositionListener
 import com.skyletto.startappfrontend.ui.chat.viewmodels.OnMessageAddedListener
 import com.skyletto.startappfrontend.ui.settings.SettingsActivity

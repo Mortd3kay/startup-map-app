@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">BeFounder</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main">MainActivity</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <string name="title_activity_main">MainActivity</string>
     <string name="start_auth_image_transition">fromStartToAuthTransition</string>
     <string name="not_registered_yet"><u>Еще нет аккаунта?</u></string>
     <string name="log_in">Войти</string>
@@ -27,8 +25,11 @@
     <string name="finish">Завершить</string>
     <string name="your_skills_and_prefs">Ваши навыки и предпочтения</string>
     <string name="specialization">специальность</string>
+    <string name="specialization2">Специальность:</string>
     <string name="tell_about_you">о себе</string>
+    <string name="tell_about_you2">О себе:</string>
     <string name="experience">опыт работы</string>
+    <string name="experience2">Опыт работы:</string>
     <string name="for_example">например, mvc</string>
     <string name="map">Карта</string>
     <string name="messages">Сообщения</string>
@@ -38,9 +39,21 @@
     <string name="log_out">Выйти</string>
     <string name="start_app_name"><font color="#FFFFFF">Be</font>Founder</string>
     <string name="chats">Чаты</string>
-    <string name="type_smth">Напишите что-нибудь...</string>
+    <string name="type_smth">Напишите что-нибудь…</string>
     <string name="error_while_sending">Ошибка при отправке сообщения</string>
     <string name="cant_send_message">Не удалось отправить сообщение</string>
+    <string name="old_pass_hint">старый пароль</string>
+    <string name="save">Сохранить</string>
+    <string name="new_pass_hint">новый пароль</string>
+    <string name="confirm">Подтвердите</string>
+    <string name="ok">Ок</string>
+    <string name="close">Закрыть</string>
+    <string name="error_while_editing_profile">Не удалось обновить данные профиля</string>
+    <string name="wrong_fields">Поля заполнены неверно</string>
+    <string name="wrong_password">Неверный пароль</string>
+    <string name="profile_email_label">Email:</string>
+    <string name="profile_phone_label">Телефон:</string>
+    <string name="projects">Проекты</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

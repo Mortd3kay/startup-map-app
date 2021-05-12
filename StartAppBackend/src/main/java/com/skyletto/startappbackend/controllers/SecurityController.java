@@ -3,6 +3,7 @@ package com.skyletto.startappbackend.controllers;
 import com.skyletto.startappbackend.entities.Message;
 import com.skyletto.startappbackend.entities.Tag;
 import com.skyletto.startappbackend.entities.User;
+import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
@@ -132,11 +133,12 @@ public class SecurityController {
 
     @PutMapping("/user/edit")
     public @ResponseBody
-    ProfileResponse updateUser(@RequestBody @Valid User user, Authentication authentication) {
+    ProfileResponse updateUser(@RequestBody @Valid EditProfileDataRequest user, Authentication authentication) {
         User u = userService.findUserByEmail(authentication.getName());
         if (u != null) {
-            user.setId(u.getId());
-            u = userService.changeUser(user);
+            u = userService.changeUser(u, user);
+            Logger.getLogger("CONTROLLER").log(Level.INFO, "changed user: "+u);
+            if (u == null) return null;
             return new ProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
         }
         return null;

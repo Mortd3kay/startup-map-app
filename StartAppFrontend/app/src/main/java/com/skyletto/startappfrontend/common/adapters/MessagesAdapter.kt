@@ -52,11 +52,11 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesHolder>() {
                 if (messages[position].outcoming) {
                     background = resources?.getDrawable(R.drawable.outcoming_bubble, null)
                     gravity = Gravity.END
-                    setTextColor(resources?.getColor(R.color.white)!!)
+                    setTextColor(resources?.getColor(R.color.white, null)!!)
                 } else {
                     background = resources?.getDrawable(R.drawable.incoming_bubble, null)
                     gravity = Gravity.START
-                    setTextColor(resources?.getColor(R.color.dark)!!)
+                    setTextColor(resources?.getColor(R.color.dark, null)!!)
                 }
             }
         }

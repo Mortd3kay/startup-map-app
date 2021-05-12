@@ -40,7 +40,7 @@
             style="@style/input_style"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            android:inputType="textEmailAddress"
+            android:inputType="textPersonName"
             android:hint="@string/specialization"
             android:text="@={model.profile.title}"/>
 

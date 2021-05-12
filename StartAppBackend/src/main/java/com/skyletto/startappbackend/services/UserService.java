@@ -2,10 +2,12 @@ package com.skyletto.startappbackend.services;
 
 import com.skyletto.startappbackend.entities.Role;
 import com.skyletto.startappbackend.entities.User;
+import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.repositories.RoleRepository;
 import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,11 +60,23 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User changeUser(User user) {
-        Role role = roleRepository.findRoleByName("ROLE_USER");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(user.getRole()==null?role: user.getRole());
-        return userRepository.save(user);
+    public User changeUser(User user, EditProfileDataRequest eUser) {
+        if (passwordEncoder.matches(eUser.getOldPassword(), user.getPassword())) {
+            Role role = roleRepository.findRoleByName("ROLE_USER");
+            if (!eUser.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(eUser.getPassword()));
+            }
+            user.setRole(user.getRole() == null ? role : user.getRole());
+            user.setEmail(eUser.getEmail());
+            user.setFirstName(eUser.getFirstName());
+            user.setSecondName(eUser.getSecondName());
+            user.setTitle(eUser.getTitle());
+            user.setDescription(eUser.getDescription());
+            user.setExperience(eUser.getExperience());
+            user.setPhoneNumber(eUser.getPhoneNumber());
+            user.setTags(eUser.getTags());
+            return userRepository.save(user);
+        } else return null;
     }
 
     public int countUserByEmail(String email){
@@ -72,6 +86,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email){
+        Logger.getLogger("USER_SERVICE").log(Level.INFO, "request info "+email);
         return userRepository.findUserByEmail(email);
     }
 

@@ -1,5 +1,6 @@
 package com.skyletto.startappfrontend.data.network
 
+import com.skyletto.startappfrontend.data.requests.EditProfileDataRequest
 import com.skyletto.startappfrontend.data.requests.LoginDataRequest
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
@@ -18,6 +19,9 @@ interface ApiService {
 
     @GET("user/get")
     fun getUserByToken(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String): Single<User>
+
+    @PUT("user/edit")
+    fun editProfile(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body profile:EditProfileDataRequest) : Single<ProfileResponse>
 
     @GET("email")
     fun findUserByEmail(@Query("email") str: String): Single<Int>
