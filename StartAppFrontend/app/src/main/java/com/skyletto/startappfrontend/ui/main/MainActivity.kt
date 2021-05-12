@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     private var isBack = false
     private val stack = LinkedList<Int>()
 
-    private val profileFragment = ProfileFragment.newInstance()
-    private val messageFragment = MessagesFragment.newInstance()
+    private lateinit var profileFragment: ProfileFragment
+    private lateinit var messageFragment :MessagesFragment
     private lateinit var mapFragment: MapsFragment
 
     private var token : String? = null
@@ -33,11 +33,17 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         setContentView(R.layout.activity_main)
         parseBundle()
         initViews()
+        initFragments()
+        bnv.selectedItemId = R.id.map
+    }
+
+    private fun initFragments(){
         fm = supportFragmentManager
         mapFragment = fm.fragmentFactory.instantiate(ClassLoader.getSystemClassLoader(), MapsFragment::class.java.name) as MapsFragment
+        profileFragment = id?.let { ProfileFragment.newInstance(it) }!!
+        messageFragment = MessagesFragment.newInstance()
         mapFragment.mActivity = this
         messageFragment.mActivity = this
-        bnv.selectedItemId = R.id.map
     }
 
     private fun initViews(){

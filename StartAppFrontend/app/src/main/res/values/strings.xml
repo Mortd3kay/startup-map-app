@@ -25,8 +25,11 @@
     <string name="finish">Завершить</string>
     <string name="your_skills_and_prefs">Ваши навыки и предпочтения</string>
     <string name="specialization">специальность</string>
+    <string name="specialization2">Специальность:</string>
     <string name="tell_about_you">о себе</string>
+    <string name="tell_about_you2">О себе:</string>
     <string name="experience">опыт работы</string>
+    <string name="experience2">Опыт работы:</string>
     <string name="for_example">например, mvc</string>
     <string name="map">Карта</string>
     <string name="messages">Сообщения</string>
@@ -50,6 +53,7 @@
     <string name="wrong_password">Неверный пароль</string>
     <string name="profile_email_label">Email:</string>
     <string name="profile_phone_label">Телефон:</string>
+    <string name="projects">Проекты</string>
 
     <string-array name="categories">
         <item name="all">Все</item>
