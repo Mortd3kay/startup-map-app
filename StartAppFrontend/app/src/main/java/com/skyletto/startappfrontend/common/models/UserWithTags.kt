@@ -18,5 +18,5 @@ data class UserWithTags(
                         entityColumn = "tagId"
                 )
         )
-        val tags: Set<Tag>
+        val tags: Set<Tag>? = null
 )

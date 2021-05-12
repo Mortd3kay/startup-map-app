@@ -37,6 +37,34 @@
                 app:layout_constraintEnd_toEndOf="@+id/profile_background"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="profile_tags_chip_group,profile_img"
+                tools:layout_editor_absoluteY="160dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/profile_tags_chip_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/profile_img"
+                app:layout_constraintTop_toBottomOf="@id/profile_background" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/ic_profile_image"
+                app:layout_constraintBottom_toBottomOf="@id/profile_background"
+                app:layout_constraintStart_toStartOf="@id/profile_background"
+                app:layout_constraintTop_toBottomOf="@id/profile_background" />
+
             <LinearLayout
                 app:layout_constraintTop_toBottomOf="@id/barrier3"
                 android:layout_width="match_parent"
@@ -217,34 +245,6 @@
                 app:layout_constraintStart_toStartOf="@+id/profile_background"
                 app:layout_constraintTop_toTopOf="@+id/profile_tb_settings" />
 
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="profile_tags_chip_group,profile_img"
-                tools:layout_editor_absoluteY="160dp" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/profile_tags_chip_group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/profile_img"
-                app:layout_constraintTop_toBottomOf="@id/profile_background" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_img"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="20dp"
-                android:src="@drawable/ic_profile_image"
-                app:layout_constraintBottom_toBottomOf="@id/profile_background"
-                app:layout_constraintStart_toStartOf="@id/profile_background"
-                app:layout_constraintTop_toBottomOf="@id/profile_background" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
