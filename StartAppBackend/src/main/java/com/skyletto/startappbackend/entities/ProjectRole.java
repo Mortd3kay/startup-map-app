@@ -1,5 +1,7 @@
 package com.skyletto.startappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -11,6 +13,7 @@ public class ProjectRole {
     private long id;
     private String name;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProjectAndRole> roles;
 

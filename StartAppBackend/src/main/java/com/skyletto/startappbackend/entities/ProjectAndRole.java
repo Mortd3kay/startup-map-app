@@ -1,5 +1,7 @@
 package com.skyletto.startappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -8,13 +10,14 @@ public class ProjectAndRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @MapsId("project_id")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
-    @MapsId("role_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
     private ProjectRole role;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
     @Column(name = "has_salary")
     private boolean hasSalary;

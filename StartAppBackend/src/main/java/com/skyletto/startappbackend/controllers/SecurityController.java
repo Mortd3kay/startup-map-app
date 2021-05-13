@@ -1,9 +1,6 @@
 package com.skyletto.startappbackend.controllers;
 
-import com.skyletto.startappbackend.entities.Message;
-import com.skyletto.startappbackend.entities.Project;
-import com.skyletto.startappbackend.entities.Tag;
-import com.skyletto.startappbackend.entities.User;
+import com.skyletto.startappbackend.entities.*;
 import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
@@ -158,6 +155,10 @@ public class SecurityController {
                 System.out.println("saved "+count);
             } catch (Exception e){
                 Logger.getLogger("CONTROLLER").log(Level.INFO,"Projects tags: ", e.getCause());
+            }
+            for (ProjectAndRole pr :
+                    project.getRoles()) {
+                pr.setProject(project);
             }
             return projectService.addProject(u, project);
         }
