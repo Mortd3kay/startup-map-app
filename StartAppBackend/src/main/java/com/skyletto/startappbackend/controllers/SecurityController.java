@@ -164,7 +164,7 @@ public class SecurityController {
         return null;
     }
 
-    @GetMapping("/projects/getAll")
+    @GetMapping("/projects/get_all")
     public @ResponseBody List<Project> getAllProjects(Authentication auth){
         User u = userService.findUserByEmail(auth.getName());
         if (u != null){
