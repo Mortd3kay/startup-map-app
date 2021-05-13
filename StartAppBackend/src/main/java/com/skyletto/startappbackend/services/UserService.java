@@ -45,7 +45,8 @@ public class UserService {
                 data.getExperience(),
                 data.getDescription(),
                 role,
-                data.getTags()
+                data.getTags(),
+                null
         );
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Logger.getLogger("SERVICE").log(Level.INFO, "save "+user.getEmail());
@@ -88,6 +89,10 @@ public class UserService {
     public User findUserByEmail(String email){
         Logger.getLogger("USER_SERVICE").log(Level.INFO, "request info "+email);
         return userRepository.findUserByEmail(email);
+    }
+
+    public User saveUser(User user){
+        return userRepository.save(user);
     }
 
     public User findByEmailAndPassword(String email, String password){

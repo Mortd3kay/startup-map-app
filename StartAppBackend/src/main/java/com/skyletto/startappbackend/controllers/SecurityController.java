@@ -1,13 +1,12 @@
 package com.skyletto.startappbackend.controllers;
 
-import com.skyletto.startappbackend.entities.Message;
-import com.skyletto.startappbackend.entities.Tag;
-import com.skyletto.startappbackend.entities.User;
+import com.skyletto.startappbackend.entities.*;
 import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
 import com.skyletto.startappbackend.services.MessageService;
+import com.skyletto.startappbackend.services.ProjectService;
 import com.skyletto.startappbackend.services.TagService;
 import com.skyletto.startappbackend.services.UserService;
 import com.skyletto.startappbackend.utils.JwtProvider;
@@ -28,14 +27,16 @@ public class SecurityController {
     private UserService userService;
     private TagService tagService;
     private MessageService messageService;
+    private ProjectService projectService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService, TagService tagService, MessageService messageService) {
+    public SecurityController(UserService userService, TagService tagService, MessageService messageService, ProjectService projectService) {
         this.userService = userService;
         this.tagService = tagService;
         this.messageService = messageService;
+        this.projectService = projectService;
     }
 
     @Autowired
@@ -140,6 +141,44 @@ public class SecurityController {
             Logger.getLogger("CONTROLLER").log(Level.INFO, "changed user: "+u);
             if (u == null) return null;
             return new ProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
+        }
+        return null;
+    }
+
+    @PostMapping("/projects/add")
+    public @ResponseBody
+    Project addProject(Authentication auth, @RequestBody Project project){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u != null){
+            try {
+                int count = tagService.saveTags(project.getTags());
+                System.out.println("saved "+count);
+            } catch (Exception e){
+                Logger.getLogger("CONTROLLER").log(Level.INFO,"Projects tags: ", e.getCause());
+            }
+            for (ProjectAndRole pr :
+                    project.getRoles()) {
+                pr.setProject(project);
+            }
+            return projectService.addProject(u, project);
+        }
+        return null;
+    }
+
+    @GetMapping("/projects/get_all")
+    public @ResponseBody List<Project> getAllProjects(Authentication auth){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u != null){
+            return projectService.getProjectsByUser(u);
+        }
+        return null;
+    }
+
+    @DeleteMapping("/projects/remove")
+    public @ResponseBody List<Project> removeProject(Authentication auth, @RequestBody Project project){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u != null){
+            return projectService.removeProject(u, project);
         }
         return null;
     }

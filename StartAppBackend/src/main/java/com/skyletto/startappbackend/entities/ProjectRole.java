@@ -6,20 +6,28 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "tags")
-public class Tag {
+@Entity(name = "project_roles")
+public class ProjectRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique = true)
     private String name;
+
     @JsonIgnore
-    @ManyToMany(mappedBy = "tags")
-    private Set<User> users;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "tags")
-    private Set<Project> projects;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjectAndRole> roles;
+
+    public ProjectRole(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public ProjectRole(String name) {
+        this(0, name);
+    }
+
+    public ProjectRole() {
+    }
 
     public long getId() {
         return id;
@@ -37,32 +45,24 @@ public class Tag {
         this.name = name;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    @Override
+    public String toString() {
+        return "ProjectRole{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
-        return id == tag.id && Objects.equals(name, tag.name) && Objects.equals(users, tag.users) && Objects.equals(projects, tag.projects);
+        ProjectRole that = (ProjectRole) o;
+        return id == that.id && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "Tag{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 }
