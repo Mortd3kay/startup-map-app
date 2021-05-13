@@ -174,9 +174,10 @@ public class SecurityController {
     }
 
     @DeleteMapping("/projects/remove")
-    public @ResponseBody Long removeProject(Authentication auth, Project project){
-        if (auth.isAuthenticated()){
-            return projectService.removeProject(project);
+    public @ResponseBody List<Project> removeProject(Authentication auth, @RequestBody Project project){
+        User u = userService.findUserByEmail(auth.getName());
+        if (u != null){
+            return projectService.removeProject(u, project);
         }
         return null;
     }

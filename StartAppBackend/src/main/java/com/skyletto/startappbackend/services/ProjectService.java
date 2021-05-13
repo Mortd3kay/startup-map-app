@@ -26,7 +26,8 @@ public class ProjectService {
         return projectRepository.getAllByUser(user);
     }
 
-    public Long removeProject(Project project){
-        return projectRepository.deleteProjectById(project.getId());
+    public List<Project> removeProject(User user,Project project){
+        projectRepository.delete(project);
+        return getProjectsByUser(user);
     }
 }
