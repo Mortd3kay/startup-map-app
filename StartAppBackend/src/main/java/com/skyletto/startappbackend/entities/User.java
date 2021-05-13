@@ -3,6 +3,7 @@ package com.skyletto.startappbackend.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -35,11 +36,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_projects",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "project_id"))
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,orphanRemoval = true)
     private Set<Project> projects;
 
     public User() {
@@ -149,5 +147,13 @@ public class User {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
     }
 }

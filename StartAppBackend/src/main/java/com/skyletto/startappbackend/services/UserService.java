@@ -91,6 +91,10 @@ public class UserService {
         return userRepository.findUserByEmail(email);
     }
 
+    public User saveUser(User user){
+        return userRepository.save(user);
+    }
+
     public User findByEmailAndPassword(String email, String password){
         User user = userRepository.findUserByEmail(email);
         if (user!=null){

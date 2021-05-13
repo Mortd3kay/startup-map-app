@@ -17,6 +17,9 @@ public class Tag {
     @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<User> users;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "tags")
+    private Set<Project> projects;
 
     public long getId() {
         return id;
@@ -47,12 +50,12 @@ public class Tag {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tag tag = (Tag) o;
-        return id == tag.id && name.equals(tag.name) && Objects.equals(users, tag.users);
+        return id == tag.id && Objects.equals(name, tag.name) && Objects.equals(users, tag.users) && Objects.equals(projects, tag.projects);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, users);
+        return Objects.hash(id, name, users, projects);
     }
 
     @Override

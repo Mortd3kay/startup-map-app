@@ -21,9 +21,9 @@ public class Project {
     private Set<Tag> tags;
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProjectAndRole> roles;
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private User creator;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Project() {
     }
@@ -33,6 +33,14 @@ public class Project {
         this.description = description;
         this.tags = tags;
         this.roles = roles;
+    }
+
+    public Project(String title, String description, Set<Tag> tags, Set<ProjectAndRole> roles, User user) {
+        this.title = title;
+        this.description = description;
+        this.tags = tags;
+        this.roles = roles;
+        this.user = user;
     }
 
     public long getId() {
@@ -75,12 +83,12 @@ public class Project {
         this.roles = roles;
     }
 
-    public User getCreator() {
-        return creator;
+    public User getUser() {
+        return user;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -91,7 +99,7 @@ public class Project {
                 ", description='" + description + '\'' +
                 ", tags=" + tags +
                 ", roles=" + roles +
-                ", creator=" + creator.getId() +
+                ", user=" + user +
                 '}';
     }
 
@@ -100,11 +108,11 @@ public class Project {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return id == project.id && Objects.equals(title, project.title) && Objects.equals(description, project.description) && Objects.equals(tags, project.tags) && Objects.equals(roles, project.roles) && Objects.equals(creator, project.creator);
+        return id == project.id && Objects.equals(title, project.title) && Objects.equals(description, project.description) && Objects.equals(tags, project.tags) && Objects.equals(roles, project.roles) && Objects.equals(user, project.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, tags, roles, creator);
+        return Objects.hash(id, title, description, tags, roles, user);
     }
 }
