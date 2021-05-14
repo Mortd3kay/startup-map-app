@@ -55,6 +55,12 @@
     <string name="profile_phone_label">Телефон:</string>
     <string name="projects">Проекты</string>
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_project">Добавить проект</string>
+    <string name="project_name">название проекта</string>
+    <string name="project_description">описание проекта</string>
+    <string name="add_role">Добавить должность +</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string-array name="categories">
         <item name="all">Все</item>
         <item name="specialists">Специалисты</item>

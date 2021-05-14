@@ -5,6 +5,7 @@ interface ActivityFragmentWorker {
     fun goToMessages()
     fun goToMap()
     fun goToSettings()
+    fun goToCreateProject()
     fun getToken(): String
     fun getUserId(): Long
 }

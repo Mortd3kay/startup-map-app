@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.project.fragments.CreateProjectFragment">
+
+    <data>
+        <variable
+            name="model"
+            type="com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/main_background"
+        android:orientation="vertical">
+
+        <Toolbar
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:elevation="3dp"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginHorizontal="15dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/create_project_back_btn"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_baseline_arrow_back_24"/>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_project"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/rubik_medium"/>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/create_project_ok_btn"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_baseline_check_24"/>
+
+            </LinearLayout>
+
+        </Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:id="@+id/project_title_input"
+                        style="@style/input_style"
+                        android:inputType="textPersonName"
+                        android:hint="@string/project_name"
+                        android:text="@={model.project.title}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#FFFFFF"
+                    app:boxStrokeWidth="0dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/input_style"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:layout_height="100dp"
+                        android:inputType="textMultiLine"
+                        android:lines="5"
+                        android:hint="@string/project_description"
+                        android:text="@={model.project.description}"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ListView
+                    android:id="@+id/roles_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="25dp"/>
+
+                <Button
+                    android:id="@+id/project_add_role_btn"
+                    style="@style/button_style"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/add_role"
+                    android:layout_marginTop="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="60dp"
+                    />
+
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</layout>

@@ -62,6 +62,7 @@ class MapsFragment : Fragment() {
             }
         }
         b.tbSettings.setOnClickListener { viewModel?.goToSettings()}
+        b.addProjectBtn.setOnClickListener { viewModel?.goToCreateProject() }
     }
 
 
