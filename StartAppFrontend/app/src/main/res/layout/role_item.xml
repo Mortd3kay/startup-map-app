@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.skyletto.startappfrontend.common.models.ProjectRoleItem" />
+    </data>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <Spinner
+            android:id="@+id/role_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:minWidth="150dp"
+            android:background="@drawable/role_views_shape"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={item.isSalary()}"
+            android:text="@string/salary"/>
+
+        <EditText
+            android:id="@+id/role_salary_amount"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:inputType="numberDecimal"
+            android:enabled="@{item.isSalary()}"
+            android:textSize="15sp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/black"
+            android:text="@={``+item.salaryAmount}"
+            android:background="@drawable/role_views_shape"/>
+
+        <Spinner
+            android:id="@+id/role_salary_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="@{item.isSalary()?0f:0.5f}"
+            android:entries="@array/salary_types"/>
+
+    </LinearLayout>
+
+
+</layout>

@@ -65,7 +65,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,13 +106,14 @@
                         android:text="@={model.project.description}"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/roles_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
                     android:layout_marginHorizontal="15dp"
-                    android:layout_marginTop="25dp"/>
+                    android:layout_marginTop="25dp"
+                    tools:listitem="@layout/role_item"/>
 
                 <Button
                     android:id="@+id/project_add_role_btn"
@@ -122,6 +123,7 @@
                     android:layout_marginTop="50dp"
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="60dp"
+                    android:layout_marginBottom="10dp"
                     />
 
 
