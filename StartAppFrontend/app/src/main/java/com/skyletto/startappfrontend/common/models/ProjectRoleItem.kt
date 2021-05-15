@@ -1,7 +1,5 @@
 package com.skyletto.startappfrontend.common.models
 
-import android.widget.EditText
-import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableField
 import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.ProjectRole

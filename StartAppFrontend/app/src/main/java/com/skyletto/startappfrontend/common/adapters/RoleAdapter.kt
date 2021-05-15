@@ -42,7 +42,7 @@ class RoleAdapter(private val context: Context, private val roleTypes: List<Proj
     }
 
     override fun onBindViewHolder(holder: RoleViewHolder, position: Int) {
-        holder.binding?.roleSpinner?.adapter = ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, roleTypes)
+        holder.binding?.roleSpinner?.adapter = ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, roleTypes.map { it.name })
     }
 
     override fun getItemCount() = roles.size
