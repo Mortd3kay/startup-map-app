@@ -61,6 +61,7 @@ class CreateProjectFragment : Fragment() {
         }
         binding.createProjectBackBtn.setOnClickListener { activity?.onBackPressed() }
         binding.createProjectOkBtn.setOnClickListener {
+            Log.d(TAG, "initViews: ${viewModel?.project?.get()}")
         }
 
     }

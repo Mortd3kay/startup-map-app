@@ -5,16 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.models.ProjectRoleItem
 import com.skyletto.startappfrontend.databinding.RoleItemBinding
 import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.ProjectRole
-import com.skyletto.startappfrontend.ui.project.fragments.CreateProjectFragment
 
 class RoleAdapter(private val context: Context, private val roleTypes: List<ProjectRole>) : RecyclerView.Adapter<RoleAdapter.RoleViewHolder>() {
 
@@ -32,8 +31,11 @@ class RoleAdapter(private val context: Context, private val roleTypes: List<Proj
         notifyDataSetChanged()
     }
 
-    class RoleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RoleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding: RoleItemBinding? = DataBindingUtil.bind(itemView)
+        init {
+            binding?.roleSpinner?.adapter = ArrayAdapter(itemView.context, R.layout.support_simple_spinner_dropdown_item, roleTypes.map { it.name })
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoleViewHolder {
@@ -42,7 +44,25 @@ class RoleAdapter(private val context: Context, private val roleTypes: List<Proj
     }
 
     override fun onBindViewHolder(holder: RoleViewHolder, position: Int) {
-        holder.binding?.roleSpinner?.adapter = ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, roleTypes.map { it.name })
+        holder.binding?.item = roles[position]
+        holder.binding?.roleSalaryType?.let{
+            it.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, _position: Int, id: Long) {
+                    roles[position].salaryType.set((it.selectedItem as String)[0])
+                    holder.binding.roleSalaryAmount.let { innerIt->
+                        if ((it.selectedItem as String)[0] == '%' && innerIt.text.length > 2){
+                            innerIt.setText(innerIt.text.substring(0,2))
+                        }
+                    }
+
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    TODO("Not yet implemented")
+                }
+
+            }
+        }
     }
 
     override fun getItemCount() = roles.size

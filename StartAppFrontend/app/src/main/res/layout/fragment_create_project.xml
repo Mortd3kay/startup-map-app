@@ -111,7 +111,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:layout_marginHorizontal="15dp"
                     android:layout_marginTop="25dp"
                     tools:listitem="@layout/role_item"/>
 
@@ -120,7 +119,7 @@
                     style="@style/button_style"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/add_role"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="30dp"
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="60dp"
                     android:layout_marginBottom="10dp"

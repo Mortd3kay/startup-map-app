@@ -9,5 +9,5 @@ class ProjectRoleItem {
     val role: ObservableField<ProjectRole> = ObservableField()
     val isSalary: ObservableField<Boolean> = ObservableField(false)
     val salaryType: ObservableField<Char> = ObservableField('%')
-    val salaryAmount: ObservableField<Double> = ObservableField(0.0)
+    val salaryAmount: ObservableField<Int> = ObservableField(0)
 }
