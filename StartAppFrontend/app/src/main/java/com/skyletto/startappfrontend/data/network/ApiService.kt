@@ -4,9 +4,8 @@ import com.skyletto.startappfrontend.data.requests.EditProfileDataRequest
 import com.skyletto.startappfrontend.data.requests.LoginDataRequest
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
-import com.skyletto.startappfrontend.domain.entities.Message
+import com.skyletto.startappfrontend.domain.entities.*
 import com.skyletto.startappfrontend.domain.entities.Tag
-import com.skyletto.startappfrontend.domain.entities.User
 import io.reactivex.Single
 import retrofit2.http.*
 
@@ -46,4 +45,16 @@ interface ApiService {
 
     @POST("users/specific")
     fun getUsersByIds(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body ids: Set<Long>): Single<List<User>>
+
+    @POST("projects/add")
+    fun addProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project: Project):Single<Project>
+
+    @GET("roles/all")
+    fun getAllRoles(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<ProjectRole>>
+
+    @GET("projects/all")
+    fun getAllProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<Project>>
+
+    @DELETE("projects/remove")
+    fun removeProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project:Project):Single<List<Project>>
 }
