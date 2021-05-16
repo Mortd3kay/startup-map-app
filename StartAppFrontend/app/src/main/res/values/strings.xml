@@ -62,6 +62,8 @@
     <string name="add_role">Добавить должность</string>
     <string name="salary">Зарплата</string>
     <string name="delete">Удалить</string>
+    <string name="for_example2">например, android</string>
+    <string name="show_tags_for_employees">Укажите тэги для соискателей</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

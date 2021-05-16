@@ -106,6 +106,47 @@
                         android:text="@={model.project.description}"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginTop="35dp"
+                    android:text="@string/show_tags_for_employees"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/rubik_regular"
+                    android:layout_gravity="start"
+                    android:layout_marginHorizontal="60dp"/>
+
+                <EditText
+                    android:id="@+id/project_tag_name_input"
+                    style="@style/input_style"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/dark"
+                    android:background="@drawable/tags_input_shape"
+                    android:inputType="text"
+                    android:hint="@string/for_example2"
+                    android:textColorHint="@color/dark"
+                    android:drawableStart="@drawable/search_icon"
+                    android:paddingHorizontal="5dp"
+                    />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/project_third_step_entry_chip_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="60dp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/project_third_step_choose_chip_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="60dp"/>
+
+
                 <Button
                     android:id="@+id/project_add_role_btn"
                     style="@style/button_style"

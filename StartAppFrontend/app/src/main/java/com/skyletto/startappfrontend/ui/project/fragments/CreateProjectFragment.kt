@@ -2,7 +2,9 @@ package com.skyletto.startappfrontend.ui.project.fragments
 
 import android.app.Activity
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,14 +15,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.adapters.RoleAdapter
+import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
 import com.skyletto.startappfrontend.common.utils.ProfileViewModelFactory
 import com.skyletto.startappfrontend.common.utils.ProjectViewModelFactory
 import com.skyletto.startappfrontend.common.utils.paintButtonText
 import com.skyletto.startappfrontend.databinding.ActivitySettingsBindingImpl
 import com.skyletto.startappfrontend.databinding.FragmentCreateProjectBinding
 import com.skyletto.startappfrontend.domain.entities.Project
+import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.main.viewmodels.MessagesViewModel
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
 
@@ -62,15 +68,41 @@ class CreateProjectFragment : Fragment() {
         }
         binding.createProjectBackBtn.setOnClickListener { activity?.onBackPressed() }
         binding.createProjectOkBtn.setOnClickListener {
-            adapter?.roles?.let { it1 -> viewModel?.packRoles(it1) }
+            adapter?.roles?.let { it1 -> viewModel?.prepareProject(it1) }
             Log.d(TAG, "initViews: ${viewModel?.project?.get()}")
         }
-
-    }
+        viewModel?.let {
+            it.chosenTags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepEntryChipGroup, tags, 1) })
+            it.tags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepChooseChipGroup, tags, 2) })
+        }
+        binding.projectTagNameInput.addTextChangedListener(object : LaconicTextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                if (s.toString().trim { it <= ' ' }.isEmpty()) viewModel?.loadRandomTags()
+                if (s.toString().trim { it <= ' ' }.length < 2) return
+                viewModel?.loadSimilarTags(s.toString())
+            }
+        })    }
 
     private fun getIdFromSP():Long {
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
         return sp?.getLong("id", -1)!!
+    }
+
+    private fun inflateChipGroup(group: ChipGroup, tags: Set<Tag>, flag: Int) {
+        group.removeAllViews()
+        for (t in tags) {
+            val chip = (Chip(requireContext()))
+            chip.text = t.name
+            if (flag == 1) {
+                chip.isChecked = true
+                chip.isCloseIconVisible = true
+                chip.setOnClickListener { viewModel?.toTagFromChosenTag(t) }
+            } else if (flag == 2) {
+                chip.setBackgroundColor(Color.BLUE)
+                chip.setOnClickListener { viewModel?.toChosenTagFromTag(t) }
+            }
+            group.addView(chip)
+        }
     }
 
     companion object {
