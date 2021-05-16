@@ -9,7 +9,7 @@ data class ProjectAndRole (
         @PrimaryKey var id: Long = 0,
         @Ignore var project: Project? = null,
         @Embedded var role: Role? = null,
-        @Ignore var user: User? = null,
+        @Embedded var user: User? = null,
         @SerializedName("has_salary")
         var isSalary: Boolean = false,
         var salaryType: Char = '%',

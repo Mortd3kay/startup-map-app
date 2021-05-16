@@ -25,6 +25,9 @@ interface ProjectDao {
     @Query("select * from projects where pId=:id")
     fun getById(id: Long): LiveData<ProjectWithTagsAndRoles>
 
+    @Query("select * from projects t1,project_user t2 where t2.userId=:id and t1.pId = t2.projectId")
+    fun getAllByUserId(id: Long): LiveData<ProjectWithTagsAndRoles>
+
     @Query("delete from projects")
     fun removeAll(): Single<Int>
 }

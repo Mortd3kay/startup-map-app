@@ -6,6 +6,7 @@ import androidx.room.Relation
 import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.ProjectAndRole
 import com.skyletto.startappfrontend.domain.entities.Tag
+import com.skyletto.startappfrontend.domain.entities.User
 
 data class ProjectWithTagsAndRoles(
         @Embedded val project: Project,
@@ -30,5 +31,16 @@ data class ProjectWithTagsAndRoles(
                         entityColumn = "roleId"
                 )
         )
-        val roles: List<ProjectAndRole>? = null
+        val roles: List<ProjectAndRole>? = null,
+        @Relation(
+                parentColumn = "pId",
+                entity = User::class,
+                entityColumn = "uId",
+                associateBy = Junction(
+                        value = ProjectUser::class,
+                        parentColumn = "projectId",
+                        entityColumn = "userId"
+                )
+        )
+        val user: User? = null
 )

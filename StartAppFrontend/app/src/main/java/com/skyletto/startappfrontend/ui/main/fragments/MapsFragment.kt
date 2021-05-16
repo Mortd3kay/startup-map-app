@@ -1,5 +1,7 @@
 package com.skyletto.startappfrontend.ui.main.fragments
 
+import android.app.Activity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
@@ -27,10 +30,12 @@ class MapsFragment : Fragment() {
     var mActivity: ActivityFragmentWorker? = null
     private var viewModel: MapViewModel? = null
     private var callback: OnMapReadyCallback = initMapCallback()
+    private var sp:SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = activity?.let { ViewModelProvider(it).get(MapViewModel::class.java) }
+        sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
+        viewModel = activity?.let { ViewModelProvider(it,MapViewModelFactory(it.application, getIdFromSP())).get(MapViewModel::class.java) }
         viewModel?.activity = mActivity
     }
 
@@ -77,6 +82,8 @@ class MapsFragment : Fragment() {
         googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
+    private fun getIdFromSP() = sp?.getLong("id", -1)!!
 
     companion object {
         private const val TAG = "MAP_FRAGMENT"
