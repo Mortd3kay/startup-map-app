@@ -3,6 +3,7 @@ package com.skyletto.startappfrontend.domain.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 //@Entity(tableName = "projects_roles")
 data class ProjectAndRole (
@@ -10,6 +11,7 @@ data class ProjectAndRole (
         var project: Project? = null,
         var role: ProjectRole? = null,
         var user: User? = null,
+        @SerializedName("has_salary")
         var isSalary: Boolean = false,
         var salaryType: Char = '%',
         var salaryAmount: Double = 0.0
