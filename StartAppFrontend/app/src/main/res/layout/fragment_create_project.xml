@@ -106,14 +106,6 @@
                         android:text="@={model.project.description}"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/roles_list_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_marginTop="25dp"
-                    tools:listitem="@layout/role_item"/>
-
                 <Button
                     android:id="@+id/project_add_role_btn"
                     style="@style/button_style"
@@ -125,6 +117,15 @@
                     android:layout_marginBottom="10dp"
                     />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/roles_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginTop="25dp"
+                    tools:listitem="@layout/role_item"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginHorizontal="10dp"/>
 
             </LinearLayout>
         </ScrollView>

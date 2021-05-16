@@ -61,6 +61,7 @@
     <string name="project_description">описание проекта</string>
     <string name="add_role">Добавить должность</string>
     <string name="salary">Зарплата</string>
+    <string name="delete">Удалить</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

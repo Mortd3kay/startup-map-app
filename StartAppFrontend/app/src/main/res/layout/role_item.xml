@@ -5,6 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <variable
+            name="click"
+            type="android.view.View.OnClickListener" />
+
         <variable
             name="item"
             type="com.skyletto.startappfrontend.common.models.ProjectRoleItem" />
@@ -17,11 +22,30 @@
         android:layout_height="wrap_content"
         android:gravity="center">
 
-        <Spinner
-            android:id="@+id/role_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/role_spinner_background" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Spinner
+                android:id="@+id/role_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/role_spinner_background" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/blood_red"
+                android:text="@string/delete"
+                android:textSize="12sp"
+                android:fontFamily="@font/rubik_medium"
+                android:onClick="@{(v)->click.onClick(v)}"
+                android:layout_marginHorizontal="10dp"/>
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
