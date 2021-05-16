@@ -1,6 +1,7 @@
 package com.skyletto.startappbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class ProjectAndRole {
     private ProjectRole role;
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
+    @JsonProperty("has_salary")
     @Column(name = "has_salary")
     private boolean hasSalary;
     @Column(name = "salary_type")

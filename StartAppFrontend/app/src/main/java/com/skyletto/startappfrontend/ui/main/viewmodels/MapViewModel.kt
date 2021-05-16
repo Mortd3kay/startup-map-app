@@ -15,6 +15,9 @@ class MapViewModel(application: Application) : AndroidViewModel(application){
         activity?.goToSettings()
     }
 
+    fun goToCreateProject(){
+        activity?.goToCreateProject()
+    }
 
     companion object{
         private const val TAG = "MAP_VIEW_MODEL"

@@ -6,12 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.skyletto.startappfrontend.common.models.UserTags
 import com.skyletto.startappfrontend.data.database.dao.*
-import com.skyletto.startappfrontend.domain.entities.Chat
-import com.skyletto.startappfrontend.domain.entities.Message
-import com.skyletto.startappfrontend.domain.entities.Tag
-import com.skyletto.startappfrontend.domain.entities.User
+import com.skyletto.startappfrontend.domain.entities.*
 
-@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class], version = 3, exportSchema = false)
+@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class, ProjectRole::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tagDao(): TagDao
@@ -19,6 +16,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun chatDao(): ChatDao
     abstract fun userDao(): UserDao
     abstract fun userTagsDao(): UserTagsDao
+    abstract fun roleDao(): RoleDao
 
     companion object {
         private var db: AppDatabase? = null

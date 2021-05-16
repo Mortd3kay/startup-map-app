@@ -165,11 +165,19 @@ public class SecurityController {
         return null;
     }
 
-    @GetMapping("/projects/get_all")
+    @GetMapping("/projects/all")
     public @ResponseBody List<Project> getAllProjects(Authentication auth){
         User u = userService.findUserByEmail(auth.getName());
         if (u != null){
             return projectService.getProjectsByUser(u);
+        }
+        return null;
+    }
+
+    @GetMapping("/roles/all")
+    public @ResponseBody List<ProjectRole> getAllRoles(Authentication auth){
+        if (auth.isAuthenticated()){
+            return projectService.getAllRoles();
         }
         return null;
     }

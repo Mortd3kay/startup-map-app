@@ -55,9 +55,28 @@
     <string name="profile_phone_label">Телефон:</string>
     <string name="projects">Проекты</string>
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_project">Создать проект</string>
+    <string name="project_name">название проекта</string>
+    <string name="project_description">описание проекта</string>
+    <string name="add_role">Добавить должность</string>
+    <string name="salary">Зарплата</string>
+    <string name="delete">Удалить</string>
+    <string name="for_example2">например, android</string>
+    <string name="show_tags_for_employees">Укажите тэги для соискателей</string>
+    <string name="fields_are_empty">Не все поля заполнены</string>
+    <string name="cant_save_project">Не удалось сохранить проект</string>
+
     <string-array name="categories">
         <item name="all">Все</item>
         <item name="specialists">Специалисты</item>
         <item name="projects">Проекты</item>
+    </string-array>
+
+    <string-array name="salary_types">
+        <item name="percent">%</item>
+        <item name="euro">€</item>
+        <item name="dollar">$</item>
+        <item name="ruble">₽</item>
     </string-array>
 </resources>

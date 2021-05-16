@@ -49,7 +49,7 @@ public class UserService {
                 null
         );
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Logger.getLogger("SERVICE").log(Level.INFO, "save "+user.getEmail());
+        Logger.getLogger("USER_SERVICE").log(Level.INFO, "save");
         return userRepository.save(user);
     }
 
@@ -87,7 +87,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email){
-        Logger.getLogger("USER_SERVICE").log(Level.INFO, "request info "+email);
+        Logger.getLogger("USER_SERVICE").log(Level.INFO, "request info by email");
         return userRepository.findUserByEmail(email);
     }
 

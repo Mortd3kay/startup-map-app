@@ -10,6 +10,7 @@ import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.ui.main.fragments.MapsFragment
 import com.skyletto.startappfrontend.ui.main.fragments.MessagesFragment
 import com.skyletto.startappfrontend.ui.main.fragments.ProfileFragment
+import com.skyletto.startappfrontend.ui.project.ProjectActivity
 import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 import com.skyletto.startappfrontend.ui.start.StartActivity
 import java.util.*
@@ -98,7 +99,11 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     }
 
     override fun goToSettings() {
-        startActivity(Intent(baseContext, SettingsActivity::class.java))
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
+    override fun goToCreateProject() {
+        startActivity(Intent(this, ProjectActivity::class.java))
     }
 
     override fun getToken():String {
