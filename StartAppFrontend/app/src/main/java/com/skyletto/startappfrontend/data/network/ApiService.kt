@@ -50,7 +50,7 @@ interface ApiService {
     fun addProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project: Project):Single<Project>
 
     @GET("roles/all")
-    fun getAllRoles(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<ProjectRole>>
+    fun getAllRoles(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<Role>>
 
     @GET("projects/all")
     fun getAllProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<Project>>
