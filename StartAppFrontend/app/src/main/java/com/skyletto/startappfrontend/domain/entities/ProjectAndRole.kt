@@ -2,6 +2,7 @@ package com.skyletto.startappfrontend.domain.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 
 //@Entity(tableName = "projects_roles")
 data class ProjectAndRole (

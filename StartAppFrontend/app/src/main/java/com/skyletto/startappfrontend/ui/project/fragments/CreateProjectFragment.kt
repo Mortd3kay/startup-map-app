@@ -10,24 +10,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.adapters.RoleAdapter
-import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
-import com.skyletto.startappfrontend.common.utils.ProfileViewModelFactory
-import com.skyletto.startappfrontend.common.utils.ProjectViewModelFactory
-import com.skyletto.startappfrontend.common.utils.paintButtonText
-import com.skyletto.startappfrontend.databinding.ActivitySettingsBindingImpl
+import com.skyletto.startappfrontend.common.utils.*
 import com.skyletto.startappfrontend.databinding.FragmentCreateProjectBinding
-import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.Tag
-import com.skyletto.startappfrontend.ui.main.viewmodels.MessagesViewModel
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
 
 class CreateProjectFragment : Fragment() {
@@ -68,8 +60,18 @@ class CreateProjectFragment : Fragment() {
         }
         binding.createProjectBackBtn.setOnClickListener { activity?.onBackPressed() }
         binding.createProjectOkBtn.setOnClickListener {
-            adapter?.roles?.let { it1 -> viewModel?.prepareProject(it1) }
-            Log.d(TAG, "initViews: ${viewModel?.project?.get()}")
+            if (viewModel?.checkTitleAndDescription()==true){
+                adapter?.roles?.let { it1 -> viewModel?.prepareProject(it1) }
+                viewModel?.saveProject(
+                        {
+                            toast(context, getString(R.string.cant_save_project))
+                        },
+                        {
+                            activity?.finish()
+                        }
+                )
+
+            } else toast(context, getString(R.string.fields_are_empty))
         }
         viewModel?.let {
             it.chosenTags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepEntryChipGroup, tags, 1) })

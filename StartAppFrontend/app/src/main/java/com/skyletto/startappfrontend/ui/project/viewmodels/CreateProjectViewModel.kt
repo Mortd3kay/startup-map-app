@@ -13,7 +13,6 @@ import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.ProjectAndRole
 import com.skyletto.startappfrontend.domain.entities.Tag
-import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -37,6 +36,14 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
             project.get()?.user = it?.user
         }
         loadRandomTags()
+    }
+
+    fun checkTitleAndDescription():Boolean{
+        project.get()?.let {
+            if (it.description.isNotBlank() && it.title.isNotBlank())
+                return true
+        }
+        return false
     }
 
     private fun loadRoles() {
@@ -130,11 +137,11 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
     }
 
     private fun packRoles(roles:List<ProjectRoleItem>){
-        project.get()?.roles = roles.map { ProjectAndRole(it.project,it.role.get(),null,it.isSalary.get()!!,it.salaryType.get()!!, it.salaryAmount.get()?.toDouble()!!) }
+        project.get()?.roles = roles.map { ProjectAndRole(null,it.role.get(),null,it.isSalary.get()!!,it.salaryType.get()!!, it.salaryAmount.get()?.toDouble()!!) }
     }
 
     private fun packTags(){
-        project.get()?.tags = tags.value
+        project.get()?.tags = chosenTags.value
     }
 
     private fun getToken() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getString("token", "")!!
@@ -143,6 +150,26 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
     companion object{
         private const val TAG = "CREATE_PROJECT_VIEW_MODEL"
         const val ROLES_MAX_COUNT = 5
+    }
+
+    fun saveProject(lambda:()->Unit, lambda2:()->Unit) {
+        project.get()?.let {
+            val d = api.apiService.addProject(makeToken(getToken()), it)
+                    .retry()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            {
+                                Log.d(TAG, "saveProject: $it")
+                                lambda2()
+                            },
+                            {
+                                Log.e(TAG, "saveProject: error", it)
+                                lambda()
+                            }
+                    )
+            cd.add(d)
+        }
     }
 
     override fun onCleared() {
