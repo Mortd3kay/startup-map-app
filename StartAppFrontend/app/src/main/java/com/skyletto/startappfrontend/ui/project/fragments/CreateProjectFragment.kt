@@ -37,6 +37,7 @@ class CreateProjectFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_project, container, false)
+        binding.model = viewModel
         initViews()
         return binding.root
     }
@@ -61,6 +62,7 @@ class CreateProjectFragment : Fragment() {
         }
         binding.createProjectBackBtn.setOnClickListener { activity?.onBackPressed() }
         binding.createProjectOkBtn.setOnClickListener {
+            adapter?.roles?.let { it1 -> viewModel?.packRoles(it1) }
             Log.d(TAG, "initViews: ${viewModel?.project?.get()}")
         }
 

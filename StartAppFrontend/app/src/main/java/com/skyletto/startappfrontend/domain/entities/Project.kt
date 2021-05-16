@@ -1,5 +1,6 @@
 package com.skyletto.startappfrontend.domain.entities
 
+import androidx.databinding.Bindable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -10,11 +11,11 @@ data class Project (
         var title: String,
         var description: String,
         var tags: Set<Tag>? = null,
-        var roles: Set<ProjectAndRole>? = null,
-        @ColumnInfo()
+        var roles: List<ProjectAndRole>? = null,
+        @ColumnInfo
         var user: User? = null
 ) {
-    constructor(title: String, description: String, tags: Set<Tag>?, roles: Set<ProjectAndRole>?) : this(0,title, description, tags, roles, null)
+    constructor(title: String, description: String, tags: Set<Tag>?, roles: List<ProjectAndRole>?) : this(0,title, description, tags, roles, null)
 
-    constructor(title: String, description: String, tags: Set<Tag>?, roles: Set<ProjectAndRole>?, user: User?):this(0, title, description, tags, roles, user)
+    constructor(title: String, description: String, tags: Set<Tag>?, roles: List<ProjectAndRole>?, user: User?):this(0, title, description, tags, roles, user)
 }

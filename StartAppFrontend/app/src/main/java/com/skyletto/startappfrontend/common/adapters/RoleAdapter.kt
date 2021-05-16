@@ -36,7 +36,16 @@ class RoleAdapter(private val context: Context, private val roleTypes: List<Proj
 
         init {
             binding?.let {
-                it.roleSpinner.adapter = ArrayAdapter(itemView.context, R.layout.support_simple_spinner_dropdown_item, roleTypes.map { innerIt -> innerIt.name })
+                it.roleSpinner.adapter = ArrayAdapter(itemView.context, R.layout.support_simple_spinner_dropdown_item, roleTypes)
+                it.roleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        it.item?.role?.set(it.roleSpinner.selectedItem as ProjectRole)
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+                }
+                it.roleSpinner.setSelection((Math.random()*roleTypes.size).toInt())
                 it.click = View.OnClickListener {
                     roles.removeAt(adapterPosition)
                     notifyItemRemoved(adapterPosition)

@@ -6,9 +6,11 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.skyletto.startappfrontend.common.MainApplication
+import com.skyletto.startappfrontend.common.models.ProjectRoleItem
 import com.skyletto.startappfrontend.common.models.UserTags
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.domain.entities.Project
+import com.skyletto.startappfrontend.domain.entities.ProjectAndRole
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -66,6 +68,10 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
                             Log.e(TAG, "loading user: error", it)
                         })
         cd.add(d2)
+    }
+
+    fun packRoles(roles:List<ProjectRoleItem>){
+        project.get()?.roles = roles.map { ProjectAndRole(it.project,it.role.get(),null,it.isSalary.get()!!,it.salaryType.get()!!, it.salaryAmount.get()?.toDouble()!!) }
     }
 
     private fun getToken() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getString("token", "")!!

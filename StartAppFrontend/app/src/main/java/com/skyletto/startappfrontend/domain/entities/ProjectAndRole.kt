@@ -15,4 +15,8 @@ data class ProjectAndRole (
 ) {
     constructor(project: Project?, role: ProjectRole?, user: User?, hasSalary: Boolean, salaryType: Char, salaryAmount: Double) : this(0, project, role, user, hasSalary, salaryType, salaryAmount)
     constructor(project: Project?, role: ProjectRole?):this(0, project, role)
+
+    override fun toString(): String {
+        return "$role $user $isSalary $salaryAmount $salaryType"
+    }
 }
