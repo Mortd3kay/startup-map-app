@@ -1,13 +1,15 @@
 package com.skyletto.startappfrontend.ui.main.viewmodels
 
+import android.app.Activity
 import android.app.Application
 import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.skyletto.startappfrontend.common.MainApplication
-import com.skyletto.startappfrontend.common.models.UserTags
-import com.skyletto.startappfrontend.common.models.UserWithTags
+import com.skyletto.startappfrontend.common.models.*
 import com.skyletto.startappfrontend.data.network.ApiRepository
+import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
+import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.ui.settings.viewmodels.SettingsViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -20,9 +22,11 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     private val sp = getApplication<MainApplication>().getSharedPreferences("profile", Application.MODE_PRIVATE)
     private val cd = CompositeDisposable()
     val user = db.userDao().getById(id)
+    val projects = db.projectDao().getAllByUserId(id)
     val vUser = ObservableField<UserWithTags>()
     init {
         loadFromNetwork()
+        loadProjects()
         user.observeForever {
             vUser.set(it)
         }
@@ -45,6 +49,43 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
         cd.add(d)
     }
 
+    private fun loadProjects() {
+        val d = api.apiService.getAllProjects(ApiRepository.makeToken(getToken()))
+                .delaySubscription(5, TimeUnit.SECONDS)
+                .retry()
+                .repeat()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            val p = saveProjects(it)
+                            Log.d(TAG, "loadProjects: $p")
+                        },
+                        {
+                            Log.e(TAG, "loadProjects: error ", it)
+                        })
+
+        cd.add(d)
+    }
+
+    private fun saveProjects(it:List<Project>) : List<Long>{
+        val pIds = db.projectDao().addAll(it)
+        for (p in it){
+            p.tags?.let { it1 ->
+                db.tagDao().addAll(it1)
+                db.projectTagsDao().addAll(it1.map { it2 -> ProjectTags(p.id, it2.id) })
+            }
+            p.user?.let { it1 ->
+                saveUser(it1)
+                it1.id?.let { it2 -> db.projectUserDao().add(ProjectUser(p.id,it2)) }
+            }
+            p.roles?.let { it1 ->
+                db.projectAndRolesDao().addAllRoles(it1)
+                db.projectRolesDao().addAll(it1.map { it2 -> ProjectRoles(p.id, it2.id) })
+            }
+        }
+        return pIds
+    }
+
     private fun saveUser(it1: User){
         db.userDao().add(it1)
         it1.tags?.let { it2 ->
@@ -54,6 +95,24 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
             db.userTagsDao().addAll(uTags)
         }
     }
+
+    fun deleteProject(project: Project) {
+        val d = api.apiService.removeProject(makeToken(getToken()), project)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            db.projectDao().removeProject(project)
+                            Log.d(TAG, "deleteProject: $it")
+                        },
+                        {
+                            Log.e(TAG, "deleteProject: error", it)
+                        }
+                )
+        cd.add(d)
+    }
+
+    private fun getToken() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getString("token", "")!!
+
 
     override fun onCleared() {
         super.onCleared()

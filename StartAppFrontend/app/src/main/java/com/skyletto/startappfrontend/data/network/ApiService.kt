@@ -55,6 +55,6 @@ interface ApiService {
     @GET("projects/all")
     fun getAllProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<Project>>
 
-    @DELETE("projects/remove")
+    @HTTP(method = "DELETE", path = "projects/remove", hasBody = true)
     fun removeProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project:Project):Single<List<Project>>
 }

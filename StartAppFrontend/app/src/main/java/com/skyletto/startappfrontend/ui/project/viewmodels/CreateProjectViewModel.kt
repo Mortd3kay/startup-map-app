@@ -149,7 +149,7 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
 
     companion object{
         private const val TAG = "CREATE_PROJECT_VIEW_MODEL"
-        const val ROLES_MAX_COUNT = 5
+        const val ROLES_MAX_COUNT = 4
     }
 
     fun saveProject(lambda:()->Unit, lambda2:()->Unit) {
