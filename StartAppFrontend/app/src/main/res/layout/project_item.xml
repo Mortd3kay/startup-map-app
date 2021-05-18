@@ -48,6 +48,16 @@
             android:textColor="@color/black"
             android:textSize="16sp"/>
 
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/project_item_chip_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/project_item_description"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/project_item_list_view"
             android:layout_width="match_parent"
@@ -58,7 +68,7 @@
             android:visibility="gone"
             android:layout_marginBottom="10dp"
             android:layout_marginHorizontal="10dp"
-            app:layout_constraintTop_toBottomOf="@id/project_item_description"
+            app:layout_constraintTop_toBottomOf="@id/project_item_chip_group"
             app:layout_constraintStart_toStartOf="parent"
             />
 

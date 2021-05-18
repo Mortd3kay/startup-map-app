@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <data>
+        <variable
+            name="role"
+            type="com.skyletto.startappfrontend.domain.entities.ProjectAndRole" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="5dp">
+
+        <Spinner
+            android:id="@+id/role_in_project_item_spinner"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/role_spinner_background" />
+
+        <EditText
+            android:id="@+id/role_in_project_item_username"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textColor="@color/black"
+            android:background="@drawable/maps_input_shape"
+            android:drawableEnd="@drawable/ic_baseline_emoji_emotions_24"
+            android:paddingHorizontal="6dp"
+            android:drawableTint="@color/transparent_grey"/>
+
+        <Button
+            android:id="@+id/assign_btn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            style="@style/button_style"
+            android:layout_marginVertical="3dp"
+            android:layout_marginHorizontal="10dp"
+            android:textSize="13sp"
+            android:text="@string/assign"/>
+
+    </LinearLayout>
+
+</layout>

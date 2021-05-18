@@ -26,7 +26,7 @@ import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 class ProfileFragment(private val id: Long) : Fragment() {
     private lateinit var viewModel: ProfileViewModel
     private lateinit var binding: FragmentProfileBinding
-    private val adapter = ProjectAdapter()
+    private var adapter:ProjectAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(activity?.application!!, id)).get(ProfileViewModel::class.java)
@@ -35,8 +35,8 @@ class ProfileFragment(private val id: Long) : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
-        takeViewModel()
         initViews()
+        takeViewModel()
         return binding.root
     }
     private fun takeViewModel(){
@@ -45,18 +45,23 @@ class ProfileFragment(private val id: Long) : Fragment() {
             it?.tags?.let {iIt -> inflateChipGroup(binding.profileTagsChipGroup, iIt) }
         }
         viewModel.projects.observe(viewLifecycleOwner){
-            adapter.projects = it
+            adapter?.projects = it
+        }
+        viewModel.roles.observe(viewLifecycleOwner){
+            context?.let{ it2 ->
+                adapter = ProjectAdapter(it2, it)
+                binding.profileProjectsRv.adapter = adapter
+            }
         }
     }
     private fun initViews(){
         binding.profileTbSettings.setOnClickListener { startActivity(Intent(this.context, SettingsActivity::class.java)) }
         binding.profileProjectsRv.layoutManager =LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        adapter.onDeleteProjectListener = object : OnDeleteProjectListener {
+        adapter?.onDeleteProjectListener = object : OnDeleteProjectListener {
             override fun delete(project: Project) {
                 viewModel.deleteProject(project)
             }
         }
-        binding.profileProjectsRv.adapter = adapter
     }
 
     private fun inflateChipGroup(group: ChipGroup, tags: Set<Tag>) {

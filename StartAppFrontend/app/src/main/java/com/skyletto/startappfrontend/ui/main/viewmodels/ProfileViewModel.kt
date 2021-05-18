@@ -11,6 +11,7 @@ import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.User
+import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
 import com.skyletto.startappfrontend.ui.settings.viewmodels.SettingsViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,10 +24,12 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     private val cd = CompositeDisposable()
     val user = db.userDao().getById(id)
     val projects = db.projectDao().getAllByUserId(id)
+    val roles = db.roleDao().getAll()
     val vUser = ObservableField<UserWithTags>()
     init {
         loadFromNetwork()
         loadProjects()
+        loadRoles()
         user.observeForever {
             vUser.set(it)
         }
@@ -106,6 +109,22 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
                         },
                         {
                             Log.e(TAG, "deleteProject: error", it)
+                        }
+                )
+        cd.add(d)
+    }
+
+    private fun loadRoles() {
+        val d = api.apiService.getAllRoles(makeToken(getToken()))
+                .retry()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            db.roleDao().addAll(it)
+                            Log.d(TAG, "loading roles: $it")
+                        },
+                        {
+                            Log.e(TAG, "loading roles: error", it)
                         }
                 )
         cd.add(d)
