@@ -37,18 +37,27 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
                 .subscribe(
                         {
                             Log.d(TAG, "loadFromNetwork user: $it")
-                            db.userDao().add(it)
-                            it.tags?.let { it1 ->
-                                db.tagDao().addAll(it1)
-                                val uTags: List<UserTags> = it1.map { innerIt -> it.id?.let { it2 -> UserTags(it2, innerIt.id) }!! }
-                                Log.d(TAG, "loadFromNetwork: $uTags")
-                                db.userTagsDao().addAll(uTags)
-                            }
+                            saveUser(it)
                         },
                         {
                             Log.e(TAG, "loadFromNetwork: ", it)
                         })
         cd.add(d)
+    }
+
+    private fun saveUser(it1: User){
+        db.userDao().add(it1)
+        it1.tags?.let { it2 ->
+            db.tagDao().addAll(it2)
+            val uTags: List<UserTags> = it2.map { innerIt -> it1.id?.let { it2 -> UserTags(it2, innerIt.id) }!! }
+            Log.d(TAG, "saveUser: $uTags")
+            db.userTagsDao().addAll(uTags)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cd.clear()
     }
 
     companion object{

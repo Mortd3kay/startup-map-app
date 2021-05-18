@@ -5,23 +5,23 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.skyletto.startappfrontend.domain.entities.ProjectAndRole
+import com.skyletto.startappfrontend.common.models.ProjectRoles
 import io.reactivex.Single
 
 @Dao
 interface ProjectRolesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun add(projectAndRole: ProjectAndRole)
+    fun add(projectRoles: ProjectRoles)
 
-    @Query("select * from projects_roles where prId in (:ids)")
-    fun getAllByIds(ids: List<Long>): LiveData<List<ProjectAndRole>>
+    @Query("select * from project_roles where projectId in (:ids)")
+    fun getAllByProjectIds(ids: List<Long>): LiveData<List<ProjectRoles>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addAll(list: List<ProjectAndRole>): List<Long>
+    fun addAll(list: List<ProjectRoles>): List<Long>
 
-    @Query("select * from projects_roles where prId=:id")
-    fun getById(id: Long): LiveData<ProjectAndRole>
+    @Query("select * from project_roles where projectId=:id")
+    fun getByProjectId(id: Long): LiveData<ProjectRoles>
 
-    @Query("delete from projects_roles")
+    @Query("delete from project_roles")
     fun removeAll(): Single<Int>
 }

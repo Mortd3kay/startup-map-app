@@ -20,8 +20,8 @@ interface UserTagsDao {
     fun addAll(list: List<UserTags>)
 
     @Query("select * from user_tags where userId=:userId")
-    fun getById(userId: Long): Single<UserTags>
+    fun getTagByUserId(userId: Long): Single<UserTags>
 
     @Query("delete from user_tags")
-    fun removeAll()
+    fun removeAllUserTags()
 }
