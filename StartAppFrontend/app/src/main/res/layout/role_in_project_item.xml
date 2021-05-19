@@ -68,7 +68,7 @@
             android:layout_marginTop="7dp"
             android:orientation="horizontal">
 
-            <MultiAutoCompleteTextView
+            <AutoCompleteTextView
                 android:id="@+id/role_in_project_item_username"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -80,6 +80,7 @@
                 android:paddingStart="10dp"
                 android:hint="@string/input_name"
                 android:textColorHint="@color/grey"
+                android:completionThreshold="1"
                 android:drawableTint="@color/transparent_grey"/>
 
             <Space

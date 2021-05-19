@@ -5,9 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.models.UserItem
 import com.skyletto.startappfrontend.common.models.UserWithTags
 import com.skyletto.startappfrontend.common.utils.paintButtonText
 import com.skyletto.startappfrontend.databinding.RoleInProjectItemBinding
@@ -30,9 +33,11 @@ class RoleInProjectAdapter(val context: Context) : RecyclerView.Adapter<RoleInPr
         val binding = DataBindingUtil.bind<RoleInProjectItemBinding>(itemView)
         init {
             binding?.assignBtn?.let { paintButtonText(it) }
-            binding?.roleInProjectItemUsername?.setAdapter(UserArrayAdapter(context, users))
-            binding?.roleInProjectItemUsername?.threshold = 1
-            Log.d(TAG, "init role adapter: users $users")
+            binding?.roleInProjectItemUsername?.setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, users.map { UserItem(it.user.id!!, it.user.firstName +" "+ it.user.secondName,it.user.title?:"") }))
+            binding?.roleInProjectItemUsername?.setOnItemClickListener { parent, view, position, id ->
+                val item = binding.roleInProjectItemUsername.adapter.getItem(position) as UserItem
+                Log.d(TAG, "item: ${item.id} ${item.fullName}")
+            }
         }
     }
 
