@@ -1,11 +1,13 @@
 package com.skyletto.startappfrontend.common.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat.getColorStateList
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -15,9 +17,14 @@ import com.skyletto.startappfrontend.databinding.ProjectItemBinding
 import com.skyletto.startappfrontend.domain.entities.Role
 import com.skyletto.startappfrontend.domain.entities.Tag
 
-class ProjectAdapter(val context: Context,private val roleTypes: List<Role>) : RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>() {
+class ProjectAdapter(val context: Context) : RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>() {
 
     var onDeleteProjectListener: OnDeleteProjectListener? = null
+    var roleTypes: List<Role>? = null
+    set(value){
+        field = value
+        notifyDataSetChanged()
+    }
 
     var projects = listOf<ProjectWithTagsAndRoles>()
     set(value){
@@ -30,7 +37,9 @@ class ProjectAdapter(val context: Context,private val roleTypes: List<Role>) : R
         val adapter = RoleInProjectAdapter(context, roleTypes)
         val binding = DataBindingUtil.bind<ProjectItemBinding>(itemView)
         init {
+            binding?.projectItemListView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.projectItemListView?.adapter = adapter
+            Log.d(TAG, "init adapter: $roleTypes")
         }
     }
 
@@ -55,7 +64,7 @@ class ProjectAdapter(val context: Context,private val roleTypes: List<Role>) : R
                     holder.expanded = true
                 }
             }
-
+            projects[position].roles?.let { it1 -> holder.adapter.roles = it1 }
             projects[position].tags?.let { it1 -> inflateChipGroup(it.projectItemChipGroup, it1) }
             it.projectItemDeleteBtn.setOnClickListener { onDeleteProjectListener?.delete(projects[position].project) }
         }
@@ -73,4 +82,8 @@ class ProjectAdapter(val context: Context,private val roleTypes: List<Role>) : R
     }
 
     override fun getItemCount() = projects.size
+
+    companion object{
+        private const val TAG = "PROJECT_ADAPTER"
+    }
 }
