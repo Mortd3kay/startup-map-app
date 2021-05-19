@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             tools:listitem="@layout/role_item"
             android:visibility="gone"
             android:layout_marginBottom="10dp"
@@ -81,6 +81,7 @@
             android:textSize="12sp"
             android:fontFamily="@font/rubik_medium"
             android:visibility="gone"
+            android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/project_item_list_view"/>

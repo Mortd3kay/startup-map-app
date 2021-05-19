@@ -49,10 +49,6 @@ class ProfileFragment(private val id: Long) : Fragment() {
         viewModel.projects.observe(viewLifecycleOwner) {
             adapter?.projects = it
         }
-        viewModel.roles.observe(viewLifecycleOwner) {
-            adapter?.roleTypes = it
-            Log.d(TAG, "takeViewModel: $adapter")
-        }
     }
 
     private fun initViews() {

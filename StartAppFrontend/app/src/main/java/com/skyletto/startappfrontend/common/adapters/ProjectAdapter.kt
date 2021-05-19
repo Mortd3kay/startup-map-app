@@ -20,11 +20,6 @@ import com.skyletto.startappfrontend.domain.entities.Tag
 class ProjectAdapter(val context: Context) : RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>() {
 
     var onDeleteProjectListener: OnDeleteProjectListener? = null
-    var roleTypes: List<Role>? = null
-    set(value){
-        field = value
-        notifyDataSetChanged()
-    }
 
     var projects = listOf<ProjectWithTagsAndRoles>()
     set(value){
@@ -34,12 +29,11 @@ class ProjectAdapter(val context: Context) : RecyclerView.Adapter<ProjectAdapter
 
     inner class ProjectViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var expanded = false
-        val adapter = RoleInProjectAdapter(context, roleTypes)
+        val adapter = RoleInProjectAdapter(context)
         val binding = DataBindingUtil.bind<ProjectItemBinding>(itemView)
         init {
             binding?.projectItemListView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.projectItemListView?.adapter = adapter
-            Log.d(TAG, "init adapter: $roleTypes")
         }
     }
 

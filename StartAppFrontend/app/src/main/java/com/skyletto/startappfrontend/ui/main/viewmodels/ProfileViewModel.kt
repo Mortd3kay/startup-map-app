@@ -29,7 +29,6 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     init {
         loadFromNetwork()
         loadProjects()
-        loadRoles()
         user.observeForever {
             vUser.set(it)
         }
@@ -109,22 +108,6 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
                         },
                         {
                             Log.e(TAG, "deleteProject: error", it)
-                        }
-                )
-        cd.add(d)
-    }
-
-    private fun loadRoles() {
-        val d = api.apiService.getAllRoles(makeToken(getToken()))
-                .retry()
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        {
-                            db.roleDao().addAll(it)
-                            Log.d(TAG, "loading roles: $it")
-                        },
-                        {
-                            Log.e(TAG, "loading roles: error", it)
                         }
                 )
         cd.add(d)
