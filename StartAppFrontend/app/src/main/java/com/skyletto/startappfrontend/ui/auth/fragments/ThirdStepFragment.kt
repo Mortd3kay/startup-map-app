@@ -1,23 +1,23 @@
 package com.skyletto.startappfrontend.ui.auth.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
+import com.skyletto.startappfrontend.common.utils.paintButtonText
 import com.skyletto.startappfrontend.databinding.FragmentThirdStepBinding
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.auth.ActivityStepper
 import com.skyletto.startappfrontend.ui.auth.viewmodels.SharedAuthViewModel
-import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
-import com.skyletto.startappfrontend.common.utils.paintButtonText
 
 class ThirdStepFragment : Fragment() {
     private var mActivity: ActivityStepper? = null
@@ -58,7 +58,7 @@ class ThirdStepFragment : Fragment() {
                 chip.isCloseIconVisible = true
                 chip.setOnClickListener { viewModel?.toTagFromChosenTag(t) }
             } else if (flag == 2) {
-                chip.setBackgroundColor(Color.BLUE)
+                chip.chipBackgroundColor = ResourcesCompat.getColorStateList(resources, R.color.pink2, null)
                 chip.setOnClickListener { viewModel?.toChosenTagFromTag(t) }
             }
             group.addView(chip)

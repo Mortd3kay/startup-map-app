@@ -13,9 +13,9 @@ import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.models.ProjectRoleItem
 import com.skyletto.startappfrontend.databinding.RoleItemBinding
 import com.skyletto.startappfrontend.domain.entities.Project
-import com.skyletto.startappfrontend.domain.entities.ProjectRole
+import com.skyletto.startappfrontend.domain.entities.Role
 
-class RoleAdapter(private val context: Context, private val roleTypes: List<ProjectRole>) : RecyclerView.Adapter<RoleAdapter.RoleViewHolder>() {
+class RoleAdapter(private val context: Context, private val roleTypes: List<Role>) : RecyclerView.Adapter<RoleAdapter.RoleViewHolder>() {
 
     var roles = mutableListOf<ProjectRoleItem>()
         set(value) {
@@ -39,7 +39,7 @@ class RoleAdapter(private val context: Context, private val roleTypes: List<Proj
                 it.roleSpinner.adapter = ArrayAdapter(itemView.context, R.layout.support_simple_spinner_dropdown_item, roleTypes)
                 it.roleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        it.item?.role?.set(it.roleSpinner.selectedItem as ProjectRole)
+                        it.item?.role?.set(it.roleSpinner.selectedItem as Role)
                     }
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                         TODO("Not yet implemented")

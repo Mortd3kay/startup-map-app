@@ -164,6 +164,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/profile_projects_rv"
+                    tools:listitem="@layout/project_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"

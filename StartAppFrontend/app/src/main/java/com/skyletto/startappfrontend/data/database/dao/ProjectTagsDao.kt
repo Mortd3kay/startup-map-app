@@ -5,23 +5,22 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.skyletto.startappfrontend.common.models.ProjectTags
 import com.skyletto.startappfrontend.common.models.UserTags
+import com.skyletto.startappfrontend.domain.entities.Project
 import io.reactivex.Single
 
 @Dao
-interface UserTagsDao {
+interface ProjectTagsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun add(ut: UserTags)
+    fun add(ut: ProjectTags)
 
-    @Query("select * from user_tags where userId in (:ids)")
-    fun getAllByUserIds(ids: List<Long>): LiveData<List<UserTags>>
+    @Query("select * from project_tags where projectId = :id")
+    fun getAllByProjectId(id:Long): LiveData<List<ProjectTags>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addAll(list: List<UserTags>)
+    fun addAll(list: List<ProjectTags>)
 
-    @Query("select * from user_tags where userId=:userId")
-    fun getTagByUserId(userId: Long): Single<UserTags>
-
-    @Query("delete from user_tags")
-    fun removeAllUserTags()
+    @Query("delete from project_tags")
+    fun removeAll()
 }

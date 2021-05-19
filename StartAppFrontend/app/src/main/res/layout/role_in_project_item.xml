@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="role"
+            type="com.skyletto.startappfrontend.domain.entities.ProjectAndRole" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="5dp"
+        android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="7dp"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginStart="5dp"
+            android:text="@{role.role.name}"
+            tools:text="Тестировщик"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:text="@{role.salaryAmount+``}"
+            android:visibility="@{role.salary?View.VISIBLE:View.GONE}"
+            tools:text="4577"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:text="@{Character.toString(role.salaryType)}"
+            android:visibility="@{role.salary?View.VISIBLE:View.GONE}"
+            android:layout_marginStart="3dp"
+            tools:text="$"/>
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="7dp"
+            android:orientation="horizontal">
+
+            <AutoCompleteTextView
+                android:id="@+id/role_in_project_item_username"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:textColor="@color/black"
+                android:background="@drawable/maps_input_shape"
+                android:drawableEnd="@drawable/ic_baseline_emoji_emotions_24"
+                android:paddingEnd="6dp"
+                android:paddingStart="10dp"
+                android:hint="@string/input_name"
+                android:textColorHint="@color/grey"
+                android:completionThreshold="1"
+                android:drawableTint="@color/transparent_grey"/>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="0dp"/>
+
+            <Button
+                android:id="@+id/assign_btn"
+                android:layout_weight="0.75"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                style="@style/button_style"
+                android:layout_marginVertical="3dp"
+                android:textSize="13sp"
+                android:text="@string/assign"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</layout>

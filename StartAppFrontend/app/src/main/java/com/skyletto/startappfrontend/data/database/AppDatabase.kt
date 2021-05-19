@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.skyletto.startappfrontend.common.models.ProjectRoles
+import com.skyletto.startappfrontend.common.models.ProjectTags
+import com.skyletto.startappfrontend.common.models.ProjectUser
 import com.skyletto.startappfrontend.common.models.UserTags
 import com.skyletto.startappfrontend.data.database.dao.*
 import com.skyletto.startappfrontend.domain.entities.*
 
-@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class, ProjectRole::class], version = 4, exportSchema = false)
+@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class, Role::class, Project::class, ProjectRoles::class, ProjectTags::class, ProjectUser::class,ProjectAndRole::class], version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tagDao(): TagDao
@@ -17,6 +20,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun userTagsDao(): UserTagsDao
     abstract fun roleDao(): RoleDao
+    abstract fun projectAndRolesDao(): ProjectAndRoleDao
+    abstract fun projectRolesDao(): ProjectRolesDao
+    abstract fun projectDao(): ProjectDao
+    abstract fun projectTagsDao(): ProjectTagsDao
+    abstract fun projectUserDao(): ProjectUserDao
 
     companion object {
         private var db: AppDatabase? = null

@@ -66,6 +66,8 @@
     <string name="show_tags_for_employees">Укажите тэги для соискателей</string>
     <string name="fields_are_empty">Не все поля заполнены</string>
     <string name="cant_save_project">Не удалось сохранить проект</string>
+    <string name="assign">Назначить</string>
+    <string name="input_name">введите имя</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

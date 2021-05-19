@@ -22,6 +22,9 @@ interface ChatDao {
     @Query("select * from chats where chat_id=:id")
     fun getById(id: Long): Single<Chat>
 
+    @Query("select chat_id from chats")
+    fun getAllIds(): LiveData<List<Long>>
+
     @Query("delete from chats")
     fun removeAll(): Single<Int>
 }
