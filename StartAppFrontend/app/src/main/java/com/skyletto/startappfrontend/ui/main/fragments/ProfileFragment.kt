@@ -1,28 +1,28 @@
 package com.skyletto.startappfrontend.ui.main.fragments
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat.getColorStateList
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.adapters.OnAssignClickListener
 import com.skyletto.startappfrontend.common.adapters.OnDeleteProjectListener
 import com.skyletto.startappfrontend.common.adapters.ProjectAdapter
-import com.skyletto.startappfrontend.common.models.UserWithTags
+import com.skyletto.startappfrontend.common.models.UserItem
 import com.skyletto.startappfrontend.common.utils.ProfileViewModelFactory
 import com.skyletto.startappfrontend.databinding.FragmentProfileBinding
 import com.skyletto.startappfrontend.domain.entities.Project
+import com.skyletto.startappfrontend.domain.entities.ProjectAndRole
 import com.skyletto.startappfrontend.domain.entities.Tag
+import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.ui.main.viewmodels.ProfileViewModel
 import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 
@@ -33,7 +33,25 @@ class ProfileFragment(private val id: Long) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(activity?.application!!, id)).get(ProfileViewModel::class.java)
-        adapter = context?.let { ProjectAdapter(it) }
+        adapter = context?.let { ProjectAdapter(it,
+                object : OnAssignClickListener {
+                    override fun assign(role: ProjectAndRole, userItem: UserItem?) {
+                        if (role.user?.id?:-1 != userItem?.id?:-1){
+                            if(userItem!=null){
+                                val user  = User()
+                                user.id = userItem.id
+                                role.user = user
+                            } else {
+                                role.user = null
+                            }
+                            viewModel.updateRole(role)
+                        }
+                    }
+
+                }
+
+        ) }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

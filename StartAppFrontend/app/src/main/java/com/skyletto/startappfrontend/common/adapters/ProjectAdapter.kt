@@ -1,14 +1,12 @@
 package com.skyletto.startappfrontend.common.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat.getColorStateList
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
@@ -21,7 +19,7 @@ import com.skyletto.startappfrontend.domain.entities.Role
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.domain.entities.User
 
-class ProjectAdapter(val context: Context) : RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>() {
+class ProjectAdapter(val context: Context, private val onAssignClickListener: OnAssignClickListener) : RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>() {
 
     var users: LiveData<List<UserWithTags>>? = null
     set(value) {
@@ -75,6 +73,7 @@ class ProjectAdapter(val context: Context) : RecyclerView.Adapter<ProjectAdapter
             projects[position].tags?.let { it1 -> inflateChipGroup(it.projectItemChipGroup, it1) }
             it.projectItemDeleteBtn.setOnClickListener { onDeleteProjectListener?.delete(projects[position].project) }
         }
+        holder.adapter.onAssignClickListener = onAssignClickListener
 
     }
 

@@ -29,15 +29,23 @@ class RoleInProjectAdapter(val context: Context) : RecyclerView.Adapter<RoleInPr
             notifyDataSetChanged()
         }
 
+    var onAssignClickListener: OnAssignClickListener? = null
+
+    var selectedItem: UserItem? = null
+
     inner class RoleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val binding = DataBindingUtil.bind<RoleInProjectItemBinding>(itemView)
         init {
             binding?.assignBtn?.let { paintButtonText(it) }
-            binding?.roleInProjectItemUsername?.setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, users.map { UserItem(it.user.id!!, it.user.firstName +" "+ it.user.secondName,it.user.title?:"") }))
-            binding?.roleInProjectItemUsername?.setOnItemClickListener { parent, view, position, id ->
-                val item = binding.roleInProjectItemUsername.adapter.getItem(position) as UserItem
-                Log.d(TAG, "item: ${item.id} ${item.fullName}")
+            binding?.assignBtn?.setOnClickListener {
+                binding.role?.let { onAssignClickListener?.assign(it, selectedItem) }
             }
+            binding?.roleInProjectItemUsername?.setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, users.map { UserItem(it.user.id!!, it.user.firstName +" "+ it.user.secondName,it.user.title?:"") }))
+            binding?.roleInProjectItemUsername?.setOnItemClickListener { _, _, position, _ ->
+                selectedItem = binding.roleInProjectItemUsername.adapter.getItem(position) as UserItem
+                Log.d(TAG, "item: ${selectedItem?.id} ${selectedItem?.fullName}")
+            }
+
         }
     }
 

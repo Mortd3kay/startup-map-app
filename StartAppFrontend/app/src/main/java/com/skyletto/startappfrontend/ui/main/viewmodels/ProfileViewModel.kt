@@ -12,6 +12,7 @@ import com.skyletto.startappfrontend.common.models.*
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.domain.entities.Project
+import com.skyletto.startappfrontend.domain.entities.ProjectAndRole
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
@@ -153,10 +154,24 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
         cd.add(d)
     }
 
+    fun updateRole(role: ProjectAndRole) {
+        val d = api.apiService.updateRole(role)
+                .subscribeOn(Schedulers.io())
+                .retry()
+                .subscribe(
+                        {
+                            db.projectAndRolesDao().updateRole(it)
+                        },
+                        {
+                            Log.e(TAG, "updateRole: error", it)
+                        }
+                )
+        cd.add(d)
+    }
+
     private fun getToken() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getString("token", "")!!
 
     private fun getUserId() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getLong("id", -1)
-
 
     override fun onCleared() {
         super.onCleared()
