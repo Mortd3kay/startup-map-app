@@ -80,7 +80,7 @@ class SettingsViewModel(application: Application, private val userId: Long) : An
         cd.add(d)
     }
 
-    private fun observeDB() {
+    fun observeDB() {
         user.observeForever { outerIt ->
             outerIt?.user?.let {
                 profile.set(
@@ -100,6 +100,10 @@ class SettingsViewModel(application: Application, private val userId: Long) : An
                 )
             }
         }
+    }
+
+    fun clearDB(){
+        db.clearAllTables()
     }
 
     fun areFieldsValid():Boolean{

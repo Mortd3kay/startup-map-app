@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat.getColorStateList
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -17,6 +18,7 @@ import com.google.android.material.chip.ChipGroup
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.adapters.OnDeleteProjectListener
 import com.skyletto.startappfrontend.common.adapters.ProjectAdapter
+import com.skyletto.startappfrontend.common.models.UserWithTags
 import com.skyletto.startappfrontend.common.utils.ProfileViewModelFactory
 import com.skyletto.startappfrontend.databinding.FragmentProfileBinding
 import com.skyletto.startappfrontend.domain.entities.Project
@@ -49,6 +51,7 @@ class ProfileFragment(private val id: Long) : Fragment() {
         viewModel.projects.observe(viewLifecycleOwner) {
             adapter?.projects = it
         }
+        adapter?.users = viewModel.knownUsers
     }
 
     private fun initViews() {

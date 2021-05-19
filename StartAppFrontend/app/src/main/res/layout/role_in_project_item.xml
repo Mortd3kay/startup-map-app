@@ -68,7 +68,7 @@
             android:layout_marginTop="7dp"
             android:orientation="horizontal">
 
-            <EditText
+            <MultiAutoCompleteTextView
                 android:id="@+id/role_in_project_item_username"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -77,12 +77,18 @@
                 android:background="@drawable/maps_input_shape"
                 android:drawableEnd="@drawable/ic_baseline_emoji_emotions_24"
                 android:paddingEnd="6dp"
-                android:paddingStart="9dp"
+                android:paddingStart="10dp"
+                android:hint="@string/input_name"
+                android:textColorHint="@color/grey"
                 android:drawableTint="@color/transparent_grey"/>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="0dp"/>
 
             <Button
                 android:id="@+id/assign_btn"
-                android:layout_weight="1"
+                android:layout_weight="0.75"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 style="@style/button_style"

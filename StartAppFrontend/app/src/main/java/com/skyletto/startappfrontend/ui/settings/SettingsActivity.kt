@@ -33,6 +33,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun initViews(){
         binding.logOutBtn.setOnClickListener {
             sp.edit().remove("token").remove("id").apply()
+            viewModel.clearDB()
             startActivity(Intent(this@SettingsActivity, AuthActivity::class.java))
             finish()
         }

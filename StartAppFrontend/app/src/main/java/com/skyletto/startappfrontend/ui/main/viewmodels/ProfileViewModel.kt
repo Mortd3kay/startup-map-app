@@ -5,16 +5,21 @@ import android.app.Application
 import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.*
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.domain.entities.Project
+import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
 import com.skyletto.startappfrontend.ui.settings.viewmodels.SettingsViewModel
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.nio.channels.SelectableChannel
 import java.util.concurrent.TimeUnit
 
 class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel(application){
@@ -26,16 +31,21 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     val projects = db.projectDao().getAllByUserId(id)
     val roles = db.roleDao().getAll()
     val vUser = ObservableField<UserWithTags>()
+    private val userIds = db.chatDao().getAllIds()
+    val knownUsers = db.userDao().getAllKnown(getUserId())
     init {
         loadFromNetwork()
         loadProjects()
         user.observeForever {
             vUser.set(it)
         }
+        userIds.observeForever {
+            loadUserByIds(it)
+        }
     }
 
     private fun loadFromNetwork() {
-        val d = api.apiService.getUserByToken(ApiRepository.makeToken(sp.getString("token", "")!!))
+        val d = api.apiService.getUserByToken(makeToken(sp.getString("token", "")!!))
                 .delaySubscription(2, TimeUnit.SECONDS)
                 .repeat()
                 .retry()
@@ -52,7 +62,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     }
 
     private fun loadProjects() {
-        val d = api.apiService.getAllProjects(ApiRepository.makeToken(getToken()))
+        val d = api.apiService.getAllProjects(makeToken(getToken()))
                 .delaySubscription(5, TimeUnit.SECONDS)
                 .retry()
                 .repeat()
@@ -66,6 +76,22 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
                             Log.e(TAG, "loadProjects: error ", it)
                         })
 
+        cd.add(d)
+    }
+
+    private fun loadUserByIds(ids:List<Long>){
+        val d = api.apiService.getUsersByIds(makeToken(getToken()),ids.toSet())
+                .subscribeOn(Schedulers.io())
+                .retry()
+                .subscribe(
+                        {
+                            saveAllUsers(it)
+                            Log.d(TAG, "loadUserByIds: userList size = ${it.size}")
+                        },
+                        {
+                            Log.e(TAG, "loadUserByIds: error", it)
+                        }
+                )
         cd.add(d)
     }
 
@@ -98,6 +124,20 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
         }
     }
 
+    private fun saveAllUsers(it: List<User>){
+        val tagSet = HashSet<Tag>()
+        val uTags = ArrayList<UserTags>()
+        for (u in it){
+            u.tags?.let {
+                it1 -> tagSet.addAll(it1)
+                uTags.addAll(it1.map { it2 -> UserTags(u.id!!, it2.id) })
+            }
+        }
+        db.userDao().addAll(it)
+        db.tagDao().addAll(tagSet)
+        db.userTagsDao().addAll(uTags)
+    }
+
     fun deleteProject(project: Project) {
         val d = api.apiService.removeProject(makeToken(getToken()), project)
                 .subscribeOn(Schedulers.io())
@@ -114,6 +154,8 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     }
 
     private fun getToken() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getString("token", "")!!
+
+    private fun getUserId() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getLong("id", -1)
 
 
     override fun onCleared() {
