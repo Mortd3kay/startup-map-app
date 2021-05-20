@@ -11,6 +11,5 @@ import javax.persistence.PersistenceContext;
 
 @Repository
 public interface ProjectAndRoleRepository extends JpaRepository<ProjectAndRole, Long> {
-    @Transactional
     void deleteAllByProject(Project project);
 }

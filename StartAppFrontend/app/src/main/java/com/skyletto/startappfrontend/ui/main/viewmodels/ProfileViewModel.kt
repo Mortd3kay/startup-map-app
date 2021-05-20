@@ -33,7 +33,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     val roles = db.roleDao().getAll()
     val vUser = ObservableField<UserWithTags>()
     private val userIds = db.chatDao().getAllIds()
-    val knownUsers = db.userDao().getAllKnown(getUserId())
+    val knownUsers = db.userDao().getAllKnown()
     init {
         loadFromNetwork()
         loadProjects()
@@ -64,14 +64,13 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
 
     private fun loadProjects() {
         val d = api.apiService.getAllProjects(makeToken(getToken()))
-                .delaySubscription(5, TimeUnit.SECONDS)
+                .delaySubscription(3, TimeUnit.SECONDS)
                 .retry()
                 .repeat()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
-                            val p = saveProjects(it)
-                            Log.d(TAG, "loadProjects: $p")
+                            saveProjects(it)
                         },
                         {
                             Log.e(TAG, "loadProjects: error ", it)
@@ -155,9 +154,8 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     }
 
     fun updateRole(role: ProjectAndRole) {
-        val d = api.apiService.updateRole(role)
+        val d = api.apiService.updateRole(makeToken(getToken()),role)
                 .subscribeOn(Schedulers.io())
-                .retry()
                 .subscribe(
                         {
                             db.projectAndRolesDao().updateRole(it)

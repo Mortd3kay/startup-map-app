@@ -105,7 +105,6 @@ public class ProjectAndRole {
     public String toString() {
         return "ProjectAndRole{" +
                 "id=" + id +
-                ", project=" + project +
                 ", role=" + role.getId() +
                 ", user=" + user +
                 ", hasSalary=" + hasSalary +

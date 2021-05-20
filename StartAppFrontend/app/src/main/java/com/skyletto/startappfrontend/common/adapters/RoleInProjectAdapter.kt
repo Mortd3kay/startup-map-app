@@ -31,21 +31,11 @@ class RoleInProjectAdapter(val context: Context) : RecyclerView.Adapter<RoleInPr
 
     var onAssignClickListener: OnAssignClickListener? = null
 
-    var selectedItem: UserItem? = null
-
     inner class RoleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val binding = DataBindingUtil.bind<RoleInProjectItemBinding>(itemView)
+        var selectedItem: UserItem? = null
         init {
             binding?.assignBtn?.let { paintButtonText(it) }
-            binding?.assignBtn?.setOnClickListener {
-                binding.role?.let { onAssignClickListener?.assign(it, selectedItem) }
-            }
-            binding?.roleInProjectItemUsername?.setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, users.map { UserItem(it.user.id!!, it.user.firstName +" "+ it.user.secondName,it.user.title?:"") }))
-            binding?.roleInProjectItemUsername?.setOnItemClickListener { _, _, position, _ ->
-                selectedItem = binding.roleInProjectItemUsername.adapter.getItem(position) as UserItem
-                Log.d(TAG, "item: ${selectedItem?.id} ${selectedItem?.fullName}")
-            }
-
         }
     }
 
@@ -55,7 +45,23 @@ class RoleInProjectAdapter(val context: Context) : RecyclerView.Adapter<RoleInPr
     }
 
     override fun onBindViewHolder(holder: RoleViewHolder, position: Int) {
-        holder.binding?.role = roles[position]
+        holder.binding?.let { it1 ->
+            it1.role = roles[position]
+            it1.role?.user?.let { it2 ->
+                it1.roleInProjectItemUsername.setText(it2.firstName + " "+it2.secondName)
+            }
+
+            it1.roleInProjectItemUsername.setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, users.map { UserItem(it.user.id!!, it.user.firstName +" "+ it.user.secondName,it.user.title?:"") }))
+            it1.roleInProjectItemUsername.setOnItemClickListener { _, _, position, _ ->
+                holder.selectedItem = it1.roleInProjectItemUsername.adapter.getItem(position) as UserItem
+                Log.d(TAG, "item: ${holder.selectedItem?.id} ${holder.selectedItem?.fullName}")
+            }
+            it1.assignBtn.setOnClickListener {
+                it1.role?.let { it2-> onAssignClickListener?.assign(it2, holder.selectedItem) }
+            }
+        }
+
+
     }
 
     override fun getItemCount() = roles.size
