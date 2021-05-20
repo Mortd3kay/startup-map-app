@@ -43,7 +43,8 @@ class ProjectAdapter(val context: Context, private val onAssignClickListener: On
             binding?.projectItemListView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.projectItemListView?.adapter = adapter
             users?.observeForever{
-                adapter.users = it
+                if (adapter.users!=it)
+                    adapter.users = it
             }
         }
     }
