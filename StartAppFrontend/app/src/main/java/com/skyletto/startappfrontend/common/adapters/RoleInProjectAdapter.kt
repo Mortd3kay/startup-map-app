@@ -47,6 +47,10 @@ class RoleInProjectAdapter(val context: Context) : RecyclerView.Adapter<RoleInPr
     override fun onBindViewHolder(holder: RoleViewHolder, position: Int) {
         holder.binding?.let { it1 ->
             it1.role = roles[position]
+            it1.role?.user?.let { it2 ->
+                it1.roleInProjectItemUsername.setText(it2.firstName + " "+it2.secondName)
+            }
+
             it1.roleInProjectItemUsername.setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, users.map { UserItem(it.user.id!!, it.user.firstName +" "+ it.user.secondName,it.user.title?:"") }))
             it1.roleInProjectItemUsername.setOnItemClickListener { _, _, position, _ ->
                 holder.selectedItem = it1.roleInProjectItemUsername.adapter.getItem(position) as UserItem
