@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
+import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
@@ -67,7 +68,11 @@ class MapsFragment : Fragment() {
             }
         }
         b.tbSettings.setOnClickListener { viewModel?.goToSettings()}
-        b.addProjectBtn.setOnClickListener { viewModel?.goToCreateProject() }
+        b.addProjectBtn.setOnClickListener {
+            if (viewModel?.creationAvailable==true)
+                viewModel?.goToCreateProject()
+            else toast(context, getString(R.string.you_may_have_only_one_project))
+        }
     }
 
 

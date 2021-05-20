@@ -9,10 +9,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MainApplication
+import com.skyletto.startappfrontend.common.models.UserTags
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.domain.entities.Message
 import com.skyletto.startappfrontend.domain.entities.User
+import com.skyletto.startappfrontend.ui.main.viewmodels.ProfileViewModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -25,14 +27,30 @@ class ChatViewModel(application: Application, private val chatId: Long) : Androi
     var forceDrop = true
     private val mObservable = MutableLiveData<Long>(0)
     var messageText = ObservableField("")
-    var friend = ObservableField<User>()
     private val api = getApplication<MainApplication>().api
     private val db = getApplication<MainApplication>().db
     private val cd = CompositeDisposable()
     private var disposable: Disposable? = null
     private val sp = application.getSharedPreferences("profile", AppCompatActivity.MODE_PRIVATE)
     private val ownerId = sp.getLong("id", -1)
+    private var mFriend = db.userDao().getById(chatId)
+    var friend = ObservableField<User>()
     var messages: LiveData<List<Message>> = db.messageDao().getAllByChatId(chatId)
+
+    init {
+        loadFriend()
+        loadMessages()
+        mObservable.observeForever{
+            Log.d(TAG, "observable: $it")
+            disposable?.dispose()
+            loadMessages()
+        }
+
+        mFriend.observeForever {
+            friend.set(it.user)
+        }
+    }
+
 
     fun sendMessage() {
         val message = Message(messageText.get()!!, LocalDateTime.now().toString(), ownerId, chatId)
@@ -54,17 +72,17 @@ class ChatViewModel(application: Application, private val chatId: Long) : Androi
         messageText.set("")
     }
 
-    init {
-        loadFriends()
-        loadMessages()
-        mObservable.observeForever{
-            Log.d(TAG, "observable: $it")
-            disposable?.dispose()
-            loadMessages()
+    private fun saveUser(it1: User){
+        db.userDao().add(it1)
+        it1.tags?.let { it2 ->
+            db.tagDao().addAll(it2)
+            val uTags: List<UserTags> = it2.map { innerIt -> it1.id?.let { it2 -> UserTags(it2, innerIt.id) }!! }
+            Log.d(TAG, "saveUser: $uTags")
+            db.userTagsDao().addAll(uTags)
         }
     }
 
-    private fun loadFriends() {
+    private fun loadFriend() {
         val d = loadFriend(chatId)
                 .delaySubscription(10, TimeUnit.SECONDS)
                 .repeat()
@@ -73,7 +91,7 @@ class ChatViewModel(application: Application, private val chatId: Long) : Androi
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
-                            friend.set(it)
+                            saveUser(it)
                         },
                         {
                             Log.e(TAG, "loadFriend: error", it)

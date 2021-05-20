@@ -7,20 +7,32 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.MainApplication
+import com.skyletto.startappfrontend.common.models.UserTags
+import com.skyletto.startappfrontend.data.database.AppDatabase
+import com.skyletto.startappfrontend.data.network.ApiRepository
+import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
+import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.ui.main.fragments.MapsFragment
 import com.skyletto.startappfrontend.ui.main.fragments.MessagesFragment
 import com.skyletto.startappfrontend.ui.main.fragments.ProfileFragment
+import com.skyletto.startappfrontend.ui.main.viewmodels.ProfileViewModel
 import com.skyletto.startappfrontend.ui.project.ProjectActivity
 import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 import com.skyletto.startappfrontend.ui.start.StartActivity
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     private lateinit var bnv: BottomNavigationView
     private lateinit var fm: FragmentManager
+    private lateinit var api:ApiRepository
+    private lateinit var db:AppDatabase
 
     private var isBack = false
     private val stack = LinkedList<Int>()
+    private val cd = CompositeDisposable()
 
     private lateinit var profileFragment: ProfileFragment
     private lateinit var messageFragment :MessagesFragment
@@ -32,7 +44,10 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        api = (application as MainApplication).api
+        db = (application as MainApplication).db
         parseBundle()
+        loadUser()
         initViews()
         initFragments()
         bnv.selectedItemId = R.id.map
@@ -75,6 +90,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         val bundle = intent.extras
         token = bundle?.getString("token")
         id = bundle?.getLong("id")
+        Log.d(TAG, "parseBundle: $id")
         if (token == null) {
             val sp = getSharedPreferences("profile", MODE_PRIVATE)
             token = sp.getString("token", "")
@@ -83,6 +99,35 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
                 finish()
             }
             id = sp.getLong("id", -1)
+        }
+    }
+
+    private fun loadUser(){
+        token?.let {
+            id?.let { it2 ->
+                val d = api.apiService.getUserById(makeToken(it), it2)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                                {
+                                    saveUser(it)
+                                },
+                                {
+                                    Log.e(TAG, "loadUser: error", it)
+                                }
+                        )
+                cd.add(d)
+            }
+        }
+
+    }
+
+    private fun saveUser(it1: User){
+        db.userDao().add(it1)
+        it1.tags?.let { it2 ->
+            db.tagDao().addAll(it2)
+            val uTags: List<UserTags> = it2.map { innerIt -> it1.id?.let { it2 -> UserTags(it2, innerIt.id) }!! }
+            Log.d(TAG, "saveUser: $uTags")
+            db.userTagsDao().addAll(uTags)
         }
     }
 
@@ -122,6 +167,12 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         }
         else super.onBackPressed()
     }
+
+    override fun onDestroy() {
+        cd.clear()
+        super.onDestroy()
+    }
+
     companion object {
         private const val TAG = "MAIN_ACTIVITY"
     }

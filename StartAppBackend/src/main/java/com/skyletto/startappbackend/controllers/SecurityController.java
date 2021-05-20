@@ -190,4 +190,11 @@ public class SecurityController {
         }
         return null;
     }
+
+    @PutMapping("/roles/update")
+    public @ResponseBody ProjectAndRole updateRole(Authentication auth, @RequestBody ProjectAndRole projectAndRole){
+        if (auth.isAuthenticated())
+            return projectService.updateRole(projectAndRole);
+        return null;
+    }
 }

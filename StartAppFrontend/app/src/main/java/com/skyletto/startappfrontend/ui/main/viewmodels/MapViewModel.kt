@@ -3,6 +3,7 @@ package com.skyletto.startappfrontend.ui.main.viewmodels
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.ProjectRoles
@@ -21,12 +22,13 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     private val api = getApplication<MainApplication>().api
     private val db = getApplication<MainApplication>().db
     private val projects = db.projectDao().getAllByUserId(userId)
+    var creationAvailable = true
     private val cd = CompositeDisposable()
 
     init {
         loadProjects()
         projects.observeForever {
-            Log.d(TAG, "projects: $it")
+            creationAvailable = it.isEmpty()
         }
     }
 

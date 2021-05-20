@@ -59,5 +59,5 @@ interface ApiService {
     fun removeProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project:Project):Single<List<Project>>
 
     @PUT("roles/update")
-    fun updateRole(@Body role: ProjectAndRole) : Single<ProjectAndRole>
+    fun updateRole(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body role: ProjectAndRole) : Single<ProjectAndRole>
 }

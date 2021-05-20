@@ -29,8 +29,6 @@ class SharedAuthViewModel(application: Application) : AndroidViewModel(applicati
     val chosenTags = MutableLiveData<MutableSet<Tag>>(HashSet())
     private val cd = CompositeDisposable()
     private val api = getApplication<MainApplication>().api
-    private val db: AppDatabase = getInstance(application)
-    private val sp: SharedPreferences = application.getSharedPreferences("profile", Context.MODE_PRIVATE)
     private var onNextStepListener: OnNextStepListener? = null
     private var onPrevStepListener: OnPrevStepListener? = null
     private var onSaveProfileListener: OnSaveProfileListener? = null
