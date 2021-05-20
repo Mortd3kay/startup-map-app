@@ -2,6 +2,7 @@ package com.skyletto.startappfrontend.ui.main.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -67,7 +68,11 @@ class ProfileFragment(private val id: Long) : Fragment() {
             it?.tags?.let { iIt -> inflateChipGroup(binding.profileTagsChipGroup, iIt) }
         }
         viewModel.projects.observe(viewLifecycleOwner) {
-            adapter?.projects = it
+            if (adapter?.projects != it){
+                adapter?.projects = it
+                Log.d(TAG, "attach projects to adapter: true")
+            } else Log.d(TAG, "attach projects to adapter: false")
+
         }
         adapter?.users = viewModel.knownUsers
     }

@@ -68,6 +68,7 @@
     <string name="cant_save_project">Не удалось сохранить проект</string>
     <string name="assign">Назначить</string>
     <string name="input_name">введите имя</string>
+    <string name="you_may_have_only_one_project">Вы можете иметь максимум 1 проект</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

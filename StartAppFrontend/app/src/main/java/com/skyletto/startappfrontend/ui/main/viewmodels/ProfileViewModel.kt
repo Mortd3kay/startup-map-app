@@ -70,8 +70,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
-                            val p = saveProjects(it)
-                            Log.d(TAG, "loadProjects: $p")
+                            saveProjects(it)
                         },
                         {
                             Log.e(TAG, "loadProjects: error ", it)
