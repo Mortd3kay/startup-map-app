@@ -154,7 +154,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     }
 
     fun updateRole(role: ProjectAndRole) {
-        val d = api.apiService.updateRole(role)
+        val d = api.apiService.updateRole(makeToken(getToken()),role)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {

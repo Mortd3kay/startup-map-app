@@ -28,7 +28,6 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     init {
         loadProjects()
         projects.observeForever {
-            Log.d(TAG, "projects: $it")
             creationAvailable = it.isEmpty()
         }
     }

@@ -9,8 +9,11 @@ import com.skyletto.startappbackend.repositories.ProjectRepository;
 import com.skyletto.startappbackend.repositories.ProjectRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class ProjectService {
@@ -34,6 +37,7 @@ public class ProjectService {
         return projectRepository.getAllByUser(user);
     }
 
+    @Transactional
     public List<Project> removeProject(User user,Project project){
         projectAndRoleRepository.deleteAllByProject(project);
         projectRepository.delete(project);
@@ -44,9 +48,12 @@ public class ProjectService {
         return projectRoleRepository.findAll();
     }
 
+    @Transactional
     public ProjectAndRole updateRole(ProjectAndRole projectAndRole){
-        ProjectAndRole role = projectAndRoleRepository.getOne(projectAndRole.getId());
+        Logger.getLogger("PROJECT_SERVICE").log(Level.INFO, "role: " + projectAndRole);
+        ProjectAndRole role = projectAndRoleRepository.findById(projectAndRole.getId()).orElse(projectAndRole);
         role.setUser(projectAndRole.getUser());
+        Logger.getLogger("PROJECT_SERVICE").log(Level.INFO, "role: " + role);
         return projectAndRoleRepository.save(role);
     }
 }
