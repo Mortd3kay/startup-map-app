@@ -1,5 +1,6 @@
 package com.skyletto.startappfrontend.ui.settings.viewmodels
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
@@ -15,8 +16,11 @@ import com.skyletto.startappfrontend.common.utils.isPasswordValid
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.requests.EditProfileDataRequest
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.nio.channels.SelectableChannel
 
 class SettingsViewModel(application: Application, private val userId: Long) : AndroidViewModel(application) {
     private val handler = Handler(Looper.getMainLooper())
@@ -32,14 +36,14 @@ class SettingsViewModel(application: Application, private val userId: Long) : An
         observeDB()
     }
 
-    fun sendNewProfile(){
+    fun sendNewProfile() {
         profile.get()?.let { outerIt ->
             Log.d(TAG, "sendNewProfile: $outerIt")
             api.apiService.editProfile(ApiRepository.makeToken(sp.getString("token", "")!!), outerIt)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             {
-                                if (it==null) handler.post{ toast(getApplication(), getApplication<MainApplication>().getString(R.string.wrong_password)) }
+                                if (it == null) handler.post { toast(getApplication(), getApplication<MainApplication>().getString(R.string.wrong_password)) }
                                 else {
                                     sp.edit().putString("token", it.token).apply()
                                     db.userDao().add(it.user)
@@ -52,8 +56,8 @@ class SettingsViewModel(application: Application, private val userId: Long) : An
                                 }
                             },
                             {
-                                handler.post{ toast(getApplication(), getApplication<MainApplication>().getString(R.string.error_while_editing_profile))}
-                                Log.e(TAG, "sendNewProfile: ",it )
+                                handler.post { toast(getApplication(), getApplication<MainApplication>().getString(R.string.error_while_editing_profile)) }
+                                Log.e(TAG, "sendNewProfile: ", it)
                             }
                     )
         }
@@ -80,7 +84,7 @@ class SettingsViewModel(application: Application, private val userId: Long) : An
         cd.add(d)
     }
 
-    fun observeDB() {
+    private fun observeDB() {
         user.observeForever { outerIt ->
             outerIt?.user?.let {
                 profile.set(
@@ -102,12 +106,18 @@ class SettingsViewModel(application: Application, private val userId: Long) : An
         }
     }
 
-    fun clearDB(){
-        db.clearAllTables()
+    @SuppressLint("CheckResult")
+    fun clearDB(onClear: ()->Unit) {
+        Observable.fromCallable { db.clearAllTables() }
+                .subscribeOn(Schedulers.newThread())
+                .subscribe{
+                    onClear()
+                }
+
     }
 
-    fun areFieldsValid():Boolean{
-        with(profile.get()){
+    fun areFieldsValid(): Boolean {
+        with(profile.get()) {
             this?.let {
                 return (isNameValid(firstName) && isNameValid(secondName) && isEmailValid(email) && (isPasswordValid(password) || password.isEmpty()))
             }

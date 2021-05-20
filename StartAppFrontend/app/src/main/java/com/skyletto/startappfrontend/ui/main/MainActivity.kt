@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         val bundle = intent.extras
         token = bundle?.getString("token")
         id = bundle?.getLong("id")
+        Log.d(TAG, "parseBundle: $id")
         if (token == null) {
             val sp = getSharedPreferences("profile", MODE_PRIVATE)
             token = sp.getString("token", "")

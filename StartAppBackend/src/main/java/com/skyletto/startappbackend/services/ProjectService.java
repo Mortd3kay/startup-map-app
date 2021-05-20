@@ -43,4 +43,10 @@ public class ProjectService {
     public List<ProjectRole> getAllRoles(){
         return projectRoleRepository.findAll();
     }
+
+    public ProjectAndRole updateRole(ProjectAndRole projectAndRole){
+        ProjectAndRole role = projectAndRoleRepository.getOne(projectAndRole.getId());
+        role.setUser(projectAndRole.getUser());
+        return projectAndRoleRepository.save(role);
+    }
 }

@@ -64,7 +64,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
 
     private fun loadProjects() {
         val d = api.apiService.getAllProjects(makeToken(getToken()))
-                .delaySubscription(5, TimeUnit.SECONDS)
+                .delaySubscription(3, TimeUnit.SECONDS)
                 .retry()
                 .repeat()
                 .subscribeOn(Schedulers.io())
@@ -157,7 +157,6 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     fun updateRole(role: ProjectAndRole) {
         val d = api.apiService.updateRole(role)
                 .subscribeOn(Schedulers.io())
-                .retry()
                 .subscribe(
                         {
                             db.projectAndRolesDao().updateRole(it)

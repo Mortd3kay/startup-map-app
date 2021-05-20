@@ -51,7 +51,10 @@ class ChatActivity : AppCompatActivity() {
         }
         adapter.onMessageAddedListener = object : OnMessageAddedListener {
             override fun update() {
-                binding.messagesRv.smoothScrollToPosition(adapter.itemCount - 1)
+                adapter?.itemCount?.let {
+                    binding.messagesRv.smoothScrollToPosition(it - 1)
+                }
+
             }
 
         }

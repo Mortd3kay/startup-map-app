@@ -9,7 +9,7 @@ import com.skyletto.startappfrontend.domain.entities.Message
 
 @Entity(tableName = "chats")
 data class Chat(
-        @ColumnInfo(name = "avatar_id") val avatarId: Int = R.drawable.ic_testing,
+        @ColumnInfo(name = "avatar_id") val avatarId: Int = R.drawable.ic_profile_image,
         @Embedded val message: Message,
         @PrimaryKey
         @ColumnInfo(name = "chat_id")

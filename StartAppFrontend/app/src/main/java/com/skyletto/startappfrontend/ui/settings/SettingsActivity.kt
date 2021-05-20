@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
@@ -33,9 +34,13 @@ class SettingsActivity : AppCompatActivity() {
     private fun initViews(){
         binding.logOutBtn.setOnClickListener {
             sp.edit().remove("token").remove("id").apply()
-            viewModel.clearDB()
-            startActivity(Intent(this@SettingsActivity, AuthActivity::class.java))
-            finish()
+            viewModel.clearDB{
+                Log.d(TAG, "clearDB: success")
+                Log.d(TAG, "initViews: ${sp.getLong("id", -1)}")
+                startActivity(Intent(this@SettingsActivity, AuthActivity::class.java))
+                finish()
+            }
+
         }
         paintButtonText(binding.editProfileBtn)
         binding.editProfileBtn.setOnClickListener {
@@ -65,4 +70,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun getIdFromPreferences() = sp.getLong("id", -1)
+
+    companion object{
+        private const val TAG = "SETTINGS_ACTIVITY"
+    }
 }
