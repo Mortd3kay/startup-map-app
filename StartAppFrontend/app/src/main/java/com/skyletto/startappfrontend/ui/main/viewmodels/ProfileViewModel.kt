@@ -33,7 +33,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
     val roles = db.roleDao().getAll()
     val vUser = ObservableField<UserWithTags>()
     private val userIds = db.chatDao().getAllIds()
-    val knownUsers = db.userDao().getAllKnown(getUserId())
+    val knownUsers = db.userDao().getAllKnown()
     init {
         loadFromNetwork()
         loadProjects()

@@ -38,7 +38,7 @@ class SettingsActivity : AppCompatActivity() {
                 Log.d(TAG, "clearDB: success")
                 Log.d(TAG, "initViews: ${sp.getLong("id", -1)}")
                 startActivity(Intent(this@SettingsActivity, AuthActivity::class.java))
-                finish()
+                finishAffinity()
             }
 
         }

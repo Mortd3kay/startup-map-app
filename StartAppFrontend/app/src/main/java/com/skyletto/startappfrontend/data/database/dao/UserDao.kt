@@ -20,8 +20,8 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAll(list: List<User>): List<Long>
 
-    @Query("select * from users where uId <> :id")
-    fun getAllKnown(id:Long):LiveData<List<UserWithTags>>
+    @Query("select * from users")
+    fun getAllKnown():LiveData<List<UserWithTags>>
 
     @Query("select * from users where uId=:id")
     fun getById(id: Long): LiveData<UserWithTags>
