@@ -51,7 +51,7 @@ public class SecurityController {
 
     @PostMapping("/messages/add")
     public @ResponseBody Message saveMessage(Authentication auth, @RequestBody Message message){
-        if (auth.isAuthenticated()){
+        if (auth !=null && auth.isAuthenticated()){
             return messageService.saveMessage(message);
         }
         return null;
@@ -59,9 +59,11 @@ public class SecurityController {
 
     @GetMapping("/messages/get")
     public @ResponseBody List<Message> getMessages(Authentication auth, @RequestParam Long chat, @RequestParam(name = "last") Long lastId){
-        User u = userService.findUserByEmail(auth.getName());
-        if (u != null) {
-            return messageService.getMessagesByChat(u, chat, lastId);
+        if (auth!=null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                return messageService.getMessagesByChat(u, chat, lastId);
+            }
         }
         return null;
     }
@@ -78,7 +80,7 @@ public class SecurityController {
 
     @PostMapping("/users/specific")
     public @ResponseBody List<User> getAllUsersByIds(Authentication auth,@RequestBody Set<Long> ids){
-        if (auth.isAuthenticated())
+        if (auth !=null && auth.isAuthenticated())
             return userService.getAllUsersByIds(ids);
         return null;
     }
@@ -86,7 +88,7 @@ public class SecurityController {
     @GetMapping("/users/{id}")
     public @ResponseBody User getUserById(Authentication auth, @PathVariable("id") Long id){
         Logger.getLogger("CONTROLLER").log(Level.INFO, "user_id: "+id);
-        if (auth.isAuthenticated())
+        if (auth !=null && auth.isAuthenticated())
         return userService.getUserById(id);
         return null;
     }
@@ -94,7 +96,10 @@ public class SecurityController {
     @GetMapping("/user/get")
     public @ResponseBody
     User getUserInfo(Authentication auth) {
-        return userService.findUserByEmail(auth.getName());
+        if (auth!=null) {
+            return userService.findUserByEmail(auth.getName());
+        }
+        return null;
     }
     
     @GetMapping("/messages/chats")
@@ -135,12 +140,14 @@ public class SecurityController {
     @PutMapping("/user/edit")
     public @ResponseBody
     ProfileResponse updateUser(@RequestBody @Valid EditProfileDataRequest user, Authentication authentication) {
-        User u = userService.findUserByEmail(authentication.getName());
-        if (u != null) {
-            u = userService.changeUser(u, user);
-            Logger.getLogger("CONTROLLER").log(Level.INFO, "changed user: "+u);
-            if (u == null) return null;
-            return new ProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
+        if (authentication!=null) {
+            User u = userService.findUserByEmail(authentication.getName());
+            if (u != null) {
+                u = userService.changeUser(u, user);
+                Logger.getLogger("CONTROLLER").log(Level.INFO, "changed user: " + u);
+                if (u == null) return null;
+                return new ProfileResponse(jwtProvider.generateToken(u.getEmail()), u);
+            }
         }
         return null;
     }
@@ -148,35 +155,39 @@ public class SecurityController {
     @PostMapping("/projects/add")
     public @ResponseBody
     Project addProject(Authentication auth, @RequestBody Project project){
-        User u = userService.findUserByEmail(auth.getName());
-        if (u != null){
-            try {
-                int count = tagService.saveTags(project.getTags());
-                System.out.println("saved "+count);
-            } catch (Exception e){
-                Logger.getLogger("CONTROLLER").log(Level.INFO,"Projects tags: ", e.getCause());
+        if (auth!=null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                try {
+                    int count = tagService.saveTags(project.getTags());
+                    System.out.println("saved " + count);
+                } catch (Exception e) {
+                    Logger.getLogger("CONTROLLER").log(Level.INFO, "Projects tags: ", e.getCause());
+                }
+                for (ProjectAndRole pr :
+                        project.getRoles()) {
+                    pr.setProject(project);
+                }
+                return projectService.addProject(u, project);
             }
-            for (ProjectAndRole pr :
-                    project.getRoles()) {
-                pr.setProject(project);
-            }
-            return projectService.addProject(u, project);
         }
         return null;
     }
 
     @GetMapping("/projects/all")
     public @ResponseBody List<Project> getAllProjects(Authentication auth){
-        User u = userService.findUserByEmail(auth.getName());
-        if (u != null){
-            return projectService.getProjectsByUser(u);
+        if (auth!=null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                return projectService.getProjectsByUser(u);
+            }
         }
         return null;
     }
 
     @GetMapping("/roles/all")
     public @ResponseBody List<ProjectRole> getAllRoles(Authentication auth){
-        if (auth.isAuthenticated()){
+        if (auth !=null && auth.isAuthenticated()){
             return projectService.getAllRoles();
         }
         return null;
@@ -184,16 +195,18 @@ public class SecurityController {
 
     @DeleteMapping("/projects/remove")
     public @ResponseBody List<Project> removeProject(Authentication auth, @RequestBody Project project){
-        User u = userService.findUserByEmail(auth.getName());
-        if (u != null){
-            return projectService.removeProject(u, project);
+        if (auth!=null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                return projectService.removeProject(u, project);
+            }
         }
         return null;
     }
 
     @PutMapping("/roles/update")
     public @ResponseBody ProjectAndRole updateRole(Authentication auth, @RequestBody ProjectAndRole projectAndRole){
-        if (auth.isAuthenticated())
+        if (auth !=null && auth.isAuthenticated())
             return projectService.updateRole(projectAndRole);
         return null;
     }
