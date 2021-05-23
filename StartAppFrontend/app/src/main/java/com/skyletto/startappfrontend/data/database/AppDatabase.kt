@@ -11,7 +11,7 @@ import com.skyletto.startappfrontend.common.models.UserTags
 import com.skyletto.startappfrontend.data.database.dao.*
 import com.skyletto.startappfrontend.domain.entities.*
 
-@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class, Role::class, Project::class, ProjectRoles::class, ProjectTags::class, ProjectUser::class,ProjectAndRole::class], version = 6, exportSchema = false)
+@Database(entities = [Tag::class, Message::class, Chat::class, User::class, UserTags::class, Role::class, Project::class, ProjectRoles::class, ProjectTags::class, ProjectUser::class,ProjectAndRole::class], version = 8, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tagDao(): TagDao

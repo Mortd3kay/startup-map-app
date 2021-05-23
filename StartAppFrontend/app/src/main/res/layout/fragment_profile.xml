@@ -204,7 +204,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
                 android:text="@{model.VUser.user.phoneNumber}"
-                android:textColor="#2295CA"
+                android:textColor="@color/blue"
                 android:textSize="16sp"
                 android:layout_marginStart="5dp"
                 app:layout_constraintBottom_toBottomOf="@+id/profile_phone_label"
