@@ -172,15 +172,16 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        cd.clear()
-    }
 
     fun checkLatLng(): Boolean {
         project.get()?.let {
             return (it.lng!=null && it.lat!=null && !it.address.isNullOrEmpty())
         }
         return false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cd.clear()
     }
 }

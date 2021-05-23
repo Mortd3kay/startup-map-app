@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.utils.convertLatLngToString
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
 import java.util.*
@@ -29,7 +30,6 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
     private var lat: Double? = null
     private var lng: Double? = null
     private val address = MutableLiveData("")
-    private lateinit var geocoder: Geocoder
     private lateinit var streetBar : Toolbar
     private lateinit var streetTitle : TextView
     private var marker: Marker? = null
@@ -59,7 +59,6 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        geocoder = Geocoder(activity, Locale.getDefault());
         img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon),128,128, false)
     }
 
@@ -97,9 +96,10 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
     private fun updateAddressInfo(it:LatLng){
         lat = it.latitude
         lng = it.longitude
-        val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
-        if (addresses.size > 0)
-            address.postValue(addresses[0].getAddressLine(0))
+        context?.let { it1 ->
+            address.postValue(convertLatLngToString(it1, it))
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
