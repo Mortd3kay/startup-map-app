@@ -27,11 +27,12 @@ class CreateProjectFragment : Fragment() {
     private var viewModel: CreateProjectViewModel? = null
     private var sp :SharedPreferences? = null
     private var adapter: RoleAdapter? = null
-    private val locationFragment = GetLocationFragment()
+    private lateinit var locationFragment:GetLocationFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = activity?.let { ViewModelProvider(it, ProjectViewModelFactory(it.application, getIdFromSP())).get(CreateProjectViewModel::class.java) }
+        viewModel?.let { locationFragment = GetLocationFragment(it) }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -42,6 +43,26 @@ class CreateProjectFragment : Fragment() {
     }
 
     private fun initViews(){
+        rolePart()
+        buttonPart()
+        tagPart()
+    }
+
+    private fun tagPart() {
+        viewModel?.let {
+            it.chosenTags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepEntryChipGroup, tags, 1) })
+            it.tags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepChooseChipGroup, tags, 2) })
+        }
+        binding.projectTagNameInput.addTextChangedListener(object : LaconicTextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                if (s.toString().trim { it <= ' ' }.isEmpty()) viewModel?.loadRandomTags()
+                if (s.toString().trim { it <= ' ' }.length < 2) return
+                viewModel?.loadSimilarTags(s.toString())
+            }
+        })
+    }
+
+    private fun rolePart(){
         viewModel?.roles?.observe(viewLifecycleOwner){outerIt ->
             adapter = context?.let { RoleAdapter(it,outerIt) }
             binding.rolesListView.adapter = adapter
@@ -59,6 +80,9 @@ class CreateProjectFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun buttonPart(){
         binding.projectLocationInput.setOnClickListener {
             parentFragmentManager.beginTransaction().replace(R.id.project_frame,locationFragment).addToBackStack("MAP").commit()
         }
@@ -77,17 +101,7 @@ class CreateProjectFragment : Fragment() {
 
             } else toast(context, getString(R.string.fields_are_empty))
         }
-        viewModel?.let {
-            it.chosenTags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepEntryChipGroup, tags, 1) })
-            it.tags.observe(viewLifecycleOwner, { tags: Set<Tag> -> inflateChipGroup(binding.projectThirdStepChooseChipGroup, tags, 2) })
-        }
-        binding.projectTagNameInput.addTextChangedListener(object : LaconicTextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                if (s.toString().trim { it <= ' ' }.isEmpty()) viewModel?.loadRandomTags()
-                if (s.toString().trim { it <= ' ' }.length < 2) return
-                viewModel?.loadSimilarTags(s.toString())
-            }
-        })    }
+    }
 
     private fun getIdFromSP():Long {
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)

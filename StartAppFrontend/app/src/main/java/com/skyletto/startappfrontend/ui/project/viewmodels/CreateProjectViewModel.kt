@@ -27,6 +27,7 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
     private val user = db.userDao().getById(userId)
     val tags = MutableLiveData<MutableSet<Tag>>()
     val chosenTags = MutableLiveData<MutableSet<Tag>>(HashSet())
+    val locationName = ObservableField("")
     private val cd = CompositeDisposable()
     val roles = db.roleDao().getAll()
     init {

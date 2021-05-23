@@ -1,45 +1,107 @@
 package com.skyletto.startappfrontend.ui.project.fragments
 
-import android.content.SharedPreferences
-import androidx.fragment.app.Fragment
-
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.google.android.gms.maps.CameraUpdateFactory
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
+import java.util.*
 
-class GetLocationFragment : Fragment() {
-    private var viewModel: CreateProjectViewModel? = null
-    private var sp : SharedPreferences? = null
 
+class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragment() {
+    private var lat: Double? = null
+    private var lng: Double? = null
+    private val address = MutableLiveData("")
+    private lateinit var geocoder: Geocoder
+    private lateinit var streetBar : Toolbar
+    private lateinit var streetTitle : TextView
+    private var marker: Marker? = null
+    private lateinit var img:Bitmap
+    private var imgWidth = 128
+    private var imgHeight = 128
     private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        googleMap.setOnMapClickListener {
+            updateAddressInfo(it)
+            marker?.remove()
+            marker = googleMap.addMarker(MarkerOptions().position(it).draggable(true).icon(BitmapDescriptorFactory.fromBitmap(img)))
+        }
+        googleMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
+            override fun onMarkerDragStart(p0: Marker?) {
+            }
+
+            override fun onMarkerDrag(p0: Marker?) {
+            }
+
+            override fun onMarkerDragEnd(p0: Marker?) {
+                marker?.let {
+                    updateAddressInfo(it.position)
+                }
+            }
+
+        })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        geocoder = Geocoder(activity, Locale.getDefault());
+        img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon),128,128, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_get_location, container, false)
+        val v = inflater.inflate(R.layout.fragment_get_location, container, false)
+        val backBtn = v.findViewById<ImageView>(R.id.location_project_back_btn)
+        val okBtn = v.findViewById<ImageView>(R.id.location_project_ok_btn)
+        streetBar = v.findViewById(R.id.location_project_title_bar)
+        streetTitle = v.findViewById(R.id.location_project_street_title)
+        backBtn.setOnClickListener {
+            activity?.onBackPressed()
+        }
+
+        okBtn.setOnClickListener {
+            if (lat!=null && lng!=null && !address.value.isNullOrEmpty()) {
+                viewModel.project.get()?.lat = lat
+                viewModel.project.get()?.lng = lng
+                viewModel.locationName.set(address.value)
+                activity?.onBackPressed()
+            } else toast(context, getString(R.string.you_didnt_choose_place))
+        }
+
+        address.observeForever{
+            if (it.isNotEmpty()){
+                streetBar.visibility = View.VISIBLE
+                streetTitle.text = it
+            } else streetBar.visibility = View.GONE
+        }
+        return v
+    }
+
+
+    private fun updateAddressInfo(it:LatLng){
+        lat = it.latitude
+        lng = it.longitude
+        val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
+        if (addresses.size > 0)
+            address.postValue(addresses[0].getAddressLine(0))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

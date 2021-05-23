@@ -1,11 +1,16 @@
 package com.skyletto.startappfrontend.common.utils
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.Shader.TileMode
+import android.os.Build
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.skyletto.startappfrontend.R
 import java.util.regex.Pattern
 
@@ -33,6 +38,19 @@ fun isEmailValid(email: String): Boolean {
 fun isNameValid(name: String): Boolean {
     val n = "^[\\p{L} .'-]+$"
     return name.isNotEmpty() && name.matches(Regex(n))
+}
+
+fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
+    val drawable = ContextCompat.getDrawable(context, drawableId)
+    drawable?.let {
+        val bitmap = Bitmap.createBitmap(it.intrinsicWidth,
+                it.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        it.setBounds(0, 0, canvas.width, canvas.height)
+        it.draw(canvas)
+        return bitmap
+    }
+    return null
 }
 
 //fun isNetworkConnected(context: Context): Boolean {
