@@ -69,6 +69,8 @@
     <string name="assign">Назначить</string>
     <string name="input_name">введите имя</string>
     <string name="you_may_have_only_one_project">Вы можете иметь максимум 1 проект</string>
+    <string name="point_location_of_project">Укажите местоположение проекта</string>
+    <string name="choose_from_map">выбрать на карте</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

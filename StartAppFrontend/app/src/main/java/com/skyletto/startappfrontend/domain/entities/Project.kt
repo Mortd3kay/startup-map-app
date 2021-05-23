@@ -1,6 +1,5 @@
 package com.skyletto.startappfrontend.domain.entities
 
-import androidx.databinding.Bindable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -15,11 +14,14 @@ data class Project (
         var description: String,
         @Ignore var tags: Set<Tag>? = null,
         @Ignore var roles: List<ProjectAndRole>? = null,
-        @Ignore var user: User? = null
+        @Ignore var user: User? = null,
+        var lat: Double? = null,
+        var lng: Double? = null
 ) {
     constructor(id: Long, title: String, description: String):this(id, title, description, null, null, null)
 
     constructor(title: String, description: String, tags: Set<Tag>?, roles: List<ProjectAndRole>?) : this(0,title, description, tags, roles, null)
 
     constructor(title: String, description: String, tags: Set<Tag>?, roles: List<ProjectAndRole>?, user: User?):this(0, title, description, tags, roles, user)
+
 }

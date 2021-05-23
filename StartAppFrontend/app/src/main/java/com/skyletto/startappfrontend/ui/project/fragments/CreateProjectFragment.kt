@@ -27,6 +27,7 @@ class CreateProjectFragment : Fragment() {
     private var viewModel: CreateProjectViewModel? = null
     private var sp :SharedPreferences? = null
     private var adapter: RoleAdapter? = null
+    private val locationFragment = GetLocationFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,9 @@ class CreateProjectFragment : Fragment() {
                     }
                 }
             }
+        }
+        binding.projectLocationInput.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.project_frame,locationFragment).addToBackStack("MAP").commit()
         }
         binding.createProjectBackBtn.setOnClickListener { activity?.onBackPressed() }
         binding.createProjectOkBtn.setOnClickListener {

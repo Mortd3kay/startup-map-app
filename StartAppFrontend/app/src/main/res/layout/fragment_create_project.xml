@@ -111,6 +111,35 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:layout_marginTop="35dp"
+                    android:text="@string/point_location_of_project"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/rubik_regular"
+                    android:layout_gravity="start"
+                    android:layout_marginHorizontal="60dp"/>
+
+                <EditText
+                    android:id="@+id/project_location_input"
+                    style="@style/input_style"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/dark"
+                    android:background="@drawable/tags_input_shape"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:cursorVisible="false"
+                    android:hint="@string/choose_from_map"
+                    android:textColorHint="@color/dark"
+                    android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="5dp"
+                    android:paddingVertical="4dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginTop="35dp"
                     android:text="@string/show_tags_for_employees"
                     android:textColor="@color/white"
                     android:fontFamily="@font/rubik_regular"
