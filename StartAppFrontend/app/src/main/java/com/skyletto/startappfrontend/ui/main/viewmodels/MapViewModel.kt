@@ -5,11 +5,13 @@ import android.app.Application
 import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.ProjectRoles
 import com.skyletto.startappfrontend.common.models.ProjectTags
 import com.skyletto.startappfrontend.common.models.ProjectUser
 import com.skyletto.startappfrontend.common.models.UserTags
+import com.skyletto.startappfrontend.common.utils.convertLatLngToString
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.domain.entities.Project
 import com.skyletto.startappfrontend.domain.entities.User
@@ -64,6 +66,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     }
 
     private fun saveProjects(it:List<Project>) : List<Long>{
+        configureProjectsAddresses(it)
         val pIds = db.projectDao().addAll(it)
         for (p in it){
             p.tags?.let { it1 ->
@@ -80,6 +83,12 @@ class MapViewModel(application: Application, private val userId: Long) : Android
             }
         }
         return pIds
+    }
+
+    private fun configureProjectsAddresses(projects:List<Project>){
+        for (p in projects){
+            if (p.lat!=null && p.lng!=null) p.address = convertLatLngToString(getApplication(), LatLng(p.lat!!, p.lng!!))
+        }
     }
 
     private fun saveUser(it1: User){
