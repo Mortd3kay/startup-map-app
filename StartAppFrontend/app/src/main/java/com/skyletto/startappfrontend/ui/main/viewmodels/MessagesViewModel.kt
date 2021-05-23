@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 import com.skyletto.startappfrontend.domain.entities.Chat
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.UserTags
@@ -30,8 +31,7 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
     private val db = getApplication<MainApplication>().db
     private val cd = CompositeDisposable()
     var chats = db.chatDao().getAll()
-
-
+    
     fun loadChats() {
         activity?.let {
             val a = getChats(it)

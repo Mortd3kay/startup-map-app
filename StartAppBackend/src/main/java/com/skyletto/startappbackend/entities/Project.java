@@ -24,23 +24,21 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    private double lat;
+    private double lng;
 
     public Project() {
     }
 
-    public Project(String title, String description, Set<Tag> tags, Set<ProjectAndRole> roles) {
-        this.title = title;
-        this.description = description;
-        this.tags = tags;
-        this.roles = roles;
-    }
-
-    public Project(String title, String description, Set<Tag> tags, Set<ProjectAndRole> roles, User user) {
+    public Project(long id, String title, String description, Set<Tag> tags, Set<ProjectAndRole> roles, User user, double lat, double lng) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.tags = tags;
         this.roles = roles;
         this.user = user;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public long getId() {
@@ -91,6 +89,22 @@ public class Project {
         this.user = user;
     }
 
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -100,6 +114,7 @@ public class Project {
                 ", tags=" + tags +
                 ", roles=" + roles +
                 ", user=" + user +
+                ", geo=" + lat +" "+ lng +
                 '}';
     }
 
@@ -108,7 +123,7 @@ public class Project {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return id == project.id && Objects.equals(title, project.title) && Objects.equals(description, project.description) && Objects.equals(tags, project.tags) && Objects.equals(roles, project.roles) && Objects.equals(user, project.user);
+        return id == project.id && Double.compare(project.lat, lat) == 0 && Double.compare(project.lng, lng) == 0 && Objects.equals(title, project.title) && Objects.equals(description, project.description) && Objects.equals(tags, project.tags) && Objects.equals(roles, project.roles) && Objects.equals(user, project.user);
     }
 
     @Override
