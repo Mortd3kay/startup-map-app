@@ -34,8 +34,6 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
     private lateinit var streetTitle : TextView
     private var marker: Marker? = null
     private lateinit var img:Bitmap
-    private var imgWidth = 128
-    private var imgHeight = 128
     private val callback = OnMapReadyCallback { googleMap ->
 
         googleMap.setOnMapClickListener {
@@ -81,7 +79,7 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
             if (lat!=null && lng!=null && !address.value.isNullOrEmpty()) {
                 viewModel.project.get()?.lat = lat
                 viewModel.project.get()?.lng = lng
-                viewModel.locationName.set(address.value)
+                viewModel.project.get()?.address = address.value
                 activity?.onBackPressed()
             } else toast(context, getString(R.string.you_didnt_choose_place))
         }

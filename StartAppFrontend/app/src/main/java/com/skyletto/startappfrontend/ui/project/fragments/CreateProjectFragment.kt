@@ -88,17 +88,21 @@ class CreateProjectFragment : Fragment() {
         }
         binding.createProjectBackBtn.setOnClickListener { activity?.onBackPressed() }
         binding.createProjectOkBtn.setOnClickListener {
-            if (viewModel?.checkTitleAndDescription()==true){
+            if (viewModel?.checkLatLng()==true && viewModel?.checkTitleAndDescription()==true){
+                it.isClickable = false
                 adapter?.roles?.let { it1 -> viewModel?.prepareProject(it1) }
                 viewModel?.saveProject(
                         {
                             toast(context, getString(R.string.cant_save_project))
+                            it.isClickable = true
                         },
                         {
                             activity?.finish()
                         }
                 )
 
+            } else if (viewModel?.checkLatLng()==false){
+                toast(context, getString(R.string.place_is_necessary))
             } else toast(context, getString(R.string.fields_are_empty))
         }
     }

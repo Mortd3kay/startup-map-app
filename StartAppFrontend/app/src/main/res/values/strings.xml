@@ -73,6 +73,7 @@
     <string name="choose_from_map">выбрать на карте</string>
     <string name="choose_location">Выбрать место</string>
     <string name="you_didnt_choose_place">Вы не выбрали место</string>
+    <string name="place_is_necessary">Необходимо указать местоположение</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

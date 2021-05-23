@@ -27,7 +27,6 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
     private val user = db.userDao().getById(userId)
     val tags = MutableLiveData<MutableSet<Tag>>()
     val chosenTags = MutableLiveData<MutableSet<Tag>>(HashSet())
-    val locationName = ObservableField("")
     private val cd = CompositeDisposable()
     val roles = db.roleDao().getAll()
     init {
@@ -176,5 +175,12 @@ class CreateProjectViewModel(application: Application, private val userId: Long)
     override fun onCleared() {
         super.onCleared()
         cd.clear()
+    }
+
+    fun checkLatLng(): Boolean {
+        project.get()?.let {
+            return (it.lng!=null && it.lat!=null && !it.address.isNullOrEmpty())
+        }
+        return false
     }
 }

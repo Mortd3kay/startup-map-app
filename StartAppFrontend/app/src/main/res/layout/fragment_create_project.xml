@@ -129,7 +129,7 @@
                     android:focusableInTouchMode="false"
                     android:cursorVisible="false"
                     android:hint="@string/choose_from_map"
-                    android:text="@{model.locationName}"
+                    android:text="@{model.project.address}"
                     android:textColorHint="@color/dark"
                     android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                     android:paddingStart="10dp"

@@ -16,7 +16,8 @@ data class Project (
         @Ignore var roles: List<ProjectAndRole>? = null,
         @Ignore var user: User? = null,
         var lat: Double? = null,
-        var lng: Double? = null
+        var lng: Double? = null,
+        var address: String? = null
 ) {
     constructor(id: Long, title: String, description: String):this(id, title, description, null, null, null)
 

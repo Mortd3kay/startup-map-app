@@ -26,11 +26,12 @@ public class Project {
     private User user;
     private double lat;
     private double lng;
+    private String address;
 
     public Project() {
     }
 
-    public Project(long id, String title, String description, Set<Tag> tags, Set<ProjectAndRole> roles, User user, double lat, double lng) {
+    public Project(long id, String title, String description, Set<Tag> tags, Set<ProjectAndRole> roles, User user, double lat, double lng, String address) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -39,6 +40,7 @@ public class Project {
         this.user = user;
         this.lat = lat;
         this.lng = lng;
+        this.address = address;
     }
 
     public long getId() {
@@ -47,6 +49,14 @@ public class Project {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getTitle() {
