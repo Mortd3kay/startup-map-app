@@ -72,8 +72,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
-                            val p = saveProjects(it)
-                            Log.d(TAG, "loadProjects: $p")
+                            saveProjects(it)
                         },
                         {
                             Log.e(TAG, "loadProjects: error ", it)
@@ -84,14 +83,12 @@ class MapViewModel(application: Application, private val userId: Long) : Android
 
     fun loadProjectLocations(latLng: LatLng, zoom:Float){
         projectDisposable?.dispose()
-        projectDisposable = api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
+        projectDisposable = api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom)).toObservable()
                 .subscribeOn(Schedulers.io())
                 .retry()
-                .delaySubscription(2, TimeUnit.SECONDS)
-                .repeat()
+                .repeatWhen { completed -> completed.delay(3, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
-                            Log.d(TAG, "loadProjectLocations: $oit")
                             saveProjects(oit)
                         },
                         {
@@ -102,14 +99,12 @@ class MapViewModel(application: Application, private val userId: Long) : Android
 
     fun loadLocations(latLng: LatLng, zoom:Float) {
         userDisposable?.dispose()
-        userDisposable = api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
+        userDisposable = api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom)).toObservable()
                 .subscribeOn(Schedulers.io())
                 .retry()
-                .delaySubscription(2, TimeUnit.SECONDS)
-                .repeat()
+                .repeatWhen { completed -> completed.delay(3, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
-                            Log.d(TAG, "loadLocations: $oit")
                             userLocations.value?.clear()
                             userLocations.postValue(oit.toMutableSet())
                             loadUserByIds(oit.map { it.userId })

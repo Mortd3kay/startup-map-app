@@ -57,10 +57,10 @@ interface ApiService {
     @GET("projects/all")
     fun getAllProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<Project>>
 
-    @HTTP(method = "GET",path = "projects/closest", hasBody = true)
+    @POST("projects/closest")
     fun getClosestProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest):Single<List<Project>>
 
-    @POST("projects/remove")
+    @HTTP(method = "DELETE",path = "projects/remove", hasBody = true)
     fun removeProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project:Project):Single<List<Project>>
 
     @PUT("roles/update")
