@@ -50,7 +50,6 @@ public class ProjectService {
 
     @Transactional
     public ProjectAndRole updateRole(ProjectAndRole projectAndRole){
-        Logger.getLogger("PROJECT_SERVICE").log(Level.INFO, "role: " + projectAndRole);
         ProjectAndRole role = projectAndRoleRepository.findById(projectAndRole.getId()).orElse(projectAndRole);
         role.setUser(projectAndRole.getUser());
         Logger.getLogger("PROJECT_SERVICE").log(Level.INFO, "role: " + role);
@@ -58,6 +57,7 @@ public class ProjectService {
     }
 
     public List<Project> getLocations(LatLngRequest latLng) {
+        Logger.getLogger("PROJECT_SERVICE").log(Level.INFO, "camera: " + latLng);
         double diff = diff(latLng.getZoom());
         return projectRepository.findAllByLatBetweenAndLngBetween(
                 latLng.getLat()-diff,

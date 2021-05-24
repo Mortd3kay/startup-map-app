@@ -76,8 +76,8 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
 
         okBtn.setOnClickListener {
             if (lat!=null && lng!=null && !address.value.isNullOrEmpty()) {
-                viewModel.project.get()?.lat = lat
-                viewModel.project.get()?.lng = lng
+                viewModel.project.get()?.lat = lat as Double
+                viewModel.project.get()?.lng = lng as Double
                 viewModel.project.get()?.address = address.value
                 activity?.onBackPressed()
             } else toast(context, getString(R.string.you_didnt_choose_place))

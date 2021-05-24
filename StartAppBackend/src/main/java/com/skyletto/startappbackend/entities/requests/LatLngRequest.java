@@ -3,7 +3,7 @@ package com.skyletto.startappbackend.entities.requests;
 public class LatLngRequest {
     private double lat;
     private double lng;
-    private int zoom = 17;
+    private float zoom = 17;
 
     public LatLngRequest(double lat, double lng, int zoom) {
         this.lat = lat;
@@ -27,11 +27,20 @@ public class LatLngRequest {
         this.lng = lng;
     }
 
-    public int getZoom() {
+    public float getZoom() {
         return zoom;
     }
 
-    public void setZoom(int zoom) {
+    public void setZoom(float zoom) {
         this.zoom = Math.min(zoom, 17);
+    }
+
+    @Override
+    public String toString() {
+        return "LatLngRequest{" +
+                "lat=" + lat +
+                ", lng=" + lng +
+                ", zoom=" + zoom +
+                '}';
     }
 }

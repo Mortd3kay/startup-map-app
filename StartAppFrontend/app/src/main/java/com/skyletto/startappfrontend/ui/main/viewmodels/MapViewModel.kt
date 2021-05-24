@@ -21,6 +21,7 @@ import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -28,19 +29,22 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     private val api = getApplication<MainApplication>().api
     private val db = getApplication<MainApplication>().db
     private val projects = db.projectDao().getAll()
+    private val myProjects = db.projectDao().getAllByUserId(userId)
     var locations = MutableLiveData<MutableSet<Location>>(HashSet())
     var creationAvailable = true
     private val cd = CompositeDisposable()
 
     init {
-        loadProjects()
+        loadUserProjects()
         projects.observeForever { it1 ->
-            creationAvailable = it1.isEmpty()
             addLocations(it1.map {
                 it.project.let { it2->
                     Location(it2.id, it2.lat, it2.lng, true)
                 }
             })
+        }
+        myProjects.observeForever {
+            creationAvailable = it.isEmpty()
         }
     }
 
@@ -57,7 +61,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         activity?.goToCreateProject()
     }
 
-    private fun loadProjects() {
+    private fun loadUserProjects() {
         val d = api.apiService.getAllProjects(makeToken(getToken()))
                 .delaySubscription(5, TimeUnit.SECONDS)
                 .retry()
@@ -75,20 +79,41 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         cd.add(d)
     }
 
-    fun loadLocations(latLng: LatLng, zoom:Int){
-        val d = api.apiService.getLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
+    fun loadProjectLocations(latLng: LatLng, zoom:Float):Disposable{
+        return api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry()
+                .delaySubscription(3, TimeUnit.SECONDS)
+                .repeat()
                 .subscribe(
                         { oit ->
-                            addLocations(oit)
-                            loadUserByIds(oit.map { it.userId })
+                            saveProjects(oit)
+                            Log.d(TAG, "loadProjectLocations: $oit")
                         },
                         {
                             Log.e(TAG, "loadLocations: error", it)
                         }
                 )
-        cd.add(d)
+    }
+
+    fun loadLocations(latLng: LatLng, zoom:Float): Disposable {
+        return api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry()
+                .delaySubscription(3, TimeUnit.SECONDS)
+                .repeat()
+                .subscribe(
+                        { oit ->
+                            addLocations(oit)
+                            loadUserByIds(oit.map { it.userId })
+                            Log.d(TAG, "loadLocations: $oit")
+                        },
+                        {
+                            Log.e(TAG, "loadLocations: error", it)
+                        }
+                )
     }
 
     private fun addLocations(it:Iterable<Location>){

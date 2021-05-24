@@ -57,6 +57,9 @@ interface ApiService {
     @GET("projects/all")
     fun getAllProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String):Single<List<Project>>
 
+    @HTTP(method = "GET",path = "projects/closest", hasBody = true)
+    fun getClosestProjects(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest):Single<List<Project>>
+
     @HTTP(method = "DELETE", path = "projects/remove", hasBody = true)
     fun removeProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project:Project):Single<List<Project>>
 
@@ -69,6 +72,6 @@ interface ApiService {
     @DELETE("user/location/remove")
     fun deleteLocation(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String) : Completable
 
-    @GET("users/locations")
-    fun getLocations(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest): Single<List<Location>>
+    @HTTP(method = "GET",path = "users/locations", hasBody = true)
+    fun getUserLocations(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest): Single<List<Location>>
 }
