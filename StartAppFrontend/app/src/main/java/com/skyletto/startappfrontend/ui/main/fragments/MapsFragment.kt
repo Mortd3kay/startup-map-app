@@ -13,18 +13,17 @@ import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.models.AlertModel
 import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
-import io.reactivex.disposables.Disposable
 
 class MapsFragment : Fragment() {
     private lateinit var mMap: GoogleMap
@@ -35,35 +34,14 @@ class MapsFragment : Fragment() {
     private var sp: SharedPreferences? = null
     private val userMarkers = HashSet<Marker>()
     private val projectMarkers = HashSet<Marker>()
-
+    private val markerModels = HashMap<Marker, AlertModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
         viewModel = activity?.let { ViewModelProvider(it, MapViewModelFactory(it.application, getIdFromSP())).get(MapViewModel::class.java) }
         viewModel?.activity = mActivity
-        viewModel?.userLocations?.observe(this) {
-            Log.d(TAG, "user locations: $it")
-            for (m in userMarkers) {
-                m.remove()
-            }
-            userMarkers.clear()
-            for (i in it) {
-                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_bug_icon), 128, 128, false)
-                userMarkers.add(mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img))))
-            }
-        }
-        viewModel?.projectLocations?.observe(this) {
-            Log.d(TAG, "project locations: $it")
-            for (m in projectMarkers) {
-                m.remove()
-            }
-            projectMarkers.clear()
-            for (i in it) {
-                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon), 128, 128, false)
-                projectMarkers.add(mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img))))
-            }
-        }
+        observeViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -79,6 +57,39 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+    }
+
+    private fun observeViewModel(){
+        viewModel?.userLocations?.observe(this) {
+            for (m in userMarkers) {
+                m.remove()
+            }
+            userMarkers.clear()
+            for (i in it) {
+                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_profile_icon), 128, 128, false)
+                val marker = mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img)))
+                userMarkers.add(marker)
+                markerModels[marker] = AlertModel(
+                        i.userId,
+                        i.isProject
+                )
+            }
+        }
+        viewModel?.projectLocations?.observe(this) {
+            for (m in projectMarkers) {
+                m.remove()
+            }
+            projectMarkers.clear()
+            for (i in it) {
+                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon), 128, 128, false)
+                val marker = mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img)))
+                projectMarkers.add(marker)
+                markerModels[marker] = AlertModel(
+                        i.userId,
+                        i.isProject
+                )
+            }
+        }
     }
 
     private fun initViews(b: FragmentMapsBinding) {
@@ -114,6 +125,16 @@ class MapsFragment : Fragment() {
             Log.d(TAG, "initMapCallback: camera idle")
             viewModel?.loadLocations(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
             viewModel?.loadProjectLocations(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
+        }
+
+        mMap.setOnMarkerClickListener {
+            val model = markerModels[it]
+            if (model != null && model.isProject) {
+                val dlg = MapDialog(model)
+                dlg.show(parentFragmentManager,"DIALOG")
+                return@setOnMarkerClickListener true
+            }
+            return@setOnMarkerClickListener false
         }
     }
 

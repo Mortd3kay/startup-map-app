@@ -86,7 +86,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         projectDisposable = api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom)).toObservable()
                 .subscribeOn(Schedulers.io())
                 .retry()
-                .repeatWhen { completed -> completed.delay(3, TimeUnit.SECONDS) }
+                .repeatWhen { completed -> completed.delay(10, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
                             saveProjects(oit)
@@ -102,7 +102,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         userDisposable = api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom)).toObservable()
                 .subscribeOn(Schedulers.io())
                 .retry()
-                .repeatWhen { completed -> completed.delay(3, TimeUnit.SECONDS) }
+                .repeatWhen { completed -> completed.delay(10, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
                             userLocations.value?.clear()
