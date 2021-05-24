@@ -32,31 +32,36 @@ class MapsFragment : Fragment() {
     var mActivity: ActivityFragmentWorker? = null
     private var viewModel: MapViewModel? = null
     private var callback: OnMapReadyCallback = initMapCallback()
-    private var sp:SharedPreferences? = null
-    private val markers = HashSet<Marker>()
-    private var userDisposable: Disposable? = null
-    private var projectDisposable: Disposable? = null
+    private var sp: SharedPreferences? = null
+    private val userMarkers = HashSet<Marker>()
+    private val projectMarkers = HashSet<Marker>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
-        viewModel = activity?.let { ViewModelProvider(it,MapViewModelFactory(it.application, getIdFromSP())).get(MapViewModel::class.java) }
+        viewModel = activity?.let { ViewModelProvider(it, MapViewModelFactory(it.application, getIdFromSP())).get(MapViewModel::class.java) }
         viewModel?.activity = mActivity
-        viewModel?.locations?.observe(this){
-            Log.d(TAG, "locations: $it")
-            for (m in markers){
+        viewModel?.userLocations?.observe(this) {
+            Log.d(TAG, "user locations: $it")
+            for (m in userMarkers) {
                 m.remove()
             }
-            markers.clear()
-            for (i in it){
-                if (i.isProject){
-                    val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon),128,128, false)
-                    markers.add(mMap.addMarker(MarkerOptions().position(LatLng(i.lat,i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img))))
-                } else {
-                    val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_bug_icon),128,128, false)
-                    markers.add(mMap.addMarker(MarkerOptions().position(LatLng(i.lat,i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img))))
-                }
-
+            userMarkers.clear()
+            for (i in it) {
+                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_bug_icon), 128, 128, false)
+                userMarkers.add(mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img))))
+            }
+        }
+        viewModel?.projectLocations?.observe(this) {
+            Log.d(TAG, "project locations: $it")
+            for (m in projectMarkers) {
+                m.remove()
+            }
+            projectMarkers.clear()
+            for (i in it) {
+                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon), 128, 128, false)
+                projectMarkers.add(mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img))))
             }
         }
     }
@@ -80,17 +85,18 @@ class MapsFragment : Fragment() {
         categories = b.tbSpinner
         categories.adapter = context?.let { ArrayAdapter(it, R.layout.spinner_text, resources.getStringArray(R.array.categories)) }
         categories.dropDownHorizontalOffset = 15
-        categories.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
+        categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 viewModel?.categoryId = id
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
         }
-        b.tbSettings.setOnClickListener { viewModel?.goToSettings()}
+        b.tbSettings.setOnClickListener { viewModel?.goToSettings() }
         b.addProjectBtn.setOnClickListener {
-            if (viewModel?.creationAvailable==true)
+            if (viewModel?.creationAvailable == true)
                 viewModel?.goToCreateProject()
             else toast(context, getString(R.string.you_may_have_only_one_project))
         }
@@ -106,10 +112,8 @@ class MapsFragment : Fragment() {
         }
         mMap.setOnCameraIdleListener {
             Log.d(TAG, "initMapCallback: camera idle")
-            userDisposable?.dispose()
-            projectDisposable?.dispose()
-            userDisposable = viewModel?.loadLocations(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
-            projectDisposable = viewModel?.loadProjectLocations(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
+            viewModel?.loadLocations(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
+            viewModel?.loadProjectLocations(mMap.cameraPosition.target, mMap.cameraPosition.zoom)
         }
     }
 

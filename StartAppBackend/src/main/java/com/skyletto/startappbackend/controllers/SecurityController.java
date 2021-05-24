@@ -195,7 +195,7 @@ public class SecurityController {
         return null;
     }
 
-    @GetMapping("/projects/closest")
+    @PostMapping("/projects/closest")
     public @ResponseBody List<Project> getAllProjectsAround(Authentication auth, @RequestBody LatLngRequest latLng){
         if (auth != null && auth.isAuthenticated()) {
             return projectService.getLocations(latLng);
@@ -254,7 +254,7 @@ public class SecurityController {
         }
     }
 
-    @GetMapping("/users/locations")
+    @PostMapping("/users/locations")
     public @ResponseBody
     List<Location> getLocationsAround(Authentication auth, @RequestBody LatLngRequest latLng) {
         if (auth != null && auth.isAuthenticated()) {

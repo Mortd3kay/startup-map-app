@@ -30,23 +30,26 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     private val db = getApplication<MainApplication>().db
     private val projects = db.projectDao().getAll()
     private val myProjects = db.projectDao().getAllByUserId(userId)
-    var locations = MutableLiveData<MutableSet<Location>>(HashSet())
+    var userLocations = MutableLiveData<MutableSet<Location>>(HashSet())
+    var projectLocations = MutableLiveData<MutableSet<Location>>(HashSet())
     var creationAvailable = true
     private val cd = CompositeDisposable()
+    private var userDisposable: Disposable? = null
+    private var projectDisposable: Disposable? = null
 
     init {
         loadUserProjects()
         projects.observeForever { it1 ->
-            addLocations(it1.map {
-                it.project.let { it2->
-                    Location(it2.id, it2.lat, it2.lng, true)
-                }
-            })
+            projectLocations.value?.clear()
+            projectLocations.postValue(it1.map {
+                it.project.let { it2-> Location(it2.id, it2.lat, it2.lng, true) }
+            }.toMutableSet())
         }
         myProjects.observeForever {
             creationAvailable = it.isEmpty()
         }
     }
+
 
     var search = ""
     var categoryId = 0L
@@ -79,17 +82,17 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         cd.add(d)
     }
 
-    fun loadProjectLocations(latLng: LatLng, zoom:Float):Disposable{
-        return api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
+    fun loadProjectLocations(latLng: LatLng, zoom:Float){
+        projectDisposable?.dispose()
+        projectDisposable = api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .retry()
-                .delaySubscription(3, TimeUnit.SECONDS)
+                .delaySubscription(2, TimeUnit.SECONDS)
                 .repeat()
                 .subscribe(
                         { oit ->
-                            saveProjects(oit)
                             Log.d(TAG, "loadProjectLocations: $oit")
+                            saveProjects(oit)
                         },
                         {
                             Log.e(TAG, "loadLocations: error", it)
@@ -97,29 +100,24 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 )
     }
 
-    fun loadLocations(latLng: LatLng, zoom:Float): Disposable {
-        return api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
+    fun loadLocations(latLng: LatLng, zoom:Float) {
+        userDisposable?.dispose()
+        userDisposable = api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .retry()
-                .delaySubscription(3, TimeUnit.SECONDS)
+                .delaySubscription(2, TimeUnit.SECONDS)
                 .repeat()
                 .subscribe(
                         { oit ->
-                            addLocations(oit)
-                            loadUserByIds(oit.map { it.userId })
                             Log.d(TAG, "loadLocations: $oit")
+                            userLocations.value?.clear()
+                            userLocations.postValue(oit.toMutableSet())
+                            loadUserByIds(oit.map { it.userId })
                         },
                         {
                             Log.e(TAG, "loadLocations: error", it)
                         }
                 )
-    }
-
-    private fun addLocations(it:Iterable<Location>){
-        val buf = locations.value
-        buf?.addAll(it)
-        locations.postValue(buf)
     }
 
     private fun loadUserByIds(ids:List<Long>){
@@ -174,7 +172,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
 
     private fun configureProjectsAddresses(projects:List<Project>){
         for (p in projects){
-            if (p.lat!=null && p.lng!=null) p.address = convertLatLngToString(getApplication(), LatLng(p.lat!!, p.lng!!))
+            if (p.lat!=0.0 && p.lng!=0.0) p.address = convertLatLngToString(getApplication(), LatLng(p.lat, p.lng))
         }
     }
 
@@ -192,6 +190,8 @@ class MapViewModel(application: Application, private val userId: Long) : Android
 
     override fun onCleared() {
         super.onCleared()
+        projectDisposable?.dispose()
+        userDisposable?.dispose()
         cd.clear()
     }
 
