@@ -2,6 +2,7 @@ package com.skyletto.startappbackend.controllers;
 
 import com.skyletto.startappbackend.entities.*;
 import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
+import com.skyletto.startappbackend.entities.requests.LatLngRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
@@ -209,5 +210,27 @@ public class SecurityController {
         if (auth !=null && auth.isAuthenticated())
             return projectService.updateRole(projectAndRole);
         return null;
+    }
+
+    @PostMapping("/user/location")
+    public @ResponseBody
+    UserLocation setUserLocation(Authentication auth, @RequestBody LatLngRequest latLng){
+        if (auth!=null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                return userService.setLocation(u.getId(), latLng);
+            }
+        }
+        return null;
+    }
+
+    @DeleteMapping("/user/location/remove")
+    public void removeLocation(Authentication auth){
+        if (auth!=null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                userService.removeLocation(u.getId());
+            }
+        }
     }
 }
