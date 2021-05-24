@@ -1,11 +1,13 @@
 package com.skyletto.startappfrontend.data.network
 
 import com.skyletto.startappfrontend.data.requests.EditProfileDataRequest
+import com.skyletto.startappfrontend.data.requests.LatLngRequest
 import com.skyletto.startappfrontend.data.requests.LoginDataRequest
 import com.skyletto.startappfrontend.data.requests.RegisterDataRequest
 import com.skyletto.startappfrontend.data.responses.ProfileResponse
 import com.skyletto.startappfrontend.domain.entities.*
 import com.skyletto.startappfrontend.domain.entities.Tag
+import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
 
@@ -60,4 +62,13 @@ interface ApiService {
 
     @PUT("roles/update")
     fun updateRole(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body role: ProjectAndRole) : Single<ProjectAndRole>
+
+    @POST("user/location")
+    fun setLocation(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest) : Single<Location>
+
+    @DELETE("user/location/remove")
+    fun deleteLocation(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String) : Completable
+
+    @GET("users/locations")
+    fun getLocations(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest): Single<List<Location>>
 }

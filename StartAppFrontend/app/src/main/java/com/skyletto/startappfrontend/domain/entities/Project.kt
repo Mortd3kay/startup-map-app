@@ -15,8 +15,8 @@ data class Project (
         @Ignore var tags: Set<Tag>? = null,
         @Ignore var roles: List<ProjectAndRole>? = null,
         @Ignore var user: User? = null,
-        var lat: Double? = null,
-        var lng: Double? = null,
+        var lat: Double = 0.0,
+        var lng: Double = 0.0,
         var address: String? = null
 ) {
 

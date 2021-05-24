@@ -115,4 +115,18 @@ public class UserService {
     public void removeLocation(long id){
         locationRepository.deleteById(id);
     }
+
+    public List<UserLocation> getLocations(LatLngRequest latLng) {
+        double diff = diff(latLng.getZoom());
+        return locationRepository.findAllByLatBetweenAndLngBetween(
+                latLng.getLat()-diff,
+                latLng.getLat()+diff,
+                latLng.getLng()-diff,
+                latLng.getLng()+diff
+                );
+    }
+
+    private double diff(int zoom){
+        return 0.06*((20-zoom)*(20-zoom));
+    }
 }
