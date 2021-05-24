@@ -1,8 +1,8 @@
 package com.skyletto.startappbackend.services;
 
+import com.skyletto.startappbackend.entities.Location;
 import com.skyletto.startappbackend.entities.Role;
 import com.skyletto.startappbackend.entities.User;
-import com.skyletto.startappbackend.entities.UserLocation;
 import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
 import com.skyletto.startappbackend.entities.requests.LatLngRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.skyletto.startappbackend.utils.Utils.diff;
 
 @Service
 public class UserService {
@@ -108,15 +110,15 @@ public class UserService {
         return null;
     }
 
-    public UserLocation setLocation(long id, LatLngRequest latLng) {
-        return locationRepository.save(new UserLocation(id, latLng.getLat(), latLng.getLng()));
+    public Location setLocation(long id, LatLngRequest latLng) {
+        return locationRepository.save(new Location(id, latLng.getLat(), latLng.getLng()));
     }
 
     public void removeLocation(long id){
         locationRepository.deleteById(id);
     }
 
-    public List<UserLocation> getLocations(LatLngRequest latLng) {
+    public List<Location> getLocations(LatLngRequest latLng) {
         double diff = diff(latLng.getZoom());
         return locationRepository.findAllByLatBetweenAndLngBetween(
                 latLng.getLat()-diff,
@@ -126,7 +128,4 @@ public class UserService {
                 );
     }
 
-    private double diff(int zoom){
-        return 0.06*((20-zoom)*(20-zoom));
-    }
 }

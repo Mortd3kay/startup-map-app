@@ -5,16 +5,16 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity(name = "users_locations")
-public class UserLocation {
+public class Location {
     @Id
     private long userId;
     private double lat;
     private double lng;
 
-    public UserLocation() {
+    public Location() {
     }
 
-    public UserLocation(long userId, double lat, double lng) {
+    public Location(long userId, double lat, double lng) {
         this.userId = userId;
         this.lat = lat;
         this.lng = lng;
@@ -57,8 +57,8 @@ public class UserLocation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserLocation userLocation = (UserLocation) o;
-        return userId == userLocation.userId && Double.compare(userLocation.lat, lat) == 0 && Double.compare(userLocation.lng, lng) == 0;
+        Location location = (Location) o;
+        return userId == location.userId && Double.compare(location.lat, lat) == 0 && Double.compare(location.lng, lng) == 0;
     }
 
     @Override

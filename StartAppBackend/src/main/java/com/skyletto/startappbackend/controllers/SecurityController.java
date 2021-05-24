@@ -185,7 +185,7 @@ public class SecurityController {
 
     @GetMapping("/projects/all")
     public @ResponseBody
-    List<Project> getAllProjects(Authentication auth) {
+    List<Project> getAllUserProjects(Authentication auth) {
         if (auth != null) {
             User u = userService.findUserByEmail(auth.getName());
             if (u != null) {
@@ -193,6 +193,14 @@ public class SecurityController {
             }
         }
         return null;
+    }
+
+    @GetMapping("/projects/closest")
+    public @ResponseBody List<Project> getAllProjectsAround(Authentication auth, @RequestBody LatLngRequest latLng){
+        if (auth != null && auth.isAuthenticated()) {
+            return projectService.getLocations(latLng);
+        }
+        return new ArrayList<>();
     }
 
     @GetMapping("/roles/all")
@@ -226,7 +234,7 @@ public class SecurityController {
 
     @PostMapping("/user/location")
     public @ResponseBody
-    UserLocation setUserLocation(Authentication auth, @RequestBody LatLngRequest latLng) {
+    Location setUserLocation(Authentication auth, @RequestBody LatLngRequest latLng) {
         if (auth != null) {
             User u = userService.findUserByEmail(auth.getName());
             if (u != null) {
@@ -248,7 +256,7 @@ public class SecurityController {
 
     @GetMapping("/users/locations")
     public @ResponseBody
-    List<UserLocation> getLocationsAround(Authentication auth, @RequestBody LatLngRequest latLng) {
+    List<Location> getLocationsAround(Authentication auth, @RequestBody LatLngRequest latLng) {
         if (auth != null && auth.isAuthenticated()) {
             return userService.getLocations(latLng);
         }

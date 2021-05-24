@@ -13,6 +13,9 @@ interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun add(project: Project)
 
+    @Query("select * from projects")
+    fun getAll():LiveData<List<ProjectWithTagsAndRoles>>
+
     @Query("select * from projects where pId in (:ids)")
     fun getAllByIds(ids: List<Long>): LiveData<List<ProjectWithTagsAndRoles>>
 
