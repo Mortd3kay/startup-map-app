@@ -75,7 +75,7 @@
     <string name="you_didnt_choose_place">Вы не выбрали место</string>
     <string name="place_is_necessary">Необходимо указать местоположение</string>
     <string name="write">Написать</string>
-    <string name="needed">требуется: </string>
+    <string name="needed">"требуется: "</string>
     <string name="exp_of_work">"опыт работы: "</string>
 
     <string-array name="categories">
