@@ -56,7 +56,6 @@ class MapsFragment : Fragment() {
                         predicates[1]?.let {
                             m.key.isVisible = it.test(m.value)
                         }
-
                 }
             }
         }
@@ -121,7 +120,7 @@ class MapsFragment : Fragment() {
         categories.dropDownHorizontalOffset = 15
         categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel?.categoryId?.postValue(id)
+                viewModel?.categoryId?.value = id
                 viewModel?.updateMarkers()
             }
 

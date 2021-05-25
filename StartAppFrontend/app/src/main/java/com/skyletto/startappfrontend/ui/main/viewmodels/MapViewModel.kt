@@ -55,9 +55,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         myProjects.observeForever {
             creationAvailable = it.isEmpty()
         }
-        users.observeForever {
-            Log.d(TAG, "observe users: ${it.size}")
-        }
+        users.observeForever {}
         categoryId.observeForever {
             predicates[0] = when (it) {
                 0L -> allPredicate
@@ -195,6 +193,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         }
     }
 
+    @Synchronized
     fun updateMarkers() {
         onConditionUpdateListener?.update(predicates)
     }
