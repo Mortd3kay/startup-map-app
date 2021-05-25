@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:layout_margin="50dp"
     android:layout_gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="10dp">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="10dp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="@color/dark"
-        app:boxStrokeWidth="0dp"
-        app:passwordToggleDrawable="@drawable/asl_password_visibility"
-        app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@color/dark">
-
-        <com.google.android.material.textfield.TextInputEditText
+        android:orientation="vertical"
+        android:padding="10dp">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/dark"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:id="@+id/settings_confirm_input"
-            android:hint="@string/old_pass_hint"
-            android:inputType="textPassword" />
+            android:textColorHint="@color/dark"
+            app:boxStrokeWidth="0dp"
+            app:passwordToggleDrawable="@drawable/asl_password_visibility"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/dark">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:id="@+id/settings_confirm_input"
+                android:hint="@string/old_pass_hint"
+                android:inputType="textPassword" />
 
-</LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/settings_confirm_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/dark_green"
+            android:text="@string/save"/>
+    </LinearLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>

@@ -1,14 +1,25 @@
 package com.skyletto.startappfrontend.ui.main
 
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Color
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.UserTags
+import com.skyletto.startappfrontend.common.receivers.LocationReceiver
+import com.skyletto.startappfrontend.common.receivers.OnStateReceiverChangeListener
+import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.data.database.AppDatabase
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
@@ -27,33 +38,52 @@ import java.util.*
 class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     private lateinit var bnv: BottomNavigationView
     private lateinit var fm: FragmentManager
-    private lateinit var api:ApiRepository
-    private lateinit var db:AppDatabase
+    private lateinit var api: ApiRepository
+    private lateinit var db: AppDatabase
+    private lateinit var app: MainApplication
+    private val receiver = LocationReceiver()
+    private lateinit var alert: AlertDialog
+
+    init {
+        receiver.listeners.add(object : OnStateReceiverChangeListener {
+            override fun notifyState(connected: Boolean) {
+                if (!connected) {
+                    buildAlertMessageNoLocationService(connected)
+                } else {
+                    if(alert.isShowing) alert.dismiss()
+                }
+            }
+
+        })
+
+    }
 
     private var isBack = false
     private val stack = LinkedList<Int>()
     private val cd = CompositeDisposable()
 
     private lateinit var profileFragment: ProfileFragment
-    private lateinit var messageFragment :MessagesFragment
+    private lateinit var messageFragment: MessagesFragment
     private lateinit var mapFragment: MapsFragment
 
-    private var token : String? = null
-    private var id : Long? = null
+    private var token: String? = null
+    private var id: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        api = (application as MainApplication).api
-        db = (application as MainApplication).db
+        app = (application as MainApplication)
+        api = app.api
+        db = app.db
         parseBundle()
         loadUser()
         initViews()
         initFragments()
+        initAlertLocationMessage()
         bnv.selectedItemId = R.id.map
     }
 
-    private fun initFragments(){
+    private fun initFragments() {
         fm = supportFragmentManager
         mapFragment = fm.fragmentFactory.instantiate(ClassLoader.getSystemClassLoader(), MapsFragment::class.java.name) as MapsFragment
         profileFragment = id?.let { ProfileFragment.newInstance(it) }!!
@@ -62,13 +92,13 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         messageFragment.mActivity = this
     }
 
-    private fun initViews(){
+    private fun initViews() {
         bnv = findViewById(R.id.bottom_menu)
         bnv.setOnNavigationItemSelectedListener {
             if (!isBack) stack.push(it.itemId)
             isBack = false
             Log.d(TAG, "initViews: $stack")
-            when (it.itemId){
+            when (it.itemId) {
                 R.id.map -> {
                     goToMap()
                     true
@@ -86,7 +116,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         }
     }
 
-    private fun parseBundle(){
+    private fun parseBundle() {
         val bundle = intent.extras
         token = bundle?.getString("token")
         id = bundle?.getLong("id")
@@ -102,7 +132,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         }
     }
 
-    private fun loadUser(){
+    private fun loadUser() {
         token?.let {
             id?.let { it2 ->
                 val d = api.apiService.getUserById(makeToken(it), it2)
@@ -122,13 +152,53 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
 
     }
 
-    private fun saveUser(it1: User){
+    private fun saveUser(it1: User) {
         db.userDao().add(it1)
         it1.tags?.let { it2 ->
             db.tagDao().addAll(it2)
             val uTags: List<UserTags> = it2.map { innerIt -> it1.id?.let { it2 -> UserTags(it2, innerIt.id) }!! }
             Log.d(TAG, "saveUser: $uTags")
             db.userTagsDao().addAll(uTags)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(receiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        buildAlertMessageNoLocationService(checkLocation())
+    }
+
+    private fun checkLocation(): Boolean {
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (lm.isLocationEnabled && alert.isShowing) alert.dismiss()
+        return lm.isLocationEnabled
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(receiver)
+    }
+
+    private fun buildAlertMessageNoLocationService(network_enabled: Boolean): Boolean {
+        if (!network_enabled)
+            populateAlertDialog()
+        return true
+    }
+
+    private fun initAlertLocationMessage() {
+        alert = AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setMessage(R.string.msg_no_location)
+                .setPositiveButton("Открыть настройки", null)
+                .create()
+    }
+
+    private fun populateAlertDialog(){
+        alert.show()
+        alert.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLACK)
+        alert.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
+            alert.dismiss()
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), null)
         }
     }
 
@@ -152,21 +222,20 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         startActivity(Intent(this, ProjectActivity::class.java))
     }
 
-    override fun getToken():String {
-        return token?:""
+    override fun getToken(): String {
+        return token ?: ""
     }
 
-    override fun getUserId():Long {
-        return id?:-1
+    override fun getUserId(): Long {
+        return id ?: -1
     }
 
     override fun onBackPressed() {
         stack.pop()
-        if (stack.size >= 1 && bnv.selectedItemId!=R.id.map){
+        if (stack.size >= 1 && bnv.selectedItemId != R.id.map) {
             isBack = true
             bnv.selectedItemId = stack.peek()
-        }
-        else super.onBackPressed()
+        } else super.onBackPressed()
     }
 
     override fun onDestroy() {

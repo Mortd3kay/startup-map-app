@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.skyletto.startappfrontend.R
+import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.AlertModel
 import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
 import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
@@ -41,6 +42,8 @@ class MapsFragment : Fragment() {
     private val projectMarkers = HashSet<Marker>()
     private val markerModels = HashMap<Marker, AlertModel>()
 
+    //private lateinit var client:FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
@@ -60,6 +63,9 @@ class MapsFragment : Fragment() {
             }
         }
         observeViewModel()
+
+        //client = LocationServices.getFusedLocationProviderClient(context)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -173,6 +179,11 @@ class MapsFragment : Fragment() {
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dlg.show(parentFragmentManager, "DIALOG")
     }
+
+//    private fun checkLocationPermission(){
+//        if (ActivityCompat.checkSelfPermission(context!!, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+//        }
+//    }
 
     private fun getIdFromSP() = sp?.getLong("id", -1)!!
 
