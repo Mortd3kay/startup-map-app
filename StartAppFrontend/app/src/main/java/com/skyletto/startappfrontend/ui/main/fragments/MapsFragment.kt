@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +21,13 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.models.AlertModel
+import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
 import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
+import java.util.function.Predicate
 
 
 class MapsFragment : Fragment() {
@@ -43,6 +46,20 @@ class MapsFragment : Fragment() {
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
         viewModel = activity?.let { ViewModelProvider(it, MapViewModelFactory(it.application, getIdFromSP())).get(MapViewModel::class.java) }
         viewModel?.activity = mActivity
+        viewModel?.onConditionUpdateListener = object : OnConditionUpdateListener {
+            override fun update(predicates: Array<Predicate<AlertModel>?>) {
+                for (m in markerModels){
+                    predicates[0]?.let {
+                        m.key.isVisible = it.test(m.value)
+                    }
+                    if (m.key.isVisible)
+                        predicates[1]?.let {
+                            m.key.isVisible = it.test(m.value)
+                        }
+
+                }
+            }
+        }
         observeViewModel()
     }
 
@@ -70,12 +87,14 @@ class MapsFragment : Fragment() {
             for (i in it) {
                 val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_profile_icon), 128, 128, false)
                 val marker = mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img)))
+                marker.isVisible = false
                 userMarkers.add(marker)
                 markerModels[marker] = AlertModel(
                         i.userId,
                         i.isProject
                 )
             }
+            viewModel?.updateMarkers()
         }
         viewModel?.projectLocations?.observe(this) {
             for (m in projectMarkers) {
@@ -85,12 +104,14 @@ class MapsFragment : Fragment() {
             for (i in it) {
                 val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_project_icon), 128, 128, false)
                 val marker = mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img)))
+                marker.isVisible = false
                 projectMarkers.add(marker)
                 markerModels[marker] = AlertModel(
                         i.userId,
                         i.isProject
                 )
             }
+            viewModel?.updateMarkers()
         }
     }
 
@@ -100,11 +121,12 @@ class MapsFragment : Fragment() {
         categories.dropDownHorizontalOffset = 15
         categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel?.categoryId = id
+                viewModel?.categoryId?.postValue(id)
+                viewModel?.updateMarkers()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                viewModel?.categoryId?.postValue(0L)
             }
         }
         b.tbSettings.setOnClickListener { viewModel?.goToSettings() }
@@ -113,6 +135,12 @@ class MapsFragment : Fragment() {
                 viewModel?.goToCreateProject()
             else toast(context, getString(R.string.you_may_have_only_one_project))
         }
+        b.mapSearchField.addTextChangedListener(object : LaconicTextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                viewModel?.searchField?.set(s.toString())
+                viewModel?.updateMarkers()
+            }
+        })
     }
 
 

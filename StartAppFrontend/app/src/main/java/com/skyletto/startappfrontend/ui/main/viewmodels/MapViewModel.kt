@@ -3,14 +3,12 @@ package com.skyletto.startappfrontend.ui.main.viewmodels
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.skyletto.startappfrontend.common.MainApplication
-import com.skyletto.startappfrontend.common.models.ProjectRoles
-import com.skyletto.startappfrontend.common.models.ProjectTags
-import com.skyletto.startappfrontend.common.models.ProjectUser
-import com.skyletto.startappfrontend.common.models.UserTags
+import com.skyletto.startappfrontend.common.models.*
 import com.skyletto.startappfrontend.common.utils.convertLatLngToString
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.data.requests.LatLngRequest
@@ -19,42 +17,59 @@ import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.domain.entities.Location
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.skyletto.startappfrontend.ui.main.fragments.OnConditionUpdateListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import java.util.function.Predicate
 
 class MapViewModel(application: Application, private val userId: Long) : AndroidViewModel(application) {
     private val api = getApplication<MainApplication>().api
     private val db = getApplication<MainApplication>().db
     private val projects = db.projectDao().getAll()
     private val myProjects = db.projectDao().getAllByUserId(userId)
+    private val users = db.userDao().getAll()
+    var searchField = ObservableField("")
     var userLocations = MutableLiveData<MutableSet<Location>>(HashSet())
     var projectLocations = MutableLiveData<MutableSet<Location>>(HashSet())
     var creationAvailable = true
     private val cd = CompositeDisposable()
     private var userDisposable: Disposable? = null
     private var projectDisposable: Disposable? = null
+    var onConditionUpdateListener: OnConditionUpdateListener? = null
+    var predicates = arrayOfNulls<Predicate<AlertModel>>(2)
+
+    var categoryId = MutableLiveData(0L)
+
+    var activity: ActivityFragmentWorker? = null
 
     init {
         loadUserProjects()
         projects.observeForever { it1 ->
             projectLocations.value?.clear()
             projectLocations.postValue(it1.map {
-                it.project.let { it2-> Location(it2.id, it2.lat, it2.lng, true) }
+                it.project.let { it2 -> Location(it2.id, it2.lat, it2.lng, true) }
             }.toMutableSet())
         }
         myProjects.observeForever {
             creationAvailable = it.isEmpty()
         }
+        users.observeForever {
+            Log.d(TAG, "observe users: ${it.size}")
+        }
+        categoryId.observeForever {
+            predicates[0] = when (it) {
+                0L -> allPredicate
+                1L -> userPredicate
+                2L -> projectPredicate
+                else -> allPredicate
+            }
+            Log.d(TAG, "category id: $it")
+        }
+        setStringCondition()
     }
 
-
-    var search = ""
-    var categoryId = 0L
-
-    var activity: ActivityFragmentWorker? = null
 
     fun goToSettings() {
         activity?.goToSettings()
@@ -81,12 +96,12 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         cd.add(d)
     }
 
-    fun loadProjectLocations(latLng: LatLng, zoom:Float){
+    fun loadProjectLocations(latLng: LatLng, zoom: Float) {
         projectDisposable?.dispose()
         projectDisposable = api.apiService.getClosestProjects(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom)).toObservable()
                 .subscribeOn(Schedulers.io())
                 .retry()
-                .repeatWhen { completed -> completed.delay(10, TimeUnit.SECONDS) }
+                .repeatWhen { completed -> completed.delay(15, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
                             saveProjects(oit)
@@ -97,7 +112,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 )
     }
 
-    fun loadLocations(latLng: LatLng, zoom:Float) {
+    fun loadLocations(latLng: LatLng, zoom: Float) {
         userDisposable?.dispose()
         userDisposable = api.apiService.getUserLocations(makeToken(getToken()), LatLngRequest(latLng.latitude, latLng.longitude, zoom)).toObservable()
                 .subscribeOn(Schedulers.io())
@@ -115,8 +130,8 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 )
     }
 
-    private fun loadUserByIds(ids:List<Long>){
-        val d = api.apiService.getUsersByIds(makeToken(getToken()),ids.toSet())
+    private fun loadUserByIds(ids: List<Long>) {
+        val d = api.apiService.getUsersByIds(makeToken(getToken()), ids.toSet())
                 .subscribeOn(Schedulers.io())
                 .retry()
                 .subscribe(
@@ -131,12 +146,12 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         cd.add(d)
     }
 
-    private fun saveAllUsers(it: List<User>){
+    private fun saveAllUsers(it: List<User>) {
         val tagSet = HashSet<Tag>()
         val uTags = ArrayList<UserTags>()
-        for (u in it){
-            u.tags?.let {
-                it1 -> tagSet.addAll(it1)
+        for (u in it) {
+            u.tags?.let { it1 ->
+                tagSet.addAll(it1)
                 uTags.addAll(it1.map { it2 -> UserTags(u.id!!, it2.id) })
             }
         }
@@ -145,17 +160,17 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         db.userTagsDao().addAll(uTags)
     }
 
-    private fun saveProjects(it:List<Project>) : List<Long>{
+    private fun saveProjects(it: List<Project>): List<Long> {
         configureProjectsAddresses(it)
         val pIds = db.projectDao().addAll(it)
-        for (p in it){
+        for (p in it) {
             p.tags?.let { it1 ->
                 db.tagDao().addAll(it1)
                 db.projectTagsDao().addAll(it1.map { it2 -> ProjectTags(p.id, it2.id) })
             }
             p.user?.let { it1 ->
                 saveUser(it1)
-                it1.id?.let { it2 -> db.projectUserDao().add(ProjectUser(p.id,it2)) }
+                it1.id?.let { it2 -> db.projectUserDao().add(ProjectUser(p.id, it2)) }
             }
             p.roles?.let { it1 ->
                 db.projectAndRolesDao().addAllRoles(it1)
@@ -165,13 +180,13 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         return pIds
     }
 
-    private fun configureProjectsAddresses(projects:List<Project>){
-        for (p in projects){
-            if (p.lat!=0.0 && p.lng!=0.0) p.address = convertLatLngToString(getApplication(), LatLng(p.lat, p.lng))
+    private fun configureProjectsAddresses(projects: List<Project>) {
+        for (p in projects) {
+            if (p.lat != 0.0 && p.lng != 0.0) p.address = convertLatLngToString(getApplication(), LatLng(p.lat, p.lng))
         }
     }
 
-    private fun saveUser(it1: User){
+    private fun saveUser(it1: User) {
         db.userDao().add(it1)
         it1.tags?.let { it2 ->
             db.tagDao().addAll(it2)
@@ -180,8 +195,36 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         }
     }
 
+    fun updateMarkers() {
+        onConditionUpdateListener?.update(predicates)
+    }
+
     private fun getToken() = getApplication<MainApplication>().getSharedPreferences("profile", Activity.MODE_PRIVATE).getString("token", "")!!
 
+    private fun setStringCondition() {
+        predicates[1] = Predicate<AlertModel> { alert ->
+            if (alert.isProject) {
+                projects.value?.let { oit ->
+                    return@Predicate (oit.any { it.project.id == alert.id && projectContainsString(it) })
+                }
+            } else {
+                users.value?.let { oit ->
+                    return@Predicate (oit.any { it.user.id == alert.id && userContainsString(it) })
+                }
+            }
+            return@Predicate false
+        }
+    }
+
+    private fun projectContainsString(it: ProjectWithTagsAndRoles): Boolean {
+        val str = searchField.get()!!
+        return it.project.title.startsWith(str) || it.tags?.map { it.name }?.any { it.startsWith(str) } ?: false || it.roles?.map { it.role?.name }?.any { it?.startsWith(str) == true } ?: false
+    }
+
+    private fun userContainsString(it: UserWithTags): Boolean {
+        val str = searchField.get()!!
+        return it.user.secondName.startsWith(str) || it.user.firstName.startsWith(str) || it.user.title?.startsWith(str) == true || it.tags?.map { it.name }?.any { it.startsWith(str) } == true
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -192,5 +235,14 @@ class MapViewModel(application: Application, private val userId: Long) : Android
 
     companion object {
         private const val TAG = "MAP_VIEW_MODEL"
+        private val allPredicate = Predicate<AlertModel> {
+            return@Predicate true
+        }
+        private val userPredicate = Predicate<AlertModel> {
+            return@Predicate !it.isProject
+        }
+        private val projectPredicate = Predicate<AlertModel> {
+            return@Predicate it.isProject
+        }
     }
 }
