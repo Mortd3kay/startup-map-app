@@ -1,15 +1,16 @@
 package com.skyletto.startappfrontend.ui.main.fragments
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.AlertModel
@@ -91,8 +92,24 @@ class MapDialog(val model : AlertModel) : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.map_alert_dialog, container, false)
+        val v = inflater.inflate(R.layout.map_alert_dialog, container);
+        binding = DataBindingUtil.bind(v)
         return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        setStyle(STYLE_NO_FRAME, android.R.style.Theme);
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialog?.window?.setLayout(
+                resources.displayMetrics.widthPixels*85/100,
+                resources.displayMetrics.heightPixels*50/100
+        )
     }
 
     companion object{

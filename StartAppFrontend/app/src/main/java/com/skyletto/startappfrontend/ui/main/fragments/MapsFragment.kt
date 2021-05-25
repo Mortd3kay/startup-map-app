@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
+
 
 class MapsFragment : Fragment() {
     private lateinit var mMap: GoogleMap
@@ -129,13 +131,20 @@ class MapsFragment : Fragment() {
 
         mMap.setOnMarkerClickListener {
             val model = markerModels[it]
-            if (model != null && model.isProject) {
-                val dlg = MapDialog(model)
-                dlg.show(parentFragmentManager,"DIALOG")
+            if (model != null) {
+                showDialog(model)
                 return@setOnMarkerClickListener true
             }
             return@setOnMarkerClickListener false
         }
+    }
+
+    private fun showDialog(model: AlertModel){
+        val dlg = MapDialog(model)
+        val lp = WindowManager.LayoutParams()
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dlg.show(parentFragmentManager, "DIALOG")
     }
 
     private fun getIdFromSP() = sp?.getLong("id", -1)!!

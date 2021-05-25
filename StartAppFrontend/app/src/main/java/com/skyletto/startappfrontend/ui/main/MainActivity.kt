@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
             id?.let { it2 ->
                 val d = api.apiService.getUserById(makeToken(it), it2)
                         .subscribeOn(Schedulers.io())
+                        .retry()
                         .subscribe(
                                 {
                                     saveUser(it)
