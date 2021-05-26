@@ -41,6 +41,7 @@
             android:name=".ui.main.MainActivity"
             android:label="@string/title_activity_main" />
         <activity android:name=".ui.auth.AuthActivity" />
+        <service android:name=".common.services.LocationService"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
