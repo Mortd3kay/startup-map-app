@@ -1,9 +1,11 @@
 package com.skyletto.startappfrontend.ui.main
 
+import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
 import android.os.Bundle
@@ -19,6 +21,7 @@ import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.UserTags
 import com.skyletto.startappfrontend.common.receivers.LocationReceiver
 import com.skyletto.startappfrontend.common.receivers.OnStateReceiverChangeListener
+import com.skyletto.startappfrontend.common.services.LocationService
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.data.database.AppDatabase
 import com.skyletto.startappfrontend.data.network.ApiRepository
@@ -33,6 +36,7 @@ import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 import com.skyletto.startappfrontend.ui.start.StartActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.security.Provider
 import java.util.*
 
 class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     private lateinit var app: MainApplication
     private val receiver = LocationReceiver()
     private lateinit var alert: AlertDialog
+    private lateinit var serviceIntent: Intent
 
     init {
         receiver.listeners.add(object : OnStateReceiverChangeListener {
@@ -50,7 +55,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
                 if (!connected) {
                     buildAlertMessageNoLocationService(connected)
                 } else {
-                    if(alert.isShowing) alert.dismiss()
+                    if (alert.isShowing) alert.dismiss()
                 }
             }
 
@@ -72,15 +77,21 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        app = (application as MainApplication)
-        api = app.api
-        db = app.db
+        initProperties()
         parseBundle()
         loadUser()
         initViews()
         initFragments()
         initAlertLocationMessage()
         bnv.selectedItemId = R.id.map
+        checkPermissions()
+    }
+
+    private fun initProperties() {
+        app = (application as MainApplication)
+        api = app.api
+        db = app.db
+        serviceIntent = Intent(this, LocationService::class.java)
     }
 
     private fun initFragments() {
@@ -113,6 +124,22 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun checkPermissions() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "checkPermissions: starts service")
+            startService(serviceIntent)
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), RQST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            RQST_CODE -> checkPermissions()
         }
     }
 
@@ -193,7 +220,7 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
                 .create()
     }
 
-    private fun populateAlertDialog(){
+    private fun populateAlertDialog() {
         alert.show()
         alert.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLACK)
         alert.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
@@ -240,10 +267,13 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
 
     override fun onDestroy() {
         cd.clear()
+        Log.d(TAG, "onStop: stops service")
+        stopService(serviceIntent)
         super.onDestroy()
     }
 
     companion object {
         private const val TAG = "MAIN_ACTIVITY"
+        private const val RQST_CODE = 123
     }
 }
