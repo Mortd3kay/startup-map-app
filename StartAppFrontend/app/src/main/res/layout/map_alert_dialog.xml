@@ -74,7 +74,7 @@
                             tools:text="опыт работы: 3 года"
                             android:fontFamily="@font/roboto_regular"
                             android:textColor="@color/dark"
-                            android:text="@{model.subsubtitle}"
+                            android:text='@{model.subsubtitle==null?"":model.subsubtitle}'
                             android:textSize="14sp"/>
 
                     </LinearLayout>
