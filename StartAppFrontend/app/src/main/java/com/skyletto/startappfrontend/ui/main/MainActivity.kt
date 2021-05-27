@@ -84,7 +84,6 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         initFragments()
         initAlertLocationMessage()
         bnv.selectedItemId = R.id.map
-        checkPermissions()
     }
 
     private fun initProperties() {
@@ -130,8 +129,11 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     private fun checkPermissions() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "checkPermissions: starts service")
-            startService(serviceIntent)
+                    if (!LocationService.IS_RUNNING){
+                        Log.d(TAG, "checkPermissions: starts service")
+                        startService(serviceIntent)
+                    }
+
         } else {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), RQST_CODE)
         }
@@ -193,6 +195,11 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
         super.onResume()
         registerReceiver(receiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
         buildAlertMessageNoLocationService(checkLocation())
+    }
+
+    override fun onStart() {
+        super.onStart()
+        checkPermissions()
     }
 
     private fun checkLocation(): Boolean {
@@ -267,9 +274,22 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
 
     override fun onDestroy() {
         cd.clear()
-        Log.d(TAG, "onStop: stops service")
-        stopService(serviceIntent)
         super.onDestroy()
+    }
+
+    override fun onStop() {
+        val d = api.apiService.deleteLocation(makeToken(getToken()))
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            Log.d(TAG, "onTaskRemoved: delete location completed")
+                        },
+                        { error ->
+                            Log.e(TAG, "onTaskRemoved: error", error)
+                        }
+                )
+        cd.add(d)
+        super.onStop()
     }
 
     companion object {

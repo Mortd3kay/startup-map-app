@@ -17,6 +17,7 @@ import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.data.network.ApiRepository
 import com.skyletto.startappfrontend.data.network.ApiRepository.makeToken
 import com.skyletto.startappfrontend.data.requests.LatLngRequest
+import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
@@ -24,7 +25,6 @@ import io.reactivex.schedulers.Schedulers
 class LocationService : Service(), LocationListener {
     private var api: ApiRepository? = null
     private var token: String? = null
-    private val latLngRequest = MutableLiveData<LatLngRequest>()
     private var d: Disposable? = null
     private var mContext: Context? = null
 
@@ -44,45 +44,22 @@ class LocationService : Service(), LocationListener {
             stopSelf()
         } else {
             Log.d(TAG, "onCreate: has token")
-            latLngRequest.observeForever {
-                d?.dispose()
-                api?.let { a ->
-                    d = a.apiService.setLocation(makeToken(token!!), it)
-                            .subscribeOn(Schedulers.io())
-                            .retry()
-                            .subscribe(
-                                    { loc ->
-                                        Log.d(TAG, "onCreate: sent new Location: ${loc.lat} ${loc.lng}")
-                                    },
-                                    { error ->
-                                        Log.e(TAG, "onCreate: error", error)
-                                    }
-                            )
-                }
-
-            }
+            IS_RUNNING = true
         }
 
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         token?.let {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
-//                val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1f) {
-//                    latLngRequest.postValue(LatLngRequest(it.latitude, it.longitude))
-//                }
-//            } else {
-//                Log.d(TAG, "onStartCommand: permission denied")
-//                stopSelf()
-//            }
             getLocation()
         }
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        getLocation()
+        token?.let {
+            getLocation()
+        }
         return null
     }
 
@@ -90,29 +67,13 @@ class LocationService : Service(), LocationListener {
         stopUsingGPS()
         return super.onUnbind(intent)
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy: service destroyed")
-        d?.dispose()
-        token?.let {
-            api?.let { a ->
-                d = a.apiService.deleteLocation(makeToken(it))
-                        .subscribeOn(Schedulers.io())
-                        .retry()
-                        .subscribe(
-                                {
-                                    Log.d(TAG, "onDestroy: delete location completed")
-                                },
-                                { error ->
-                                    Log.e(TAG, "onDestroy: error", error)
-                                }
-                        )
-                d?.dispose()
-            }
-        }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        IS_RUNNING = false
+        super.onTaskRemoved(rootIntent)
     }
 
-    fun getLocation(): Location? {
+    private fun getLocation(): Location? {
         try {
             locationManager = mContext?.getSystemService(LOCATION_SERVICE) as LocationManager
 
@@ -169,7 +130,7 @@ class LocationService : Service(), LocationListener {
         return location
     }
 
-    fun stopUsingGPS() {
+    private fun stopUsingGPS() {
         locationManager?.removeUpdates(this)
     }
 
@@ -180,12 +141,31 @@ class LocationService : Service(), LocationListener {
 
     companion object {
         private const val TAG = "LOCATION_SERVICE"
-        private const val MIN_TIME_BW_UPDATES = 5000L
+        private const val MIN_TIME_BW_UPDATES = 3000L
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES = 1f
+        var IS_RUNNING = false
+    }
+
+    override fun onDestroy() {
+        IS_RUNNING = false
+        Log.d(TAG, "onDestroy: service finished")
+        super.onDestroy()
     }
 
     override fun onLocationChanged(location: Location) {
         Log.d(TAG, "onLocationChanged: $location")
-        latLngRequest.postValue(LatLngRequest(location.latitude, location.longitude))
+        d?.dispose()
+        api?.let { a ->
+            d = a.apiService.setLocation(makeToken(token!!), LatLngRequest(location.latitude, location.longitude))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            { loc ->
+                                Log.d(TAG, "onLocationChanged: sent new Location: ${loc.lat} ${loc.lng}")
+                            },
+                            { error ->
+                                Log.e(TAG, "onLocationChanged: error", error)
+                            }
+                    )
+        }
     }
 }

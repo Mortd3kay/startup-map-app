@@ -70,7 +70,7 @@ interface ApiService {
     fun setLocation(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest) : Single<Location>
 
     @DELETE("user/location/remove")
-    fun deleteLocation(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String) : Completable
+    fun deleteLocation(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String) : Single<Void>
 
     @POST("users/locations")
     fun getUserLocations(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest): Single<List<Location>>
