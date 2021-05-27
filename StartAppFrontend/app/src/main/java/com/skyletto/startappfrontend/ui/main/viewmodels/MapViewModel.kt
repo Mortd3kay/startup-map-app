@@ -119,7 +119,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .subscribe(
                         { oit ->
                             userLocations.value?.clear()
-                            userLocations.postValue(oit.toMutableSet())
+                            userLocations.postValue(oit.filter { it.userId!=userId }.toMutableSet())
                             loadUserByIds(oit.map { it.userId })
                         },
                         {

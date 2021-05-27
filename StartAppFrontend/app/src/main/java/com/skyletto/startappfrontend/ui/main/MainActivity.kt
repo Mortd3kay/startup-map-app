@@ -36,6 +36,7 @@ import com.skyletto.startappfrontend.ui.settings.SettingsActivity
 import com.skyletto.startappfrontend.ui.start.StartActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.lang.Exception
 import java.security.Provider
 import java.util.*
 
@@ -278,22 +279,26 @@ class MainActivity : AppCompatActivity(), ActivityFragmentWorker {
     }
 
     override fun onStop() {
-        val d = api.apiService.deleteLocation(makeToken(getToken()))
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        {
-                            Log.d(TAG, "onTaskRemoved: delete location completed")
-                        },
-                        { error ->
-                            Log.e(TAG, "onTaskRemoved: error", error)
-                        }
-                )
-        cd.add(d)
+        try {
+            val d = api.apiService.deleteLocation(makeToken(getToken()))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                            {
+                                Log.d(TAG, "onStop: delete location completed")
+                            },
+                            { error ->
+                                Log.e(TAG, "onStop: error", error)
+                            }
+                    )
+            cd.add(d)
+        } catch (e:Exception){
+            Log.e(TAG, "onStop: error")
+        }
         super.onStop()
     }
 
     companion object {
         private const val TAG = "MAIN_ACTIVITY"
-        private const val RQST_CODE = 123
+        const val RQST_CODE = 123
     }
 }

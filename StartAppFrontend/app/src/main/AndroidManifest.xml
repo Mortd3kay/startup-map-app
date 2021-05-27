@@ -43,7 +43,8 @@
         <activity android:name=".ui.auth.AuthActivity" />
         <service android:name=".common.services.LocationService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false"
+            android:stopWithTask="false"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

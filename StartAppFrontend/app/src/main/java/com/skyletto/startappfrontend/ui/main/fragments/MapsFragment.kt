@@ -2,8 +2,10 @@ package com.skyletto.startappfrontend.ui.main.fragments
 
 import android.app.Activity
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -14,10 +16,11 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MainApplication
@@ -27,8 +30,10 @@ import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
 import com.skyletto.startappfrontend.common.utils.toast
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
+import com.skyletto.startappfrontend.ui.main.MainActivity
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
 import java.util.function.Predicate
+import java.util.jar.Manifest
 
 
 class MapsFragment : Fragment() {
@@ -41,30 +46,21 @@ class MapsFragment : Fragment() {
     private val userMarkers = HashSet<Marker>()
     private val projectMarkers = HashSet<Marker>()
     private val markerModels = HashMap<Marker, AlertModel>()
+    private var lastKnownLocation = MutableLiveData<Location>()
 
-    //private lateinit var client:FusedLocationProviderClient
+    private lateinit var client: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sp = activity?.getSharedPreferences("profile", Activity.MODE_PRIVATE)
         viewModel = activity?.let { ViewModelProvider(it, MapViewModelFactory(it.application, getIdFromSP())).get(MapViewModel::class.java) }
-        viewModel?.activity = mActivity
-        viewModel?.onConditionUpdateListener = object : OnConditionUpdateListener {
-            override fun update(predicates: Array<Predicate<AlertModel>?>) {
-                for (m in markerModels){
-                    predicates[0]?.let {
-                        m.key.isVisible = it.test(m.value)
-                    }
-                    if (m.key.isVisible)
-                        predicates[1]?.let {
-                            m.key.isVisible = it.test(m.value)
-                        }
-                }
+        observeViewModel()
+        client = LocationServices.getFusedLocationProviderClient(context)
+        lastKnownLocation.observeForever {
+            if (it!=null){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude),14f))
             }
         }
-        observeViewModel()
-
-        //client = LocationServices.getFusedLocationProviderClient(context)
 
     }
 
@@ -83,7 +79,33 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
+    private fun initLocationListener(){
+        if (activity?.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+            val locResult = client.lastLocation
+            locResult.addOnCompleteListener(activity!!){
+                if (it.isSuccessful){
+                    lastKnownLocation.postValue(it.result)
+                }
+            }
+        }
+
+    }
+
     private fun observeViewModel(){
+        viewModel?.activity = mActivity
+        viewModel?.onConditionUpdateListener = object : OnConditionUpdateListener {
+            override fun update(predicates: Array<Predicate<AlertModel>?>) {
+                for (m in markerModels){
+                    predicates[0]?.let {
+                        m.key.isVisible = it.test(m.value)
+                    }
+                    if (m.key.isVisible)
+                        predicates[1]?.let {
+                            m.key.isVisible = it.test(m.value)
+                        }
+                }
+            }
+        }
         viewModel?.userLocations?.observe(this) {
             for (m in userMarkers) {
                 m.remove()
@@ -148,9 +170,16 @@ class MapsFragment : Fragment() {
         })
     }
 
-
     private fun initMapCallback() = OnMapReadyCallback { googleMap ->
         mMap = googleMap
+        if (activity?.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+            mMap?.let {
+                it.isMyLocationEnabled = true
+                initLocationListener()
+            }
+
+        } else requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_FINE_LOCATION),MainActivity.RQST_CODE)
+
         try {
             if (!mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.mapstyle))) Log.e(TAG, "onMapReady: Parsing failed")
         } catch (e: Exception) {
@@ -179,11 +208,6 @@ class MapsFragment : Fragment() {
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dlg.show(parentFragmentManager, "DIALOG")
     }
-
-//    private fun checkLocationPermission(){
-//        if (ActivityCompat.checkSelfPermission(context!!, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-//        }
-//    }
 
     private fun getIdFromSP() = sp?.getLong("id", -1)!!
 
