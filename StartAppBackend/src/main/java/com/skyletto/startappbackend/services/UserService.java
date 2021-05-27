@@ -1,13 +1,15 @@
 package com.skyletto.startappbackend.services;
 
+import com.skyletto.startappbackend.entities.Location;
 import com.skyletto.startappbackend.entities.Role;
 import com.skyletto.startappbackend.entities.User;
 import com.skyletto.startappbackend.entities.requests.EditProfileDataRequest;
+import com.skyletto.startappbackend.entities.requests.LatLngRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
+import com.skyletto.startappbackend.repositories.LocationRepository;
 import com.skyletto.startappbackend.repositories.RoleRepository;
 import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +18,20 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.skyletto.startappbackend.utils.Utils.diff;
+
 @Service
 public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private LocationRepository locationRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository,LocationRepository locationRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.locationRepository = locationRepository;
     }
 
     @Autowired
@@ -103,4 +109,23 @@ public class UserService {
         }
         return null;
     }
+
+    public Location setLocation(long id, LatLngRequest latLng) {
+        return locationRepository.save(new Location(id, latLng.getLat(), latLng.getLng()));
+    }
+
+    public void removeLocation(long id){
+        locationRepository.deleteById(id);
+    }
+
+    public List<Location> getLocations(LatLngRequest latLng) {
+        double diff = diff(latLng.getZoom());
+        return locationRepository.findAllByLatBetweenAndLngBetween(
+                latLng.getLat()-diff,
+                latLng.getLat()+diff,
+                latLng.getLng()-diff,
+                latLng.getLng()+diff
+                );
+    }
+
 }

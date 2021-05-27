@@ -66,6 +66,7 @@
             tools:context=".ui.main.MainActivity" />
 
         <EditText
+            android:id="@+id/map_search_field"
             app:layout_constraintTop_toBottomOf="@id/maps_toolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +81,7 @@
             tools:text="gamedev"
             android:inputType="text"
             android:textColor="@color/dark"
-            android:text="@={model.search}"
+            android:text="@={model.searchField}"
             android:elevation="5dp"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

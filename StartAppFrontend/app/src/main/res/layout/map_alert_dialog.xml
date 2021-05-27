@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="click"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="model"
+            type="com.skyletto.startappfrontend.common.models.AlertModel" />
+    </data>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_margin="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/map_dialog_img"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/ic_idea_image" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Middle Android Developer"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textColor="@color/dark"
+                            android:text="@{model.title}"
+                            android:textSize="20sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Арсений Шпилевой"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textSize="18sp"
+                            android:text="@{model.subtitle}"
+                            android:textColor="@color/dark"
+                            android:visibility='@{model.subtitle==""?View.GONE:View.VISIBLE}'
+                            android:layout_marginVertical="4dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="опыт работы: 3 года"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/dark"
+                            android:text="@{model.subsubtitle}"
+                            android:textSize="14sp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/map_dialog_chip_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp" />
+
+                </HorizontalScrollView>
+
+
+
+                <Button
+                    android:layout_height="40dp"
+                    android:layout_width="140dp"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/dark_green"
+                    android:text="@string/write"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="center_horizontal"
+                    android:onClick="@{view -> click.onClick(view)}"
+                    />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="@tools:sample/lorem/random"
+                        android:textColor="@color/dark"
+                        android:textSize="15sp"
+                        android:text="@{model.description}"
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/roboto_regular"/>
+
+                </ScrollView>
+
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+
+
+
+</layout>
+
