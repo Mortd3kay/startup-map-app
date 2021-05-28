@@ -6,10 +6,7 @@ import com.skyletto.startappbackend.entities.requests.LatLngRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
-import com.skyletto.startappbackend.services.MessageService;
-import com.skyletto.startappbackend.services.ProjectService;
-import com.skyletto.startappbackend.services.TagService;
-import com.skyletto.startappbackend.services.UserService;
+import com.skyletto.startappbackend.services.*;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,11 +27,13 @@ public class SecurityController {
     private TagService tagService;
     private MessageService messageService;
     private ProjectService projectService;
+    private BlacklistService blacklistService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService, TagService tagService, MessageService messageService, ProjectService projectService) {
+    public SecurityController(UserService userService, TagService tagService, MessageService messageService, ProjectService projectService, BlacklistService blacklistService) {
+        this.blacklistService = blacklistService;
         this.userService = userService;
         this.tagService = tagService;
         this.messageService = messageService;
@@ -219,6 +218,17 @@ public class SecurityController {
             User u = userService.findUserByEmail(auth.getName());
             if (u != null) {
                 return projectService.removeProject(u, project);
+            }
+        }
+        return null;
+    }
+
+    @PostMapping("/projects/recommendations")
+    public @ResponseBody List<Project> getRecommendations(Authentication auth, @RequestBody LatLngRequest latLngRequest){
+        if (auth!=null){
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                return blacklistService.getRecommendationsForUser(latLngRequest, u);
             }
         }
         return null;
