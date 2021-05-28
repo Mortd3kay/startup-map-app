@@ -3,6 +3,7 @@ package com.skyletto.startappbackend.services;
 import com.skyletto.startappbackend.entities.*;
 import com.skyletto.startappbackend.entities.requests.LatLngRequest;
 import com.skyletto.startappbackend.repositories.ProjectRepository;
+import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,12 @@ public class BlacklistService {
     private static final double DESCRIPTION_COEFFICIENT = 0.15;
 
     private ProjectRepository projectRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public BlacklistService(ProjectRepository projectRepository) {
+    public BlacklistService(ProjectRepository projectRepository,UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Project> getRecommendationsForUser(LatLngRequest llr, User user) {
@@ -34,6 +37,12 @@ public class BlacklistService {
         List<Project> projects = projectRepository.findAllRecommendedProjects(llr.getLat(), llr.getLng(), user.getId());
         projects.sort((o1, o2) -> -Double.compare(summarize(o2, user, llr), summarize(o1, user, llr)));
         return projects.stream().limit(4).collect(Collectors.toList());
+    }
+
+    public List<User> getRecommendationsForProject(Project project){
+        Logger.getLogger("BLACKLIST_SERVICE").log(Level.INFO, "Coordinates: " + project.getLat() + " " + project.getLng() + " project: " + project.getId());
+        List<User> users = userRepository.findAllRecommendedUsers(project.getLat(), project.getLng(), project.getId());
+        return users;
     }
 
     private double summarize(Project p, User u, LatLngRequest llr) {

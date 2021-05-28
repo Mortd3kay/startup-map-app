@@ -195,7 +195,8 @@ public class SecurityController {
     }
 
     @PostMapping("/projects/closest")
-    public @ResponseBody List<Project> getAllProjectsAround(Authentication auth, @RequestBody LatLngRequest latLng){
+    public @ResponseBody
+    List<Project> getAllProjectsAround(Authentication auth, @RequestBody LatLngRequest latLng) {
         if (auth != null && auth.isAuthenticated()) {
             return projectService.getLocations(latLng);
         }
@@ -224,8 +225,9 @@ public class SecurityController {
     }
 
     @PostMapping("/projects/recommendations")
-    public @ResponseBody List<Project> getRecommendations(Authentication auth, @RequestBody LatLngRequest latLngRequest){
-        if (auth!=null){
+    public @ResponseBody
+    List<Project> getRecommendationsForUser(Authentication auth, @RequestBody LatLngRequest latLngRequest) {
+        if (auth != null) {
             User u = userService.findUserByEmail(auth.getName());
             if (u != null) {
                 return blacklistService.getRecommendationsForUser(latLngRequest, u);
@@ -250,6 +252,15 @@ public class SecurityController {
             if (u != null) {
                 return userService.setLocation(u.getId(), latLng);
             }
+        }
+        return null;
+    }
+
+    @PostMapping("/users/recommendations")
+    public @ResponseBody
+    List<User> getRecommendationsForProject(Authentication auth, @RequestBody Project project) {
+        if (auth != null && auth.isAuthenticated()) {
+            return blacklistService.getRecommendationsForProject(project);
         }
         return null;
     }

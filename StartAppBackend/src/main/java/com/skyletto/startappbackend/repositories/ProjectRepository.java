@@ -14,6 +14,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     List<Project> findAllByLatBetweenAndLngBetween(double v, double v1, double v2, double v3);
 
-    @Query(value = "select p.* from projects p where (p.lat between ?1-0.25 and ?1+0.25) and (p.lng between ?2-0.7 and ?2+0.7) and p.id not in (select b.project_id from user_blacklists b where b.user_id = ?3)",nativeQuery = true)
+    @Query(value = "select p.* from projects p " +
+            "where (p.lat between ?1-0.25 and ?1+0.25) " +
+            "and (p.lng between ?2-0.7 and ?2+0.7) " +
+            "and p.id not in (select b.project_id from user_blacklists b where b.user_id = ?3 union select id from projects where p.user_id = ?3)",nativeQuery = true)
     List<Project> findAllRecommendedProjects(double lat, double lng, long user_id);
 }
