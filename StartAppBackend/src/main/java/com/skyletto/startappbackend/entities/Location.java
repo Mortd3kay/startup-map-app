@@ -2,9 +2,12 @@ package com.skyletto.startappbackend.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity(name = "users_locations")
+@Table(indexes = @Index(columnList = "lat, lng"))
 public class Location {
     @Id
     private long userId;

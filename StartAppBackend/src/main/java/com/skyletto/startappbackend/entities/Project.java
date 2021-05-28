@@ -1,12 +1,11 @@
 package com.skyletto.startappbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity(name = "projects")
+@Table(indexes = @Index(columnList = "lat, lng"))
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
