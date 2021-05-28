@@ -2,6 +2,7 @@ package com.skyletto.startappbackend.services;
 
 import com.skyletto.startappbackend.entities.*;
 import com.skyletto.startappbackend.entities.requests.LatLngRequest;
+import com.skyletto.startappbackend.repositories.LocationRepository;
 import com.skyletto.startappbackend.repositories.ProjectRepository;
 import com.skyletto.startappbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,36 +23,61 @@ public class BlacklistService {
     private static final double TAGS_EQUALS_COEFFICIENT = 1;
     private static final double DISTANCE_COEFFICIENT = -0.25;
     private static final double DESCRIPTION_COEFFICIENT = 0.15;
+    private static final double EXPERIENCE_COEFFICIENT = 0.3;
 
     private ProjectRepository projectRepository;
     private UserRepository userRepository;
+    private LocationRepository locationRepository;
 
     @Autowired
-    public BlacklistService(ProjectRepository projectRepository,UserRepository userRepository) {
+    public BlacklistService(ProjectRepository projectRepository, UserRepository userRepository, LocationRepository locationRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.locationRepository = locationRepository;
     }
 
     public List<Project> getRecommendationsForUser(LatLngRequest llr, User user) {
         Logger.getLogger("BLACKLIST_SERVICE").log(Level.INFO, "Coordinates: " + llr.getLat() + " " + llr.getLng() + " user: " + user.getId());
         List<Project> projects = projectRepository.findAllRecommendedProjects(llr.getLat(), llr.getLng(), user.getId());
-        projects.sort((o1, o2) -> -Double.compare(summarize(o2, user, llr), summarize(o1, user, llr)));
+        projects.sort((o1, o2) -> -Double.compare(summarizeProject(o2, user, llr), summarizeProject(o1, user, llr)));
         return projects.stream().limit(4).collect(Collectors.toList());
     }
 
-    public List<User> getRecommendationsForProject(Project project){
+    public List<User> getRecommendationsForProject(Project project) {
         Logger.getLogger("BLACKLIST_SERVICE").log(Level.INFO, "Coordinates: " + project.getLat() + " " + project.getLng() + " project: " + project.getId());
         List<User> users = userRepository.findAllRecommendedUsers(project.getLat(), project.getLng(), project.getId());
-        return users;
+        users.sort((o1, o2) -> -Double.compare(summarizeUser(o2, project), summarizeUser(o1, project)));
+        return users.stream().limit(4).collect(Collectors.toList());
     }
 
-    private double summarize(Project p, User u, LatLngRequest llr) {
+    private double summarizeUser(User u, Project p) {
+        double p1 = u.getTags().size() * TAGS_COUNT_COEFFICIENT;
+        double p2 = countOfEqualsTags(p, u) * TAGS_EQUALS_COEFFICIENT;
+        double p3 = distanceInAbstractPoints(u.getLat(), p.getLat(), u.getLng(), p.getLng()) * DISTANCE_COEFFICIENT;
+        String str = (u.getDescription()==null?"":u.getDescription()) + (u.getTitle()==null?"":u.getTitle());
+        double p4 = descriptionLengthInAbstractPoints(str) * DESCRIPTION_COEFFICIENT;
+        double p5 = countExperience(u.getExperience()) * EXPERIENCE_COEFFICIENT;
+        return p1 + p2 + p3 + p4 + p5;
+    }
+
+    private double summarizeProject(Project p, User u, LatLngRequest llr) {
         double p1 = countOfEmptyRoles(p) * ROLE_COEFFICIENT;
-        double p2 = countOfTags(p) * TAGS_COUNT_COEFFICIENT;
+        double p2 = p.getTags().size() * TAGS_COUNT_COEFFICIENT;
         double p3 = distanceInAbstractPoints(p.getLat(), llr.getLat(), p.getLng(), llr.getLng()) * DISTANCE_COEFFICIENT;
         double p4 = countOfEqualsTags(p, u) * TAGS_EQUALS_COEFFICIENT;
-        double p5 = descriptionLengthInAbstractPoints(p) * DESCRIPTION_COEFFICIENT;
+        double p5 = descriptionLengthInAbstractPoints(p.getDescription() + p.getTitle()) * DESCRIPTION_COEFFICIENT;
         return p1 + p2 + p3 + p4 + p5;
+    }
+
+    private int countExperience(String exp){
+        if (exp!=null){
+            try {
+                return Integer.parseInt(exp);
+            } catch (Exception e){
+                Logger.getLogger("BLACKLIST_SERVICE").log(Level.INFO,"Error", e);
+            }
+        }
+        return 0;
     }
 
     private int countOfEmptyRoles(Project p) {
@@ -78,12 +104,8 @@ public class BlacklistService {
         return count;
     }
 
-    private float descriptionLengthInAbstractPoints(Project p) {
-        return (p.getDescription() + p.getTitle()).length() / 100f;
-    }
-
-    private int countOfTags(Project p) {
-        return p.getTags().size();
+    private float descriptionLengthInAbstractPoints(String s) {
+        return s.length() / 100f;
     }
 
 }
