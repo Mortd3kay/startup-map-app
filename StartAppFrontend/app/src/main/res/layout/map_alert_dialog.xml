@@ -97,8 +97,6 @@
 
                 </HorizontalScrollView>
 
-
-
                 <Button
                     android:layout_height="40dp"
                     android:layout_width="140dp"

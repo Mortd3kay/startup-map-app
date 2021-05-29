@@ -1,12 +1,17 @@
 package com.skyletto.startappfrontend.ui.main.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,22 +23,27 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.skyletto.startappfrontend.R
-import com.skyletto.startappfrontend.common.MainApplication
+import com.skyletto.startappfrontend.common.adapters.RecommendAdapter
 import com.skyletto.startappfrontend.common.models.AlertModel
+import com.skyletto.startappfrontend.common.models.RecommendationItem
 import com.skyletto.startappfrontend.common.utils.LaconicTextWatcher
 import com.skyletto.startappfrontend.common.utils.MapViewModelFactory
 import com.skyletto.startappfrontend.common.utils.toast
+import com.skyletto.startappfrontend.data.requests.LatLngRequest
 import com.skyletto.startappfrontend.databinding.FragmentMapsBinding
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
 import com.skyletto.startappfrontend.ui.main.MainActivity
 import com.skyletto.startappfrontend.ui.main.viewmodels.MapViewModel
+import com.skyletto.startappfrontend.ui.main.viewmodels.OnConditionUpdateListener
+import com.skyletto.startappfrontend.ui.main.viewmodels.RecommendationCallback
 import java.util.function.Predicate
-import java.util.jar.Manifest
 
 
 class MapsFragment : Fragment() {
@@ -59,6 +69,12 @@ class MapsFragment : Fragment() {
         lastKnownLocation.observeForever {
             if (it!=null){
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude),13f))
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed({
+                    Log.d(TAG, "onCreate: postDelayed works")
+                    viewModel?.loadRecommendationsForUser(LatLngRequest(it.latitude, it.longitude))
+                }, 2000)
+
             }
         }
 
@@ -93,6 +109,12 @@ class MapsFragment : Fragment() {
 
     private fun observeViewModel(){
         viewModel?.activity = mActivity
+        initViewModelListeners()
+        observeUserLocations()
+        observeProjectLocations()
+    }
+
+    private fun initViewModelListeners(){
         viewModel?.onConditionUpdateListener = object : OnConditionUpdateListener {
             override fun update(predicates: Array<Predicate<AlertModel>?>) {
                 for (m in markerModels){
@@ -106,23 +128,15 @@ class MapsFragment : Fragment() {
                 }
             }
         }
-        viewModel?.userLocations?.observe(this) {
-            for (m in userMarkers) {
-                m.remove()
+
+        viewModel?.recommendationCallback = object : RecommendationCallback {
+            override fun callback(list: List<RecommendationItem>) {
+                showRecommendationDialog(list)
             }
-            userMarkers.clear()
-            for (i in it) {
-                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_profile_icon), 128, 128, false)
-                val marker = mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img)))
-                marker.isVisible = false
-                userMarkers.add(marker)
-                markerModels[marker] = AlertModel(
-                        i.userId,
-                        i.isProject
-                )
-            }
-            viewModel?.updateMarkers()
         }
+    }
+
+    private fun observeProjectLocations(){
         viewModel?.projectLocations?.observe(this) {
             for (m in projectMarkers) {
                 m.remove()
@@ -141,6 +155,27 @@ class MapsFragment : Fragment() {
             viewModel?.updateMarkers()
         }
     }
+
+    private fun observeUserLocations(){
+        viewModel?.userLocations?.observe(this) {
+            for (m in userMarkers) {
+                m.remove()
+            }
+            userMarkers.clear()
+            for (i in it) {
+                val img = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.map_profile_icon), 128, 128, false)
+                val marker = mMap.addMarker(MarkerOptions().position(LatLng(i.lat, i.lng)).icon(BitmapDescriptorFactory.fromBitmap(img)))
+                marker.isVisible = false
+                userMarkers.add(marker)
+                markerModels[marker] = AlertModel(
+                        i.userId,
+                        i.isProject
+                )
+            }
+            viewModel?.updateMarkers()
+        }
+    }
+
 
     private fun initViews(b: FragmentMapsBinding) {
         categories = b.tbSpinner
@@ -207,6 +242,29 @@ class MapsFragment : Fragment() {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dlg.show(parentFragmentManager, "DIALOG")
+    }
+
+    private fun showRecommendationDialog(list:List<RecommendationItem>){
+        Log.d(TAG, "showRecommendationDialog: start creating")
+        context?.let {
+            val dlgBuilder = AlertDialog.Builder(it)
+            val v = LayoutInflater.from(it).inflate(R.layout.recommend_dialog, null)
+            val rv = v.findViewById<RecyclerView>(R.id.rec_item_rv)
+            rv.layoutManager = GridLayoutManager(it, 2)
+            val adapter = RecommendAdapter(list,it)
+            adapter.onUsernameClickListener = object : OnUsernameClickListener {
+                override fun onClick(userId: Long) {
+                    showDialog(AlertModel(userId, false))
+                }
+            }
+            rv.adapter = adapter
+            val closeBtn = v.findViewById<ImageView>(R.id.rec_dlg_close_btn)
+            dlgBuilder.setView(v)
+            val dlg = dlgBuilder.create()
+            dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            dlg.show()
+            closeBtn.setOnClickListener { dlg.dismiss() }
+        }
     }
 
     private fun getIdFromSP() = sp?.getLong("id", -1)!!

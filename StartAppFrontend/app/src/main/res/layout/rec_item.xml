@@ -6,6 +6,15 @@
 
     <data>
         <variable
+            name="removeClick"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="usernameClick"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="click"
+            type="android.view.View.OnClickListener" />
+        <variable
             name="item"
             type="com.skyletto.startappfrontend.common.models.RecommendationItem" />
     </data>
@@ -26,10 +35,23 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:text="Арсений Ш."
+                android:textColor="@color/blue"
+                android:gravity="center_horizontal"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="16sp"
+                android:text="@{item.username}"
+                android:onClick="@{view->usernameClick.onClick(view)}"
+                android:layout_marginTop="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 tools:text="Android-developer"
                 android:textColor="@color/black"
                 android:gravity="center_horizontal"
                 android:fontFamily="@font/roboto_medium"
+                android:text='@{item.title==null?"":item.title}'
                 android:layout_marginTop="10dp"/>
 
             <TextView
@@ -39,7 +61,34 @@
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/dark"
                 android:textSize="12sp"
-                android:layout_marginTop="5dp"/>
+                android:text='@{item.subtitle==null?"":item.subtitle}'
+                android:layout_marginTop="3dp"/>
+
+            <Button
+                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:textSize="14sp"
+                android:backgroundTint="@color/dark_green"
+                android:text="@string/write"
+                android:textAllCaps="false"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="4dp"
+                android:onClick="@{view -> click.onClick(view)}"
+                />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center_horizontal"
+                android:text="@string/remove_from_recommendations"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:onClick="@{view -> removeClick.onClick(view)}"/>
 
         </LinearLayout>
 

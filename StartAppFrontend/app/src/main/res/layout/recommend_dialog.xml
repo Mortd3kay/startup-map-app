@@ -1,18 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="10dp"
-    app:cardElevation="10dp">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rec_item_rv"
+    app:cardElevation="0dp"
+    app:cardMaxElevation="0dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        app:spanCount="2"
-        tools:listitem="@layout/rec_item"/>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/main_background"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/rec_dlg_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="10dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_item_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            app:spanCount="2"
+            app:layout_constraintTop_toBottomOf="@id/rec_dlg_close_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/rec_item"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.cardview.widget.CardView>
 

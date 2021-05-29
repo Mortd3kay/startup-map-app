@@ -78,6 +78,7 @@
     <string name="needed">"требуется: "</string>
     <string name="exp_of_work">"опыт работы: "</string>
     <string name="msg_no_location">Для работы приложения необходимо включить передачу геоданных</string>
+    <string name="remove_from_recommendations">Убрать из рекомендаций</string>
 
     <string-array name="categories">
         <item name="all">Все</item>

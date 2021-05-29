@@ -1,4 +1,4 @@
-package com.skyletto.startappfrontend.ui.main.fragments
+package com.skyletto.startappfrontend.ui.main.viewmodels
 
 import com.skyletto.startappfrontend.common.models.RecommendationItem
 

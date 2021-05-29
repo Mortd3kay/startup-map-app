@@ -95,7 +95,6 @@ class MapDialog(val model: AlertModel) : DialogFragment() {
                     }
                     return@joinToString ""
                 }?.replace(" ,", "")?.trim(',')?.toLowerCase()
-                Log.d(TAG, "onCreate: subtitle $str")
                 if (str != null) {
                     it.subsubtitle = str
                 }

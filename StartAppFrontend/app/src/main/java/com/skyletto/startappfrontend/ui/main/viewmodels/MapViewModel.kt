@@ -7,6 +7,7 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.*
 import com.skyletto.startappfrontend.common.utils.convertLatLngToString
@@ -17,12 +18,16 @@ import com.skyletto.startappfrontend.domain.entities.User
 import com.skyletto.startappfrontend.domain.entities.Location
 import com.skyletto.startappfrontend.domain.entities.Tag
 import com.skyletto.startappfrontend.ui.main.ActivityFragmentWorker
-import com.skyletto.startappfrontend.ui.main.fragments.OnConditionUpdateListener
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.function.Predicate
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class MapViewModel(application: Application, private val userId: Long) : AndroidViewModel(application) {
     private val api = getApplication<MainApplication>().api
@@ -39,7 +44,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     private var projectDisposable: Disposable? = null
     var onConditionUpdateListener: OnConditionUpdateListener? = null
     var predicates = arrayOfNulls<Predicate<AlertModel>>(2)
-
+    var recommendationCallback: RecommendationCallback? = null
     var categoryId = MutableLiveData(0L)
 
     var activity: ActivityFragmentWorker? = null
@@ -68,6 +73,73 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         setStringCondition()
     }
 
+    fun loadRecommendationsForUser(latLng: LatLngRequest) {
+        val d = api.apiService.getRecommendationsForUser(makeToken(getToken()), latLng)
+                .subscribeOn(Schedulers.io())
+                .retry()
+                .map {
+                    saveProjects(it)
+                    it
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            Log.d(TAG, "loadRecommendationsForUser: got projects $it")
+                            recommendationCallback?.callback(it.map { p ->
+                                val str = getApplication<MainApplication>().getString(R.string.needed) + p.roles?.joinToString { iit ->
+                                    if (iit.user == null) {
+                                        return@joinToString iit.role?.name!!
+                                    }
+                                    return@joinToString ""
+                                }?.replace(" ,", "")?.trim(',')?.toLowerCase(Locale.ROOT)
+                                RecommendationItem(
+                                        p.id,
+                                        p.user?.id ?: 0,
+                                        p.user?.firstName + " " + p.user?.secondName?.subSequence(0, 1) + ".",
+                                        p.title,
+                                        str,
+                                        true
+                                )
+                            })
+                        },
+                        {
+                            Log.e(TAG, "loadRecommendationsForUser: error", it)
+                        })
+        cd.add(d)
+    }
+
+    fun loadRecommendationsForProject(project: Project){
+        val d = api.apiService.getRecommendationsForProject(makeToken(getToken()), project)
+                .subscribeOn(Schedulers.io())
+                .retry()
+                .map {
+                    saveAllUsers(it)
+                    it
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            Log.d(TAG, "loadRecommendationsForUser: got users $it")
+                            recommendationCallback?.callback(it.map { u->
+                                val str = if (u.experience!=null) {
+                                    getApplication<MainApplication>().getString(R.string.exp_of_work) + u.experience?.toInt()?.let { it1 -> getApplication<MainApplication>().resources.getQuantityString(R.plurals.years, it1, it1) }
+                                } else getApplication<MainApplication>().getString(R.string.exp_of_work) + "нет"
+                                RecommendationItem(
+                                        u.id?:0,
+                                        u.id?:0,
+                                        u.firstName+" "+u.secondName.subSequence(0,1)+".",
+                                        u.title?:"",
+                                        str,
+                                        false
+                                )
+                            })
+                        },
+                        {
+                            Log.e(TAG, "loadRecommendationsForProject: error", it)
+                        }
+                )
+        cd.add(d)
+    }
 
     fun goToSettings() {
         activity?.goToSettings()
@@ -119,7 +191,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .subscribe(
                         { oit ->
                             userLocations.value?.clear()
-                            userLocations.postValue(oit.filter { it.userId!=userId }.toMutableSet())
+                            userLocations.postValue(oit.filter { it.userId != userId }.toMutableSet())
                             loadUserByIds(oit.map { it.userId })
                         },
                         {
