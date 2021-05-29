@@ -58,7 +58,7 @@ class MapsFragment : Fragment() {
         client = LocationServices.getFusedLocationProviderClient(context)
         lastKnownLocation.observeForever {
             if (it!=null){
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude),14f))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude),13f))
             }
         }
 

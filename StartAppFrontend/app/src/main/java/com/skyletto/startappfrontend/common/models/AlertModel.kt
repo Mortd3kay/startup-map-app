@@ -1,5 +1,8 @@
 package com.skyletto.startappfrontend.common.models
 
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.domain.entities.Tag
 
 data class AlertModel(
@@ -13,4 +16,5 @@ data class AlertModel(
         var chatId: Long? = null
 ){
     constructor(id: Long, isProject: Boolean):this("","", "", "", id, null, isProject, null)
+
 }

@@ -91,4 +91,11 @@
         <item name="dollar">$</item>
         <item name="ruble">₽</item>
     </string-array>
+
+    <plurals name="years">
+        <item quantity="one">%d год</item>
+        <item quantity="few">%d года</item>
+        <item quantity="many">%d лет</item>
+        <item quantity="other">%1$d года</item>
+    </plurals>
 </resources>

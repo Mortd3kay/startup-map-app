@@ -74,4 +74,10 @@ interface ApiService {
 
     @POST("users/locations")
     fun getUserLocations(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest): Single<List<Location>>
+
+    @POST("users/recommendations")
+    fun getRecommendationsForProject(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body project: Project): Single<List<User>>
+
+    @POST("projects/recommendations")
+    fun getRecommendationsForUser(@Header(ApiRepository.AUTH_HEADER_NAME) auth: String, @Body latLng: LatLngRequest): Single<List<Project>>
 }
