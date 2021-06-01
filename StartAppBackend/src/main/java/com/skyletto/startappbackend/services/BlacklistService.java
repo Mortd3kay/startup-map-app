@@ -43,6 +43,11 @@ public class BlacklistService {
         return projects.stream().limit(4).collect(Collectors.toList());
     }
 
+    public void addProjectToBlacklist(Project project, User user){
+        Logger.getLogger("BLACKLIST_SERVICE").log(Level.INFO, "To blacklist: project" + project);
+
+    }
+
     public List<User> getRecommendationsForProject(Project project) {
         Logger.getLogger("BLACKLIST_SERVICE").log(Level.INFO, "Coordinates: " + project.getLat() + " " + project.getLng() + " project: " + project.getId());
         List<User> users = userRepository.findAllRecommendedUsers(project.getLat(), project.getLng(), project.getId());

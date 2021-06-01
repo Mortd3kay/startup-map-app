@@ -265,6 +265,26 @@ public class SecurityController {
         return null;
     }
 
+    @PostMapping("/users/blacklist/add")
+    public void addProjectToBlacklist(Authentication auth, @RequestBody Project project){
+        if (auth != null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                blacklistService.addProjectToBlacklist(project, u);
+            }
+        }
+    }
+
+    @PostMapping("/projects/blacklist/add")
+    public void addUserToBlacklist(Authentication auth, @RequestBody Project project){
+        if (auth != null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                blacklistService.addProjectToBlacklist(project, u);
+            }
+        }
+    }
+
     @DeleteMapping("/user/location/remove")
     public void removeLocation(Authentication auth) {
         if (auth != null) {

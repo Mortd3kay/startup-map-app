@@ -263,6 +263,10 @@ class MapsFragment : Fragment() {
             val dlg = dlgBuilder.create()
             dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
             dlg.show()
+            dlg.window?.setLayout(
+                    resources.displayMetrics.widthPixels * 85 / 100,
+                    resources.displayMetrics.heightPixels * 60 / 100
+            )
             closeBtn.setOnClickListener { dlg.dismiss() }
         }
     }
