@@ -72,7 +72,7 @@ class MapsFragment : Fragment() {
                 val handler = Handler(Looper.getMainLooper())
                 handler.postDelayed({
                     Log.d(TAG, "onCreate: postDelayed works")
-                    viewModel?.loadRecommendationsForUser(LatLngRequest(it.latitude, it.longitude))
+                    viewModel?.loadRecommendations(LatLngRequest(it.latitude, it.longitude))
                 }, 2000)
 
             }

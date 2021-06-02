@@ -75,7 +75,7 @@ public class BlacklistService {
     }
 
     private int countExperience(String exp){
-        if (exp!=null){
+        if (exp!=null && !exp.isEmpty()){
             try {
                 return Integer.parseInt(exp);
             } catch (Exception e){
@@ -102,6 +102,7 @@ public class BlacklistService {
 
     private int countOfEqualsTags(Project p, User u) {
         int count = 0;
+        if (p.getTags()==null || u.getTags()==null) return 0;
         Set<Tag> tags = p.getTags();
         for (Tag t : u.getTags()) {
             if (tags.contains(t)) count++;

@@ -35,6 +35,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
     private val projects = db.projectDao().getAll()
     private val myProjects = db.projectDao().getAllByUserId(userId)
     private val users = db.userDao().getAll()
+    var isRecommendationShown = false
     var searchField = ObservableField("")
     var userLocations = MutableLiveData<MutableSet<Location>>(HashSet())
     var projectLocations = MutableLiveData<MutableSet<Location>>(HashSet())
@@ -73,7 +74,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         setStringCondition()
     }
 
-    fun loadRecommendationsForUser(latLng: LatLngRequest) {
+    private fun loadRecommendationsForUser(latLng: LatLngRequest) {
         val d = api.apiService.getRecommendationsForUser(makeToken(getToken()), latLng)
                 .subscribeOn(Schedulers.io())
                 .retry()
@@ -108,7 +109,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         cd.add(d)
     }
 
-    fun loadRecommendationsForProject(project: Project){
+    private fun loadRecommendationsForProject(project: Project){
         val d = api.apiService.getRecommendationsForProject(makeToken(getToken()), project)
                 .subscribeOn(Schedulers.io())
                 .retry()
@@ -121,7 +122,7 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                         {
                             Log.d(TAG, "loadRecommendationsForUser: got users $it")
                             recommendationCallback?.callback(it.map { u->
-                                val str = if (u.experience!=null) {
+                                val str = if (!u.experience.isNullOrBlank()) {
                                     getApplication<MainApplication>().getString(R.string.exp_of_work) + u.experience?.toInt()?.let { it1 -> getApplication<MainApplication>().resources.getQuantityString(R.plurals.years, it1, it1) }
                                 } else getApplication<MainApplication>().getString(R.string.exp_of_work) + "нет"
                                 RecommendationItem(
@@ -141,6 +142,17 @@ class MapViewModel(application: Application, private val userId: Long) : Android
         cd.add(d)
     }
 
+    fun loadRecommendations(latLng: LatLngRequest){
+        if (!isRecommendationShown){
+            if (myProjects.value!=null && myProjects.value?.isNotEmpty() == true)
+                myProjects.value?.get(0)?.let {
+                    loadRecommendationsForProject(it.project)
+                }
+            else loadRecommendationsForUser(latLng)
+            isRecommendationShown = true
+        }
+    }
+
     fun goToSettings() {
         activity?.goToSettings()
     }
@@ -157,6 +169,11 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
+                            db.projectAndRolesDao().removeAllRoles()
+                            db.projectRolesDao().removeAll()
+                            db.projectTagsDao().removeAll()
+                            db.projectUserDao().removeAll()
+                            db.projectDao().removeAll()
                             saveProjects(it)
                         },
                         {
@@ -174,6 +191,11 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .repeatWhen { completed -> completed.delay(15, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
+                            db.projectAndRolesDao().removeAllRoles()
+                            db.projectRolesDao().removeAll()
+                            db.projectTagsDao().removeAll()
+                            db.projectUserDao().removeAll()
+                            db.projectDao().removeAll()
                             saveProjects(oit)
                         },
                         {
