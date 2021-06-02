@@ -78,6 +78,8 @@
     <string name="needed">"требуется: "</string>
     <string name="exp_of_work">"опыт работы: "</string>
     <string name="msg_no_location">Для работы приложения необходимо включить передачу геоданных</string>
+    <string name="remove_from_recommendations">Убрать из рекомендаций</string>
+    <string name="recommendations">Рекомендации</string>
 
     <string-array name="categories">
         <item name="all">Все</item>
@@ -91,4 +93,11 @@
         <item name="dollar">$</item>
         <item name="ruble">₽</item>
     </string-array>
+
+    <plurals name="years">
+        <item quantity="one">%d год</item>
+        <item quantity="few">%d года</item>
+        <item quantity="many">%d лет</item>
+        <item quantity="other">%1$d года</item>
+    </plurals>
 </resources>

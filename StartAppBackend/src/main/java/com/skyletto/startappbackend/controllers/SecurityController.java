@@ -6,10 +6,7 @@ import com.skyletto.startappbackend.entities.requests.LatLngRequest;
 import com.skyletto.startappbackend.entities.requests.LoginDataRequest;
 import com.skyletto.startappbackend.entities.requests.RegisterDataRequest;
 import com.skyletto.startappbackend.entities.responses.ProfileResponse;
-import com.skyletto.startappbackend.services.MessageService;
-import com.skyletto.startappbackend.services.ProjectService;
-import com.skyletto.startappbackend.services.TagService;
-import com.skyletto.startappbackend.services.UserService;
+import com.skyletto.startappbackend.services.*;
 import com.skyletto.startappbackend.utils.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,11 +27,13 @@ public class SecurityController {
     private TagService tagService;
     private MessageService messageService;
     private ProjectService projectService;
+    private BlacklistService blacklistService;
 
     private JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityController(UserService userService, TagService tagService, MessageService messageService, ProjectService projectService) {
+    public SecurityController(UserService userService, TagService tagService, MessageService messageService, ProjectService projectService, BlacklistService blacklistService) {
+        this.blacklistService = blacklistService;
         this.userService = userService;
         this.tagService = tagService;
         this.messageService = messageService;
@@ -196,7 +195,8 @@ public class SecurityController {
     }
 
     @PostMapping("/projects/closest")
-    public @ResponseBody List<Project> getAllProjectsAround(Authentication auth, @RequestBody LatLngRequest latLng){
+    public @ResponseBody
+    List<Project> getAllProjectsAround(Authentication auth, @RequestBody LatLngRequest latLng) {
         if (auth != null && auth.isAuthenticated()) {
             return projectService.getLocations(latLng);
         }
@@ -224,6 +224,18 @@ public class SecurityController {
         return null;
     }
 
+    @PostMapping("/projects/recommendations")
+    public @ResponseBody
+    List<Project> getRecommendationsForUser(Authentication auth, @RequestBody LatLngRequest latLngRequest) {
+        if (auth != null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                return blacklistService.getRecommendationsForUser(latLngRequest, u);
+            }
+        }
+        return null;
+    }
+
     @PutMapping("/roles/update")
     public @ResponseBody
     ProjectAndRole updateRole(Authentication auth, @RequestBody ProjectAndRole projectAndRole) {
@@ -242,6 +254,35 @@ public class SecurityController {
             }
         }
         return null;
+    }
+
+    @PostMapping("/users/recommendations")
+    public @ResponseBody
+    List<User> getRecommendationsForProject(Authentication auth, @RequestBody Project project) {
+        if (auth != null && auth.isAuthenticated()) {
+            return blacklistService.getRecommendationsForProject(project);
+        }
+        return null;
+    }
+
+    @PostMapping("/users/blacklist/add")
+    public void addProjectToBlacklist(Authentication auth, @RequestBody Project project){
+        if (auth != null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                blacklistService.addProjectToBlacklist(project, u);
+            }
+        }
+    }
+
+    @PostMapping("/projects/blacklist/add")
+    public void addUserToBlacklist(Authentication auth, @RequestBody Project project){
+        if (auth != null) {
+            User u = userService.findUserByEmail(auth.getName());
+            if (u != null) {
+                blacklistService.addProjectToBlacklist(project, u);
+            }
+        }
     }
 
     @DeleteMapping("/user/location/remove")

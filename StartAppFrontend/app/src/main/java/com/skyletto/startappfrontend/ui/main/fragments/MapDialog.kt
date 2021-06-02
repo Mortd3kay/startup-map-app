@@ -73,7 +73,10 @@ class MapDialog(val model: AlertModel) : DialogFragment() {
                 it.title = oit.user.title ?: ""
                 it.tags = oit.tags
                 it.subtitle = oit.user.firstName + " " + oit.user.secondName
-                it.subsubtitle = getString(R.string.exp_of_work) + oit.user.experience ?: "Нет"
+                if (oit.user.experience!=null) {
+                    it.subsubtitle = getString(R.string.exp_of_work) + oit.user.experience?.toInt()?.let { it1 -> resources.getQuantityString(R.plurals.years, it1, it1) }
+                } else it.subsubtitle = getString(R.string.exp_of_work) + "нет"
+
                 it.description = oit.user.description ?: ""
                 it.chatId = oit.user.id
             }
@@ -92,7 +95,6 @@ class MapDialog(val model: AlertModel) : DialogFragment() {
                     }
                     return@joinToString ""
                 }?.replace(" ,", "")?.trim(',')?.toLowerCase()
-                Log.d(TAG, "onCreate: subtitle $str")
                 if (str != null) {
                     it.subsubtitle = str
                 }

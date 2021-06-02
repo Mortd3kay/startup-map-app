@@ -3,11 +3,14 @@ package com.skyletto.startappfrontend.ui.main.viewmodels
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.MainApplication
 import com.skyletto.startappfrontend.common.models.*
 import com.skyletto.startappfrontend.common.utils.convertLatLngToString
@@ -120,7 +123,7 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
 
     private fun configureProjectsAddresses(projects:List<Project>){
         for (p in projects){
-            if (p.lat!=null && p.lng!=null) p.address = convertLatLngToString(getApplication(), LatLng(p.lat!!, p.lng!!))
+            if (p.lat!=null && p.lng!=null) p.address = convertLatLngToString(getApplication(), LatLng(p.lat, p.lng))
         }
     }
 
@@ -186,7 +189,15 @@ class ProfileViewModel(application: Application, val id:Long) : AndroidViewModel
         cd.clear()
     }
 
+
     companion object{
         private const val TAG = "PROFILE_VIEW_MODEL"
+        @JvmStatic
+        @BindingAdapter("experience", requireAll = false)
+        fun convertExperience(view: TextView, exp:String?){
+            exp?.let {
+                view.text = view.context.resources.getQuantityString(R.plurals.years, exp.toInt(),exp.toInt())
+            }
+        }
     }
 }

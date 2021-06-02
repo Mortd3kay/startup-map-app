@@ -50,7 +50,7 @@ public class Tag {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tag tag = (Tag) o;
-        return id == tag.id && Objects.equals(name, tag.name) && Objects.equals(users, tag.users) && Objects.equals(projects, tag.projects);
+        return id == tag.id && Objects.equals(name, tag.name);
     }
 
     @Override
