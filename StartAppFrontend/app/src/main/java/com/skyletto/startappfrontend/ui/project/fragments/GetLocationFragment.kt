@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +16,11 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.skyletto.startappfrontend.R
 import com.skyletto.startappfrontend.common.utils.convertLatLngToString
 import com.skyletto.startappfrontend.common.utils.toast
+import com.skyletto.startappfrontend.ui.main.fragments.MapsFragment
 import com.skyletto.startappfrontend.ui.project.viewmodels.CreateProjectViewModel
 import java.util.*
 
@@ -35,7 +34,11 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
     private var marker: Marker? = null
     private lateinit var img:Bitmap
     private val callback = OnMapReadyCallback { googleMap ->
-
+        try {
+            if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.mapstyle))) Log.e("GET_LOCATION", "onMapReady: Parsing failed")
+        } catch (e: Exception) {
+            Log.e("GET_LOCATION", "onMapReady: ", e.cause)
+        }
         googleMap.setOnMapClickListener {
             updateAddressInfo(it)
             marker?.remove()

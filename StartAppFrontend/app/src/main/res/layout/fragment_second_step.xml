@@ -27,7 +27,7 @@
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textAllCaps="true"
-            android:fontFamily="@font/rubik_regular"
+            android:fontFamily="@font/roboto_regular"
             android:layout_marginBottom="60dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -73,6 +73,7 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/auth_register_phone_input"
             style="@style/input_style"
             android:inputType="phone"
             android:paddingStart="5dp"

@@ -251,11 +251,17 @@ class MapsFragment : Fragment() {
             val v = LayoutInflater.from(it).inflate(R.layout.recommend_dialog, null)
             val rv = v.findViewById<RecyclerView>(R.id.rec_item_rv)
             rv.layoutManager = GridLayoutManager(it, 2)
-            val adapter = RecommendAdapter(list,it)
+            val adapter = RecommendAdapter(list.toMutableList(),it)
             adapter.onUsernameClickListener = object : OnUsernameClickListener {
-                override fun onClick(userId: Long) {
-                    showDialog(AlertModel(userId, false))
+                override fun onClick(id: Long, isProject:Boolean) {
+                    showDialog(AlertModel(id, isProject))
                 }
+            }
+            adapter.onRemoveClickListener = object : OnRemoveClickListener {
+                override fun onClick(id: Long, isProject: Boolean, pos:Int) {
+                    adapter.notifyItemRemoved(pos)
+                }
+
             }
             rv.adapter = adapter
             val closeBtn = v.findViewById<ImageView>(R.id.rec_dlg_close_btn)

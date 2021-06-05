@@ -96,8 +96,8 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                                 RecommendationItem(
                                         p.id,
                                         p.user?.id ?: 0,
-                                        p.user?.firstName + " " + p.user?.secondName?.subSequence(0, 1) + ".",
                                         p.title,
+                                        p.user?.firstName + " " + p.user?.secondName?.subSequence(0, 1) + ".",
                                         str,
                                         true
                                 )

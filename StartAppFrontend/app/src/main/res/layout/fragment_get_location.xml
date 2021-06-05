@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/choose_location"
                 android:textSize="20sp"
-                android:fontFamily="@font/rubik_medium"/>
+                android:fontFamily="@font/roboto_medium"/>
 
             <Space
                 android:layout_width="0dp"

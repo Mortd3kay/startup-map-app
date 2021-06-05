@@ -93,7 +93,7 @@
             android:backgroundTint="@color/blood_red"
             android:text="@string/delete"
             android:textSize="12sp"
-            android:fontFamily="@font/rubik_medium"
+            android:fontFamily="@font/roboto_medium"
             android:visibility="gone"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"

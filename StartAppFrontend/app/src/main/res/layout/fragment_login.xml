@@ -27,7 +27,7 @@
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textAllCaps="true"
-            android:fontFamily="@font/rubik_regular"
+            android:fontFamily="@font/roboto_regular"
             android:layout_marginBottom="60dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -91,7 +91,7 @@
             android:layout_marginTop="15dp"
             android:text="@string/not_registered_yet"
             android:textColor="@color/white"
-            android:fontFamily="@font/rubik_regular"
+            android:fontFamily="@font/roboto_regular"
             android:onClick="@{(view)->model.goToRegister()}"
             android:textAllCaps="false" />
 

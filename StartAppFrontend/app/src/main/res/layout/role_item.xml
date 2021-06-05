@@ -40,7 +40,7 @@
                 android:backgroundTint="@color/blood_red"
                 android:text="@string/delete"
                 android:textSize="12sp"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/roboto_medium"
                 android:onClick="@{(v)->click.onClick(v)}"
                 android:layout_marginHorizontal="10dp"/>
 
@@ -60,7 +60,7 @@
                 android:checked="@={item.isSalary()}"
                 android:text="@string/salary"
                 android:buttonTint="@color/skin"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/roboto_medium"
                 />
 
             <EditText
