@@ -34,11 +34,7 @@ class GetLocationFragment(private val viewModel: CreateProjectViewModel) : Fragm
     private var marker: Marker? = null
     private lateinit var img:Bitmap
     private val callback = OnMapReadyCallback { googleMap ->
-        try {
-            if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.mapstyle))) Log.e("GET_LOCATION", "onMapReady: Parsing failed")
-        } catch (e: Exception) {
-            Log.e("GET_LOCATION", "onMapReady: ", e.cause)
-        }
+
         googleMap.setOnMapClickListener {
             updateAddressInfo(it)
             marker?.remove()
