@@ -114,6 +114,7 @@ public class UserService {
     }
 
     public void removeLocation(long id){
+        if (locationRepository.existsById(id))
         locationRepository.deleteById(id);
     }
 
