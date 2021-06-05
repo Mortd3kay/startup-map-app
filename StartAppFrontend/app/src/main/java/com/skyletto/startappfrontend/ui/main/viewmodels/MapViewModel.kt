@@ -87,17 +87,22 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                         {
                             Log.d(TAG, "loadRecommendationsForUser: got projects $it")
                             recommendationCallback?.callback(it.map { p ->
-                                val str = getApplication<MainApplication>().getString(R.string.needed) + p.roles?.joinToString { iit ->
+                                var str = p.roles?.joinToString { iit ->
                                     if (iit.user == null) {
                                         return@joinToString iit.role?.name!!
                                     }
                                     return@joinToString ""
-                                }?.replace(" ,", "")?.trim(',')?.toLowerCase(Locale.ROOT)
+                                }?.replace(" ,", "")?.trim(' ',',')?.toLowerCase(Locale.ROOT)
+                                if (!str.isNullOrBlank()){
+                                    str = if (str.length > 15) getApplication<MainApplication>().getString(R.string.needed) + "..."
+                                    else getApplication<MainApplication>().getString(R.string.needed) + str
+                                }
+
                                 RecommendationItem(
                                         p.id,
                                         p.user?.id ?: 0,
-                                        p.user?.firstName + " " + p.user?.secondName?.subSequence(0, 1) + ".",
                                         p.title,
+                                        p.user?.firstName + " " + p.user?.secondName?.subSequence(0, 1) + ".",
                                         str,
                                         true
                                 )
@@ -169,11 +174,6 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
-                            db.projectAndRolesDao().removeAllRoles()
-                            db.projectRolesDao().removeAll()
-                            db.projectTagsDao().removeAll()
-                            db.projectUserDao().removeAll()
-                            db.projectDao().removeAll()
                             saveProjects(it)
                         },
                         {
@@ -191,11 +191,6 @@ class MapViewModel(application: Application, private val userId: Long) : Android
                 .repeatWhen { completed -> completed.delay(15, TimeUnit.SECONDS) }
                 .subscribe(
                         { oit ->
-                            db.projectAndRolesDao().removeAllRoles()
-                            db.projectRolesDao().removeAll()
-                            db.projectTagsDao().removeAll()
-                            db.projectUserDao().removeAll()
-                            db.projectDao().removeAll()
                             saveProjects(oit)
                         },
                         {

@@ -13,7 +13,7 @@ import com.skyletto.startappfrontend.ui.chat.ChatActivity
 import com.skyletto.startappfrontend.ui.main.fragments.OnRemoveClickListener
 import com.skyletto.startappfrontend.ui.main.fragments.OnUsernameClickListener
 
-class RecommendAdapter(val items: List<RecommendationItem>, val context:Context) : RecyclerView.Adapter<RecommendAdapter.RecommendHolder>() {
+class RecommendAdapter(var items: MutableList<RecommendationItem>, val context:Context) : RecyclerView.Adapter<RecommendAdapter.RecommendHolder>() {
 
     var onUsernameClickListener: OnUsernameClickListener? = null
     var onRemoveClickListener: OnRemoveClickListener? = null
@@ -36,11 +36,12 @@ class RecommendAdapter(val items: List<RecommendationItem>, val context:Context)
                 context.startActivity(intent)
             }
             holder.binding.usernameClick = View.OnClickListener { _->
-                onUsernameClickListener?.onClick(it.userId)
+                onUsernameClickListener?.onClick(it.id, it.isProject)
             }
 
             holder.binding.removeClick = View.OnClickListener { _->
-                onRemoveClickListener?.onClick(it.id, it.isProject)
+                items.removeAt(position)
+                onRemoveClickListener?.onClick(it.id, it.isProject, position)
             }
         }
 

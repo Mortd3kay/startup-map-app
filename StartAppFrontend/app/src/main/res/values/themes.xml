@@ -17,7 +17,7 @@
 
     <style name="input_style">
         <item name="android:background">@drawable/input_text_style</item>
-        <item name="fontFamily">@font/rubik_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:textSize">18sp</item>
         <item name="android:layout_width">match_parent</item>
@@ -30,7 +30,7 @@
         <item name="background">@drawable/auth_btn</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="fontFamily">@font/rubik_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
         <item name="android:elevation">5dp</item>
     </style>
 

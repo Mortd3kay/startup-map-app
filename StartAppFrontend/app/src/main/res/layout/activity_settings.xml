@@ -42,7 +42,7 @@
             android:id="@+id/settings_tv_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/rubik_medium"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/settings"
             android:textAllCaps="true"
             android:textSize="20sp"

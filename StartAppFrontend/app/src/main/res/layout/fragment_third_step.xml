@@ -27,7 +27,7 @@
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textAllCaps="true"
-            android:fontFamily="@font/rubik_regular"
+            android:fontFamily="@font/roboto_regular"
             android:layout_marginBottom="60dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -85,7 +85,7 @@
             android:layout_marginTop="35dp"
             android:text="@string/your_skills_and_prefs"
             android:textColor="@color/white"
-            android:fontFamily="@font/rubik_regular"
+            android:fontFamily="@font/roboto_regular"
             android:layout_gravity="start"
             android:layout_marginHorizontal="60dp"/>
 

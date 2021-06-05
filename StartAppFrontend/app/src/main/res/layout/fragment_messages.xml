@@ -38,7 +38,7 @@
             android:id="@+id/message_tv_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/rubik_medium"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/chats"
             android:textAllCaps="true"
             android:textSize="20sp"
